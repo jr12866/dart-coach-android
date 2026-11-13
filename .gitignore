@@ -1,0 +1,53 @@
+﻿# Gradle
+.gradle/
+build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Android
+*.apk
+*.aab
+*.ap_
+*.dex
+release/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# --- Models ---
+#
+# The models are large (Whisper base.en int8 is around 250 MB, the Piper voice
+# around 63 MB) and they are downloaded, not authored. They are fetched by
+# models/fetch-models.sh and must never be committed.
+#
+# The espeak-ng data is a directory of many small files that the fetch script
+# unpacks, so it gets ignored by name rather than by size.
+
+app/src/main/assets/*.onnx
+app/src/main/assets/*-tokens.txt
+app/src/main/assets/espeak-ng-data/
+app/src/main/assets/samples/
+
+# The Windows repo's parity generator writes into corpus/ from here, so the
+# generated files are ignored - but the generator itself is tracked.
+tools/parity_gen.py
+!corpus/README.md
+
+# Model archives, if fetched into place rather than into a temp dir
+*.tar.bz2
+*.onnx
+
+# Logs and captures from the device
+*.log
+session*.wav
+levels*.csv

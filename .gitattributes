@@ -1,0 +1,26 @@
+﻿# Normalise line endings on checkin, so the working tree gets CRLF on Windows
+# and LF everywhere else. The model fetch script must stay LF: it runs under
+# bash, and CRLF in a shebang line breaks it.
+
+* text=auto
+
+*.kt        text diff=kotlin
+*.kts       text
+*.java      text
+*.xml       text
+*.md        text
+*.json      text
+*.txt       text
+*.csv       text
+*.pro       text
+
+*.sh        text eol=lf
+*.bash      text eol=lf
+
+*.onnx      binary
+*.wav       binary
+*.png       binary
+*.jpg       binary
+*.so        binary
+*.jar       binary
+*.aar       binary
