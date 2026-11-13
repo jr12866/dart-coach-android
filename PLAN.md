@@ -206,8 +206,12 @@ should be real-time, but this must be *measured* on the device.
   `sherpa-onnx-streaming-zipformer-en-2023-02-17`, 20M params, English) which
   *does* support hotwords with `modified_beam_search`.
 
-**This is the one genuine fork in the road, and Phase 1 is a measurement spike
-for exactly this reason.**
+**This was the one genuine fork in the road, and Phase 1 settled it.** Measured
+on the Pixel 7, Whisper `base.en` int8 hears "one eighty" as `180`, "bust" as
+`bust` and "yes" as `Yes.` - all three of the words that had broken on the
+laptop - at **RTF 0.11 to 0.20**. The hotwords that would have fixed the
+vocabulary problem are not needed, so the Zipformer path is dropped and the
+parser's assumptions stay intact. See `docs/PHASE1-FINDINGS.md`.
 
 ---
 
@@ -242,9 +246,12 @@ assertions from `tests/test_darts.py`, `test_parser.py`, `test_state.py`,
 `test_gameplay_rules.py`, `test_preferred_double.py` to Kotlin/JUnit, driven
 from the same fixtures. The Python tests remain the reference spec.
 
-### Phase 1 — Spike: can the Pixel 7 hear a darts score? (1–2 days)
+### Phase 1 — Spike: can the Pixel 7 hear a darts score? (1–2 days) — **DONE**
 
-**Make-or-break. Do it before writing any of the app.**
+**Measured on the Pixel 7. Whisper `base.en` int8 works, at RTF 0.11-0.20, and
+it hears "one eighty" as `180`, "bust" as `bust` and "yes" as `Yes.` - all
+three of the words that had broken on the laptop. See
+`docs/PHASE1-FINDINGS.md` for the numbers.**
 
 1. Build sherpa-onnx for `arm64-v8a` (see `docs/BUILDING.md`). Needs the NDK.
    Budget real time — the longest single unknown.
@@ -348,7 +355,7 @@ simple and true: on-device ASR, no data transmitted, no analytics, no ads.
 | Phase | Time | Risk |
 |---|---|---|
 | 0. Repo layout | done | — |
-| 1. sherpa-onnx + ASR spike | 1–2 d | **High** — native build + ASR quality |
+| 1. sherpa-onnx + ASR spike | 1–2 d | **done** — RTF 0.11-0.20, all words correct |
 | 2. Kotlin core port | 2–3 d | **done** — all 7663 corpus cases match |
 | 3. The app | 3–5 d | Medium — echo gate, lifecycle |
 | 4. On-the-oche verification | 2–3 d | Medium — real-world behaviour |
@@ -363,9 +370,10 @@ fallback.
 ## Open questions
 
 1. ~~**Repo layout**~~ — **decided: separate repo `C:\git\dart-coach-android`.**
-2. **Whisper vs Zipformer** — decided by the Phase 1 spike. If Whisper `base.en`
-   mishears "one eighty" at the oche, switch to a Zipformer transducer, which
-   supports hotwords and would fix the vocabulary problem properly.
+2. ~~**Whisper vs Zipformer**~~ — **decided: Whisper `base.en` int8.** Measured
+   on the Pixel 7: "one eighty" is `180`, "bust" is `bust`, "yes" is `Yes.`,
+   at RTF 0.11-0.20. The hotwords that would have fixed the vocabulary
+   problem are not needed, and the Zipformer path is dropped.
 3. ~~**Where the assets live**~~ — **decided: a Play Asset Delivery pack,
    `install-time`.** The models ship inside the Play install; no download code,
    no progress UI, no checksums to write.

@@ -61,6 +61,18 @@ android {
     // assets, so that the APK stays small enough for the Play Store.
     assetPacks += listOf(":models-pack")
 
+    // For local development, the models are also copied into the app's own
+    // assets. A debug APK installed with `adb install` never gets the asset
+    // pack, because that only arrives through the Play Store.
+    //
+    // The release build does not do this: it ships the pack and nothing
+    // else, which is the whole point of the pack.
+    if (project.hasProperty("withLocalModels")) {
+        sourceSets.getByName("main") {
+            assets.srcDir(rootProject.file("models-pack/src/main/assets"))
+        }
+    }
+
     androidResources {
         // Model files must be readable as-is.
         noCompress += listOf("onnx", "txt")
