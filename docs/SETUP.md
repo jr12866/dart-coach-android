@@ -22,32 +22,19 @@ sherpa-onnx is not published as a prebuilt AAR. It is built from source for
 `arm64-v8a` and produces the `sherpa-onnx-jni` native library plus the Kotlin
 API classes.
 
-See `docs/BUILDING.md` for the full procedure. In outline:
+```
+sdkmanager "ndk;27.2.12479018" "cmake;3.31.6"
+git clone --depth 1 https://github.com/k2-fsa/sherpa-onnx.git third_party/sherpa-onnx
+./tools/build-sherpa.ps1
+```
 
-1. Clone `k2-fsa/sherpa-onnx`.
-2. Build the shared library for Android with the NDK toolchain:
+The script downloads ONNX Runtime, configures CMake, compiles, and copies the
+native libraries into `app/src/main/jniLibs/arm64-v8a/` and the Kotlin API into
+`app/src/main/java/com/k2fsa/sherpa/onnx/`.
 
-   ```
-   cmake -B build-android-arm64 \
-     -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
-     -DANDROID_ABI=arm64-v8a \
-     -DANDROID_PLATFORM=android-26 \
-     -DSHERPA_ONNX_ENABLE_TTS=ON \
-     -DSHERPA_ONNX_ENABLE_PORTAUDIO=OFF \
-     -DSHERPA_ONNX_ENABLE_WEBSOCKET=OFF \
-     .
-   ```
+See `docs/BUILDING.md` for the versions that matter and the things that will
+bite you.
 
-   `SHERPA_ONNX_ENABLE_TTS=ON` is required: the Piper voice is a VITS model,
-   and the TTS code is not built by default.
-
-3. Copy the resulting `libsherpa-onnx-jni.so` into
-   `app/src/main/jniLibs/arm64-v8a/`.
-4. Copy the Kotlin API sources from `sherpa-onnx/kotlin-api/` into
-   `core/src/main/kotlin/com/k2fsa/sherpa/onnx/`.
-
-The `core` Gradle module depends on the sherpa-onnx Kotlin classes but not on
-the native library, so `core` tests run on the JVM without the NDK.
 
 ## Fetch the models
 
@@ -60,14 +47,17 @@ Delivery pack:
 
 | File | Purpose | Size |
 |---|---|---|
-| `silero_vad.onnx` | voice activity detection | ~2 MB |
-| `base.en-encoder.int8.onnx` + decoder + tokens | Whisper ASR (default) | ~250 MB |
+| `silero_vad.onnx` | voice activity detection | 0.6 MB |
+| `base.en-encoder.int8.onnx` + decoder + tokens | Whisper ASR (default) | 153 MB |
 | `tiny.en-encoder.int8.onnx` + decoder + tokens | Whisper ASR (smaller) | ~120 MB |
-| `en_US-lessac-medium.onnx` + tokens | Piper TTS voice | ~63 MB |
-| `espeak-ng-data/` | phoneme data for Piper | ~10 MB |
+| `en_US-lessac-medium.onnx` + tokens | Piper TTS voice | 17.7 MB |
+| `espeak-ng-data/` | phoneme data for Piper | 17.2 MB |
 
-Total ~325 MB, which fits in a single install-time asset pack (the limit is
+Total **~189 MB**, which fits in a single install-time asset pack (the limit is
 1.5 GB per pack, 500 MB for the base module). See `docs/DECISIONS.md` entry 8.
+
+The int8 variants are used throughout. The Piper voice in particular is 17.7 MB
+int8 against 64 MB in float32, for the same voice.
 
 Whisper `base.en` is the default because that is what the Windows coach uses.
 `tiny.en` is about half the size and noticeably worse at number words - see

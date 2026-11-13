@@ -169,9 +169,13 @@ are part of the Play install, not downloaded by the app.
 | Individual asset packs | 1.5 GB |
 | Cumulative, all modules + install-time packs | 4 GB |
 
-Our assets are ~325 MB in total: Whisper `base.en` int8 (~250 MB), the Piper
-voice (~63 MB), silero-vad (~2 MB) and espeak-ng data (~10 MB). That fits in a
-single install-time pack with room to spare.
+Our assets are ~189 MB in total: Whisper `base.en` int8 (153 MB), the Piper
+voice int8 (17.7 MB), silero-vad (0.6 MB) and espeak-ng data (17.2 MB). That
+fits in a single install-time pack with room to spare.
+
+The int8 variants are used throughout. The Piper voice is 17.7 MB int8 against
+64 MB in float32, for the same voice, and the Whisper int8 pair is a third of
+the float32 size.
 
 The 200 MB figure is the *legacy APK* limit, for apps still publishing APKs
 instead of app bundles. An app bundle gets 500 MB for the base module alone.
@@ -201,3 +205,54 @@ path. With install-time this problem does not exist.
 case the fallback is a plain HTTPS download from GitHub Releases with a
 manifest carrying `sha256` per asset, resumable transfers, and a "models not
 ready" startup state.
+
+---
+
+## 9. The sherpa-onnx build is scripted, not documented as steps
+
+**Decision.** `tools/build-sherpa.ps1` does the whole build: download ONNX
+Runtime, configure CMake, compile, install, and copy the results into the app.
+
+**Why.** The upstream recipe is `build-android-arm64-v8a.sh`, which needs
+bash and a Unix environment. That is fine for the sherpa-onnx maintainers and
+not fine for a Windows machine. More importantly, the build has four version
+constraints that all have to be right at once, and getting one of them wrong
+produces an error that does not say what is wrong:
+
+| | |
+|---|---|
+| NDK 27.2.12479018 | the version the sherpa-onnx F-Droid document names |
+| CMake 3.31.6 | 3.22.1 links with `-fuse-ld=gold`, which NDK r27 removed |
+| Ninja | CMake defaults to NMake on Windows, and nmake is not installed |
+| ONNX Runtime 1.28.2 | the version the upstream script uses |
+
+The script also copies `libc++_shared.so` into the APK. The library is linked
+against the shared C++ runtime, and without it the app dies at startup with
+`UnsatisfiedLinkError` - a confusing way to find out that one file is missing.
+
+**What it costs.** The script is longer than the four commands it replaces,
+and it is a file to maintain when upstream changes. In exchange, the build
+works the same way for whoever picks this up next.
+
+---
+
+## 10. The Compose compiler plugin is a separate plugin
+
+**Decision.** `org.jetbrains.kotlin.plugin.compose` is applied to the app
+module.
+
+**Why it matters.** Since Kotlin 2.0 the Compose compiler is a Kotlin plugin
+of its own rather than something bundled with the Kotlin compiler. Without it,
+composable functions fail with an internal backend error:
+
+```
+Couldn't inline method call: CALL 'public final fun Column (...)'
+```
+
+which says nothing about the actual cause. This cost an hour to track down,
+because the error looks like a Kotlin bug rather than a missing plugin.
+
+**Also.** `androidx.compose.foundation` is a separate dependency from
+`androidx.compose.ui`. `Column`, `Row` and the rest of the layout primitives
+live in foundation. Without it, the same internal error appears, for the
+same reason.

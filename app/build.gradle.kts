@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -13,6 +14,11 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "0.1.0"
+
+        // The sherpa-onnx native library is built by
+        // tools/build-sherpa.ps1 against this NDK. Telling AGP which one it
+        // is stops it trying to resolve a different version.
+        ndkVersion = "27.2.12479018"
 
         // The models are large. Whisper base.en int8 alone is around 250 MB,
         // so the APK cannot fit under the 200 MB limit on Google Play. This is
@@ -51,6 +57,10 @@ android {
         }
     }
 
+    // The models ship as a Play Asset Delivery pack, not in the app's own
+    // assets, so that the APK stays small enough for the Play Store.
+    assetPacks += listOf(":models-pack")
+
     androidResources {
         // Model files must be readable as-is.
         noCompress += listOf("onnx", "txt")
@@ -66,6 +76,10 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.11.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
+    // Column, Row and the rest of the layout primitives live here, not in
+    // compose-ui. Without it the compiler cannot find Column's inline
+    // method and fails with an internal backend error.
+    implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-core")
 

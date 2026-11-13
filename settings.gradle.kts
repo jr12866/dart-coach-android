@@ -1,4 +1,4 @@
-﻿pluginManagement {
+pluginManagement {
     repositories {
         google()
         mavenCentral()
@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 rootProject.name = "dart-coach-android"
 include(":core")
 include(":app")
+include(":models-pack")
