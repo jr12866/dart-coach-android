@@ -1,0 +1,2277 @@
+[
+  {
+    "id": "score-bare-125",
+    "text": "125",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 125,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-bare-180",
+    "text": "180",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 180,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-bare-0",
+    "text": "0",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": true,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-word-eighty",
+    "text": "eighty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 80,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-word-one-hundred",
+    "text": "one hundred",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 100,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-one-eighty",
+    "text": "one eighty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 180,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-one-twenty",
+    "text": "one twenty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 120,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-one-forty",
+    "text": "one forty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 140,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-one-eighteen",
+    "text": "one eighteen",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 19,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-one-nineteen",
+    "text": "one nineteen",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 20,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-one-hundred-and-eighty",
+    "text": "one hundred and eighty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 180,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-one-hundred-eighty",
+    "text": "one hundred eighty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 180,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-typo-eighteen-nine",
+    "text": "eighty-nine",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 89,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-decimal-split",
+    "text": "1.80",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 180,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-in-sentence",
+    "text": "i need a hundred and forty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-in-sentence-2",
+    "text": "it was one of those days",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-leading-word",
+    "text": "well one eighty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 180,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-two-numbers",
+    "text": "60 60",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 120,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-three-darts",
+    "text": "20 20 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 60,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "score-four-darts",
+    "text": "20 20 20 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": true,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "dart-single-20",
+    "text": "single 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "qualified_darts",
+      "score": null,
+      "darts": [
+        20
+      ],
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "dart-double-16",
+    "text": "double 16",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "qualified_darts",
+      "score": null,
+      "darts": [
+        32
+      ],
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "dart-triple-20",
+    "text": "triple 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "qualified_darts",
+      "score": null,
+      "darts": [
+        60
+      ],
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "dart-treble-20",
+    "text": "treble 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "qualified_darts",
+      "score": null,
+      "darts": [
+        60
+      ],
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "dart-mixed",
+    "text": "triple 20 double 16 single 5",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "qualified_darts",
+      "score": null,
+      "darts": [
+        60,
+        32,
+        5
+      ],
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "dart-two",
+    "text": "double 16 single 5",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "qualified_darts",
+      "score": null,
+      "darts": [
+        32,
+        5
+      ],
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "dart-three",
+    "text": "double 16 single 5 single 3",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "qualified_darts",
+      "score": null,
+      "darts": [
+        32,
+        5,
+        3
+      ],
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "dart-four",
+    "text": "single 1 single 2 single 3 single 4",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": true,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "dart-plus-bare",
+    "text": "triple 20 140",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 140,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "dart-bull",
+    "text": "bull",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "dart-double-bull",
+    "text": "double bull",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "cmd-new-game",
+    "text": "new game",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "new_game",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": true
+    }
+  },
+  {
+    "id": "cmd-undo",
+    "text": "undo",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "undo",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": true
+    }
+  },
+  {
+    "id": "cmd-whats-my-score",
+    "text": "what's my score",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "whats_my_score",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "cmd-what-do-i-have-left",
+    "text": "what do i have left",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "whats_my_score",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "cmd-continue",
+    "text": "continue",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "continue",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "cmd-bust",
+    "text": "bust",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "bust",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "cmd-busted",
+    "text": "busted",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "bust",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "cmd-bus",
+    "text": "bus",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "bust",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "cmd-bus-with-number",
+    "text": "bus 40",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 40,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "pref-double-20",
+    "text": "i prefer double 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "prefer_double",
+      "score": null,
+      "darts": null,
+      "double": 20,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "pref-double-18",
+    "text": "i'd rather have double eighteen",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "prefer_double",
+      "score": null,
+      "darts": null,
+      "double": 18,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "pref-bull",
+    "text": "i prefer the bull",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "prefer_double",
+      "score": null,
+      "darts": null,
+      "double": 50,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "pref-double-1",
+    "text": "i prefer double 1",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "prefer_double",
+      "score": null,
+      "darts": null,
+      "double": 1,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "pref-double-21",
+    "text": "i prefer double 21",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-yes",
+    "text": "yes",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-yeah",
+    "text": "yeah",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-ok",
+    "text": "ok",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-correct",
+    "text": "correct",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "undo",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": true
+    }
+  },
+  {
+    "id": "answer-coach-yes",
+    "text": "coach yes",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-yes-coach",
+    "text": "yes coach",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-thats-right",
+    "text": "that's right",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-no",
+    "text": "no",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-nope",
+    "text": "nope",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-wrong",
+    "text": "wrong",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-not-right",
+    "text": "not right",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-never-mind",
+    "text": "never mind",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-no-inside-number",
+    "text": "one hundred",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "turn_score",
+      "score": 100,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-no-inside-i-know",
+    "text": "i know",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-oh-yes",
+    "text": "oh yes",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-well-no",
+    "text": "well, no",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "answer-all-right",
+    "text": "all right",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "junk-empty",
+    "text": "",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "junk-words",
+    "text": "hello there",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "junk-conversation",
+    "text": "i'm gonna be a bit bigger than that one",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "junk-alone-word",
+    "text": "yeah",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "junk-coach-only",
+    "text": "coach",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "stateful-score-at-80",
+    "text": "100",
+    "state": {
+      "remaining_score": 80,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "bust",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "stateful-score-bust",
+    "text": "100",
+    "state": {
+      "remaining_score": 50,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "bust",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "stateful-score-at-170",
+    "text": "170",
+    "state": {
+      "remaining_score": 170,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "full_score",
+      "score": 170,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "stateful-score-exactly",
+    "text": "100",
+    "state": {
+      "remaining_score": 100,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "full_score",
+      "score": 100,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "stateful-score-179",
+    "text": "179",
+    "state": {
+      "remaining_score": 200,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "invalid",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": true,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "stateful-undo-with-history",
+    "text": "undo",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 3
+    },
+    "expect": {
+      "command": "undo",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": true
+    }
+  },
+  {
+    "id": "stateful-undo-no-history",
+    "text": "undo",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "undo",
+      "score": null,
+      "darts": null,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": true
+    }
+  },
+  {
+    "id": "confirm-score-bare-125",
+    "text": "125",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-bare-180",
+    "text": "180",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-bare-0",
+    "text": "0",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-word-eighty",
+    "text": "eighty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-word-one-hundred",
+    "text": "one hundred",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-one-eighty",
+    "text": "one eighty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-one-twenty",
+    "text": "one twenty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-one-forty",
+    "text": "one forty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-one-eighteen",
+    "text": "one eighteen",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-one-nineteen",
+    "text": "one nineteen",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-one-hundred-and-eighty",
+    "text": "one hundred and eighty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-one-hundred-eighty",
+    "text": "one hundred eighty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-typo-eighteen-nine",
+    "text": "eighty-nine",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-decimal-split",
+    "text": "1.80",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-in-sentence",
+    "text": "i need a hundred and forty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-in-sentence-2",
+    "text": "it was one of those days",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-leading-word",
+    "text": "well one eighty",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-two-numbers",
+    "text": "60 60",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-three-darts",
+    "text": "20 20 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-score-four-darts",
+    "text": "20 20 20 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-dart-single-20",
+    "text": "single 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-dart-double-16",
+    "text": "double 16",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-dart-triple-20",
+    "text": "triple 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-dart-treble-20",
+    "text": "treble 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-dart-mixed",
+    "text": "triple 20 double 16 single 5",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-dart-two",
+    "text": "double 16 single 5",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-dart-three",
+    "text": "double 16 single 5 single 3",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-dart-four",
+    "text": "single 1 single 2 single 3 single 4",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-dart-plus-bare",
+    "text": "triple 20 140",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-dart-bull",
+    "text": "bull",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-dart-double-bull",
+    "text": "double bull",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-cmd-new-game",
+    "text": "new game",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-cmd-undo",
+    "text": "undo",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-cmd-whats-my-score",
+    "text": "what's my score",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-cmd-what-do-i-have-left",
+    "text": "what do i have left",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-cmd-continue",
+    "text": "continue",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-cmd-bust",
+    "text": "bust",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-cmd-busted",
+    "text": "busted",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-cmd-bus",
+    "text": "bus",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-cmd-bus-with-number",
+    "text": "bus 40",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-pref-double-20",
+    "text": "i prefer double 20",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-pref-double-18",
+    "text": "i'd rather have double eighteen",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-pref-bull",
+    "text": "i prefer the bull",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-pref-double-1",
+    "text": "i prefer double 1",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-pref-double-21",
+    "text": "i prefer double 21",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-yes",
+    "text": "yes",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": true,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-yeah",
+    "text": "yeah",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": true,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-ok",
+    "text": "ok",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": true,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-correct",
+    "text": "correct",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": true,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-coach-yes",
+    "text": "coach yes",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-yes-coach",
+    "text": "yes coach",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-thats-right",
+    "text": "that's right",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": true,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-no",
+    "text": "no",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": true,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-nope",
+    "text": "nope",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": true,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-wrong",
+    "text": "wrong",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": true,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-not-right",
+    "text": "not right",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": true,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-never-mind",
+    "text": "never mind",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": true,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-no-inside-number",
+    "text": "one hundred",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-no-inside-i-know",
+    "text": "i know",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-oh-yes",
+    "text": "oh yes",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": true,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-well-no",
+    "text": "well, no",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": true,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-answer-all-right",
+    "text": "all right",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-junk-empty",
+    "text": "",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-junk-words",
+    "text": "hello there",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-junk-conversation",
+    "text": "i'm gonna be a bit bigger than that one",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-junk-alone-word",
+    "text": "yeah",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": true,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  },
+  {
+    "id": "confirm-junk-coach-only",
+    "text": "coach",
+    "state": {
+      "remaining_score": 501,
+      "turns_played": 0
+    },
+    "expect": {
+      "command": "__is_confirmation__",
+      "score": false,
+      "darts": false,
+      "double": null,
+      "refused": false,
+      "needs_confirmation": false
+    }
+  }
+]

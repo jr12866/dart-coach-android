@@ -1,0 +1,93 @@
+[
+  {
+    "id": "leg-mixed",
+    "turns": [
+      45,
+      26,
+      60,
+      0,
+      100,
+      41,
+      20
+    ],
+    "expect": {
+      "remaining_score": 209,
+      "turns_played": 7,
+      "current_darts": [],
+      "preferred_double": null
+    }
+  },
+  {
+    "id": "leg-full",
+    "turns": [
+      60,
+      60,
+      60,
+      57,
+      60,
+      60,
+      57,
+      60,
+      60,
+      26,
+      60,
+      60,
+      45
+    ],
+    "expect": {
+      "remaining_score": -224,
+      "turns_played": 13,
+      "current_darts": [],
+      "preferred_double": null
+    }
+  },
+  {
+    "id": "leg-bust",
+    "turns": [
+      100,
+      200,
+      45
+    ],
+    "expect": {
+      "remaining_score": 156,
+      "turns_played": 3,
+      "current_darts": [],
+      "preferred_double": null
+    }
+  },
+  {
+    "id": "leg-single",
+    "turns": [
+      180
+    ],
+    "expect": {
+      "remaining_score": 321,
+      "turns_played": 1,
+      "current_darts": [],
+      "preferred_double": null
+    }
+  },
+  {
+    "id": "leg-empty",
+    "turns": [],
+    "expect": {
+      "remaining_score": 501,
+      "turns_played": 0,
+      "current_darts": [],
+      "preferred_double": null
+    }
+  },
+  {
+    "id": "leg-preferred-double-survives",
+    "turns": [
+      45
+    ],
+    "preferred_double": 16,
+    "expect": {
+      "remaining_score": 456,
+      "turns_played": 1,
+      "current_darts": [],
+      "preferred_double": 16
+    }
+  }
+]

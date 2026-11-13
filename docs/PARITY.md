@@ -1,4 +1,4 @@
-﻿# Parity harness
+# Parity harness
 
 The Kotlin core is a **port** of the Python one, not a rewrite. This directory
 holds the mechanism that proves the port is faithful, because reading 1200
@@ -66,12 +66,12 @@ number must be 20 or more for "one eighty" to mean 180 - see the comment in
 `src/game/parser.py` and `PLAN.md` Phase 1. It is the single most likely
 thing to get subtly wrong in a port, so it is pinned explicitly.
 
-### `corpus/planner.json`
+### `corpus/plans.json`
 
 ```json
 [
   {
-    "id": "checkout-170",
+    "id": "plan-170",
     "remaining": 170,
     "preferred_double": null,
     "expect": {
@@ -79,15 +79,45 @@ thing to get subtly wrong in a port, so it is pinned explicitly.
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [],
-      "fallback_leaves": null,
-      "doubles": []
+      "fallback_leaves": 170,
+      "doubles": [],
+      "speak": "treble twenty, treble twenty and double bull",
+      "display_lines": ["T20 T20 Bull", "to win"]
     }
   }
 ]
 ```
 
-`planner.json` should cover every remaining score from 1 to 501. The search is
+`plans.json` covers every remaining score from 1 to 501. The search is
 deterministic, so this is a complete characterisation, not a sample.
+
+### `corpus/routes.json`
+
+The same shape, but with `preferred_double` set and `expect` holding a route
+instead of a plan. `expect` is `null` when the Python planner found no shot at
+that double - the Kotlin one must not invent one.
+
+```json
+[
+  {
+    "id": "route-170-d20",
+    "remaining": 170,
+    "preferred_double": 20,
+    "expect": {
+      "labels": ["T20", "T20", "D20"],
+      "leaves": 0,
+      "finishes": true,
+      "fallback_labels": [],
+      "fallback_leaves": 170,
+      "speak": "treble twenty, treble twenty and double twenty",
+      "display_lines": ["T20 T20 D20", "to win"],
+      "double": 20
+    }
+  }
+]
+```
+
+`routes.json` has 6513 cases and 1561 distinct behaviours among them.
 
 ### `corpus/state.json`
 

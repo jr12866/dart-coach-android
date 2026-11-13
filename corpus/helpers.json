@@ -1,0 +1,5642 @@
+[
+  {
+    "id": "helpers-0",
+    "score": 0,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "0"
+    }
+  },
+  {
+    "id": "helpers-1",
+    "score": 1,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one"
+    }
+  },
+  {
+    "id": "helpers-2",
+    "score": 2,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D1"
+      ],
+      "double_options": [
+        "D1"
+      ],
+      "words": "two"
+    }
+  },
+  {
+    "id": "helpers-3",
+    "score": 3,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three"
+    }
+  },
+  {
+    "id": "helpers-4",
+    "score": 4,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D2",
+        "2",
+        "D1"
+      ],
+      "double_options": [
+        "D2"
+      ],
+      "words": "four"
+    }
+  },
+  {
+    "id": "helpers-5",
+    "score": 5,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "five"
+    }
+  },
+  {
+    "id": "helpers-6",
+    "score": 6,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D3"
+      ],
+      "double_options": [
+        "D3"
+      ],
+      "words": "six"
+    }
+  },
+  {
+    "id": "helpers-7",
+    "score": 7,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seven"
+    }
+  },
+  {
+    "id": "helpers-8",
+    "score": 8,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D4",
+        "4",
+        "D2",
+        "2",
+        "D1"
+      ],
+      "double_options": [
+        "D4"
+      ],
+      "words": "eight"
+    }
+  },
+  {
+    "id": "helpers-9",
+    "score": 9,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "nine"
+    }
+  },
+  {
+    "id": "helpers-10",
+    "score": 10,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D5"
+      ],
+      "double_options": [
+        "D5"
+      ],
+      "words": "ten"
+    }
+  },
+  {
+    "id": "helpers-11",
+    "score": 11,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "eleven"
+    }
+  },
+  {
+    "id": "helpers-12",
+    "score": 12,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D6",
+        "6",
+        "D3"
+      ],
+      "double_options": [
+        "D6"
+      ],
+      "words": "twelve"
+    }
+  },
+  {
+    "id": "helpers-13",
+    "score": 13,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "thirteen"
+    }
+  },
+  {
+    "id": "helpers-14",
+    "score": 14,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D7"
+      ],
+      "double_options": [
+        "D7"
+      ],
+      "words": "fourteen"
+    }
+  },
+  {
+    "id": "helpers-15",
+    "score": 15,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "fifteen"
+    }
+  },
+  {
+    "id": "helpers-16",
+    "score": 16,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D8",
+        "8",
+        "D4",
+        "4",
+        "D2",
+        "2",
+        "D1"
+      ],
+      "double_options": [
+        "D8"
+      ],
+      "words": "sixteen"
+    }
+  },
+  {
+    "id": "helpers-17",
+    "score": 17,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seventeen"
+    }
+  },
+  {
+    "id": "helpers-18",
+    "score": 18,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D9"
+      ],
+      "double_options": [
+        "D9"
+      ],
+      "words": "eighteen"
+    }
+  },
+  {
+    "id": "helpers-19",
+    "score": 19,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "nineteen"
+    }
+  },
+  {
+    "id": "helpers-20",
+    "score": 20,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D10",
+        "10",
+        "D5"
+      ],
+      "double_options": [
+        "D10"
+      ],
+      "words": "twenty"
+    }
+  },
+  {
+    "id": "helpers-21",
+    "score": 21,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "twenty-one"
+    }
+  },
+  {
+    "id": "helpers-22",
+    "score": 22,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D11"
+      ],
+      "double_options": [
+        "D11"
+      ],
+      "words": "twenty-two"
+    }
+  },
+  {
+    "id": "helpers-23",
+    "score": 23,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "twenty-three"
+    }
+  },
+  {
+    "id": "helpers-24",
+    "score": 24,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D12",
+        "12",
+        "D6",
+        "6",
+        "D3"
+      ],
+      "double_options": [
+        "D12"
+      ],
+      "words": "twenty-four"
+    }
+  },
+  {
+    "id": "helpers-25",
+    "score": 25,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "twenty-five"
+    }
+  },
+  {
+    "id": "helpers-26",
+    "score": 26,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D13"
+      ],
+      "double_options": [
+        "D13"
+      ],
+      "words": "twenty-six"
+    }
+  },
+  {
+    "id": "helpers-27",
+    "score": 27,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "twenty-seven"
+    }
+  },
+  {
+    "id": "helpers-28",
+    "score": 28,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D14",
+        "14",
+        "D7"
+      ],
+      "double_options": [
+        "D14"
+      ],
+      "words": "twenty-eight"
+    }
+  },
+  {
+    "id": "helpers-29",
+    "score": 29,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "twenty-nine"
+    }
+  },
+  {
+    "id": "helpers-30",
+    "score": 30,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D15"
+      ],
+      "double_options": [
+        "D15"
+      ],
+      "words": "thirty"
+    }
+  },
+  {
+    "id": "helpers-31",
+    "score": 31,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "thirty-one"
+    }
+  },
+  {
+    "id": "helpers-32",
+    "score": 32,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D16",
+        "16",
+        "D8",
+        "8",
+        "D4",
+        "4",
+        "D2",
+        "2",
+        "D1"
+      ],
+      "double_options": [
+        "D16"
+      ],
+      "words": "thirty-two"
+    }
+  },
+  {
+    "id": "helpers-33",
+    "score": 33,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "thirty-three"
+    }
+  },
+  {
+    "id": "helpers-34",
+    "score": 34,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D17"
+      ],
+      "double_options": [
+        "D17"
+      ],
+      "words": "thirty-four"
+    }
+  },
+  {
+    "id": "helpers-35",
+    "score": 35,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "thirty-five"
+    }
+  },
+  {
+    "id": "helpers-36",
+    "score": 36,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D18",
+        "18",
+        "D9"
+      ],
+      "double_options": [
+        "D18"
+      ],
+      "words": "thirty-six"
+    }
+  },
+  {
+    "id": "helpers-37",
+    "score": 37,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "thirty-seven"
+    }
+  },
+  {
+    "id": "helpers-38",
+    "score": 38,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D19"
+      ],
+      "double_options": [
+        "D19"
+      ],
+      "words": "thirty-eight"
+    }
+  },
+  {
+    "id": "helpers-39",
+    "score": 39,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "thirty-nine"
+    }
+  },
+  {
+    "id": "helpers-40",
+    "score": 40,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [
+        "D20",
+        "20",
+        "D10",
+        "10",
+        "D5"
+      ],
+      "double_options": [
+        "D20"
+      ],
+      "words": "forty"
+    }
+  },
+  {
+    "id": "helpers-41",
+    "score": 41,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "forty-one"
+    }
+  },
+  {
+    "id": "helpers-42",
+    "score": 42,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "forty-two"
+    }
+  },
+  {
+    "id": "helpers-43",
+    "score": 43,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "forty-three"
+    }
+  },
+  {
+    "id": "helpers-44",
+    "score": 44,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "forty-four"
+    }
+  },
+  {
+    "id": "helpers-45",
+    "score": 45,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "forty-five"
+    }
+  },
+  {
+    "id": "helpers-46",
+    "score": 46,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "forty-six"
+    }
+  },
+  {
+    "id": "helpers-47",
+    "score": 47,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "forty-seven"
+    }
+  },
+  {
+    "id": "helpers-48",
+    "score": 48,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "forty-eight"
+    }
+  },
+  {
+    "id": "helpers-49",
+    "score": 49,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "forty-nine"
+    }
+  },
+  {
+    "id": "helpers-50",
+    "score": 50,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [
+        "Bull"
+      ],
+      "words": "fifty"
+    }
+  },
+  {
+    "id": "helpers-51",
+    "score": 51,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "fifty-one"
+    }
+  },
+  {
+    "id": "helpers-52",
+    "score": 52,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "fifty-two"
+    }
+  },
+  {
+    "id": "helpers-53",
+    "score": 53,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "fifty-three"
+    }
+  },
+  {
+    "id": "helpers-54",
+    "score": 54,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "fifty-four"
+    }
+  },
+  {
+    "id": "helpers-55",
+    "score": 55,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "fifty-five"
+    }
+  },
+  {
+    "id": "helpers-56",
+    "score": 56,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "fifty-six"
+    }
+  },
+  {
+    "id": "helpers-57",
+    "score": 57,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "fifty-seven"
+    }
+  },
+  {
+    "id": "helpers-58",
+    "score": 58,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "fifty-eight"
+    }
+  },
+  {
+    "id": "helpers-59",
+    "score": 59,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "fifty-nine"
+    }
+  },
+  {
+    "id": "helpers-60",
+    "score": 60,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "sixty"
+    }
+  },
+  {
+    "id": "helpers-61",
+    "score": 61,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "sixty-one"
+    }
+  },
+  {
+    "id": "helpers-62",
+    "score": 62,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "sixty-two"
+    }
+  },
+  {
+    "id": "helpers-63",
+    "score": 63,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "sixty-three"
+    }
+  },
+  {
+    "id": "helpers-64",
+    "score": 64,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "sixty-four"
+    }
+  },
+  {
+    "id": "helpers-65",
+    "score": 65,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "sixty-five"
+    }
+  },
+  {
+    "id": "helpers-66",
+    "score": 66,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "sixty-six"
+    }
+  },
+  {
+    "id": "helpers-67",
+    "score": 67,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "sixty-seven"
+    }
+  },
+  {
+    "id": "helpers-68",
+    "score": 68,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "sixty-eight"
+    }
+  },
+  {
+    "id": "helpers-69",
+    "score": 69,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "sixty-nine"
+    }
+  },
+  {
+    "id": "helpers-70",
+    "score": 70,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seventy"
+    }
+  },
+  {
+    "id": "helpers-71",
+    "score": 71,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seventy-one"
+    }
+  },
+  {
+    "id": "helpers-72",
+    "score": 72,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seventy-two"
+    }
+  },
+  {
+    "id": "helpers-73",
+    "score": 73,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seventy-three"
+    }
+  },
+  {
+    "id": "helpers-74",
+    "score": 74,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seventy-four"
+    }
+  },
+  {
+    "id": "helpers-75",
+    "score": 75,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seventy-five"
+    }
+  },
+  {
+    "id": "helpers-76",
+    "score": 76,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seventy-six"
+    }
+  },
+  {
+    "id": "helpers-77",
+    "score": 77,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seventy-seven"
+    }
+  },
+  {
+    "id": "helpers-78",
+    "score": 78,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seventy-eight"
+    }
+  },
+  {
+    "id": "helpers-79",
+    "score": 79,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "seventy-nine"
+    }
+  },
+  {
+    "id": "helpers-80",
+    "score": 80,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "eighty"
+    }
+  },
+  {
+    "id": "helpers-81",
+    "score": 81,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "eighty-one"
+    }
+  },
+  {
+    "id": "helpers-82",
+    "score": 82,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "eighty-two"
+    }
+  },
+  {
+    "id": "helpers-83",
+    "score": 83,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "eighty-three"
+    }
+  },
+  {
+    "id": "helpers-84",
+    "score": 84,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "eighty-four"
+    }
+  },
+  {
+    "id": "helpers-85",
+    "score": 85,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "eighty-five"
+    }
+  },
+  {
+    "id": "helpers-86",
+    "score": 86,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "eighty-six"
+    }
+  },
+  {
+    "id": "helpers-87",
+    "score": 87,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "eighty-seven"
+    }
+  },
+  {
+    "id": "helpers-88",
+    "score": 88,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "eighty-eight"
+    }
+  },
+  {
+    "id": "helpers-89",
+    "score": 89,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "eighty-nine"
+    }
+  },
+  {
+    "id": "helpers-90",
+    "score": 90,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "ninety"
+    }
+  },
+  {
+    "id": "helpers-91",
+    "score": 91,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "ninety-one"
+    }
+  },
+  {
+    "id": "helpers-92",
+    "score": 92,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "ninety-two"
+    }
+  },
+  {
+    "id": "helpers-93",
+    "score": 93,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "ninety-three"
+    }
+  },
+  {
+    "id": "helpers-94",
+    "score": 94,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "ninety-four"
+    }
+  },
+  {
+    "id": "helpers-95",
+    "score": 95,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "ninety-five"
+    }
+  },
+  {
+    "id": "helpers-96",
+    "score": 96,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "ninety-six"
+    }
+  },
+  {
+    "id": "helpers-97",
+    "score": 97,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "ninety-seven"
+    }
+  },
+  {
+    "id": "helpers-98",
+    "score": 98,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "ninety-eight"
+    }
+  },
+  {
+    "id": "helpers-99",
+    "score": 99,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "ninety-nine"
+    }
+  },
+  {
+    "id": "helpers-100",
+    "score": 100,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred"
+    }
+  },
+  {
+    "id": "helpers-101",
+    "score": 101,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and one"
+    }
+  },
+  {
+    "id": "helpers-102",
+    "score": 102,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and two"
+    }
+  },
+  {
+    "id": "helpers-103",
+    "score": 103,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and three"
+    }
+  },
+  {
+    "id": "helpers-104",
+    "score": 104,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and four"
+    }
+  },
+  {
+    "id": "helpers-105",
+    "score": 105,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and five"
+    }
+  },
+  {
+    "id": "helpers-106",
+    "score": 106,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and six"
+    }
+  },
+  {
+    "id": "helpers-107",
+    "score": 107,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seven"
+    }
+  },
+  {
+    "id": "helpers-108",
+    "score": 108,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eight"
+    }
+  },
+  {
+    "id": "helpers-109",
+    "score": 109,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and nine"
+    }
+  },
+  {
+    "id": "helpers-110",
+    "score": 110,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and ten"
+    }
+  },
+  {
+    "id": "helpers-111",
+    "score": 111,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eleven"
+    }
+  },
+  {
+    "id": "helpers-112",
+    "score": 112,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and twelve"
+    }
+  },
+  {
+    "id": "helpers-113",
+    "score": 113,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and thirteen"
+    }
+  },
+  {
+    "id": "helpers-114",
+    "score": 114,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fourteen"
+    }
+  },
+  {
+    "id": "helpers-115",
+    "score": 115,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fifteen"
+    }
+  },
+  {
+    "id": "helpers-116",
+    "score": 116,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and sixteen"
+    }
+  },
+  {
+    "id": "helpers-117",
+    "score": 117,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seventeen"
+    }
+  },
+  {
+    "id": "helpers-118",
+    "score": 118,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eighteen"
+    }
+  },
+  {
+    "id": "helpers-119",
+    "score": 119,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and nineteen"
+    }
+  },
+  {
+    "id": "helpers-120",
+    "score": 120,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and twenty"
+    }
+  },
+  {
+    "id": "helpers-121",
+    "score": 121,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and twenty-one"
+    }
+  },
+  {
+    "id": "helpers-122",
+    "score": 122,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and twenty-two"
+    }
+  },
+  {
+    "id": "helpers-123",
+    "score": 123,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and twenty-three"
+    }
+  },
+  {
+    "id": "helpers-124",
+    "score": 124,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and twenty-four"
+    }
+  },
+  {
+    "id": "helpers-125",
+    "score": 125,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and twenty-five"
+    }
+  },
+  {
+    "id": "helpers-126",
+    "score": 126,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and twenty-six"
+    }
+  },
+  {
+    "id": "helpers-127",
+    "score": 127,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and twenty-seven"
+    }
+  },
+  {
+    "id": "helpers-128",
+    "score": 128,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and twenty-eight"
+    }
+  },
+  {
+    "id": "helpers-129",
+    "score": 129,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and twenty-nine"
+    }
+  },
+  {
+    "id": "helpers-130",
+    "score": 130,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and thirty"
+    }
+  },
+  {
+    "id": "helpers-131",
+    "score": 131,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and thirty-one"
+    }
+  },
+  {
+    "id": "helpers-132",
+    "score": 132,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and thirty-two"
+    }
+  },
+  {
+    "id": "helpers-133",
+    "score": 133,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and thirty-three"
+    }
+  },
+  {
+    "id": "helpers-134",
+    "score": 134,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and thirty-four"
+    }
+  },
+  {
+    "id": "helpers-135",
+    "score": 135,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and thirty-five"
+    }
+  },
+  {
+    "id": "helpers-136",
+    "score": 136,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and thirty-six"
+    }
+  },
+  {
+    "id": "helpers-137",
+    "score": 137,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and thirty-seven"
+    }
+  },
+  {
+    "id": "helpers-138",
+    "score": 138,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and thirty-eight"
+    }
+  },
+  {
+    "id": "helpers-139",
+    "score": 139,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and thirty-nine"
+    }
+  },
+  {
+    "id": "helpers-140",
+    "score": 140,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and forty"
+    }
+  },
+  {
+    "id": "helpers-141",
+    "score": 141,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and forty-one"
+    }
+  },
+  {
+    "id": "helpers-142",
+    "score": 142,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and forty-two"
+    }
+  },
+  {
+    "id": "helpers-143",
+    "score": 143,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and forty-three"
+    }
+  },
+  {
+    "id": "helpers-144",
+    "score": 144,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and forty-four"
+    }
+  },
+  {
+    "id": "helpers-145",
+    "score": 145,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and forty-five"
+    }
+  },
+  {
+    "id": "helpers-146",
+    "score": 146,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and forty-six"
+    }
+  },
+  {
+    "id": "helpers-147",
+    "score": 147,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and forty-seven"
+    }
+  },
+  {
+    "id": "helpers-148",
+    "score": 148,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and forty-eight"
+    }
+  },
+  {
+    "id": "helpers-149",
+    "score": 149,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and forty-nine"
+    }
+  },
+  {
+    "id": "helpers-150",
+    "score": 150,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fifty"
+    }
+  },
+  {
+    "id": "helpers-151",
+    "score": 151,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fifty-one"
+    }
+  },
+  {
+    "id": "helpers-152",
+    "score": 152,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fifty-two"
+    }
+  },
+  {
+    "id": "helpers-153",
+    "score": 153,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fifty-three"
+    }
+  },
+  {
+    "id": "helpers-154",
+    "score": 154,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fifty-four"
+    }
+  },
+  {
+    "id": "helpers-155",
+    "score": 155,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fifty-five"
+    }
+  },
+  {
+    "id": "helpers-156",
+    "score": 156,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fifty-six"
+    }
+  },
+  {
+    "id": "helpers-157",
+    "score": 157,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fifty-seven"
+    }
+  },
+  {
+    "id": "helpers-158",
+    "score": 158,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fifty-eight"
+    }
+  },
+  {
+    "id": "helpers-159",
+    "score": 159,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": true,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and fifty-nine"
+    }
+  },
+  {
+    "id": "helpers-160",
+    "score": 160,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and sixty"
+    }
+  },
+  {
+    "id": "helpers-161",
+    "score": 161,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and sixty-one"
+    }
+  },
+  {
+    "id": "helpers-162",
+    "score": 162,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": true,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and sixty-two"
+    }
+  },
+  {
+    "id": "helpers-163",
+    "score": 163,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": true,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and sixty-three"
+    }
+  },
+  {
+    "id": "helpers-164",
+    "score": 164,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and sixty-four"
+    }
+  },
+  {
+    "id": "helpers-165",
+    "score": 165,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": true,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and sixty-five"
+    }
+  },
+  {
+    "id": "helpers-166",
+    "score": 166,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": true,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and sixty-six"
+    }
+  },
+  {
+    "id": "helpers-167",
+    "score": 167,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and sixty-seven"
+    }
+  },
+  {
+    "id": "helpers-168",
+    "score": 168,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": true,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and sixty-eight"
+    }
+  },
+  {
+    "id": "helpers-169",
+    "score": 169,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": true,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and sixty-nine"
+    }
+  },
+  {
+    "id": "helpers-170",
+    "score": 170,
+    "expect": {
+      "can_finish": true,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seventy"
+    }
+  },
+  {
+    "id": "helpers-171",
+    "score": 171,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seventy-one"
+    }
+  },
+  {
+    "id": "helpers-172",
+    "score": 172,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seventy-two"
+    }
+  },
+  {
+    "id": "helpers-173",
+    "score": 173,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seventy-three"
+    }
+  },
+  {
+    "id": "helpers-174",
+    "score": 174,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seventy-four"
+    }
+  },
+  {
+    "id": "helpers-175",
+    "score": 175,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seventy-five"
+    }
+  },
+  {
+    "id": "helpers-176",
+    "score": 176,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seventy-six"
+    }
+  },
+  {
+    "id": "helpers-177",
+    "score": 177,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seventy-seven"
+    }
+  },
+  {
+    "id": "helpers-178",
+    "score": 178,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seventy-eight"
+    }
+  },
+  {
+    "id": "helpers-179",
+    "score": 179,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and seventy-nine"
+    }
+  },
+  {
+    "id": "helpers-180",
+    "score": 180,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eighty"
+    }
+  },
+  {
+    "id": "helpers-181",
+    "score": 181,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eighty-one"
+    }
+  },
+  {
+    "id": "helpers-182",
+    "score": 182,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eighty-two"
+    }
+  },
+  {
+    "id": "helpers-183",
+    "score": 183,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eighty-three"
+    }
+  },
+  {
+    "id": "helpers-184",
+    "score": 184,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eighty-four"
+    }
+  },
+  {
+    "id": "helpers-185",
+    "score": 185,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eighty-five"
+    }
+  },
+  {
+    "id": "helpers-186",
+    "score": 186,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eighty-six"
+    }
+  },
+  {
+    "id": "helpers-187",
+    "score": 187,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eighty-seven"
+    }
+  },
+  {
+    "id": "helpers-188",
+    "score": 188,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eighty-eight"
+    }
+  },
+  {
+    "id": "helpers-189",
+    "score": 189,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and eighty-nine"
+    }
+  },
+  {
+    "id": "helpers-190",
+    "score": 190,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and ninety"
+    }
+  },
+  {
+    "id": "helpers-191",
+    "score": 191,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and ninety-one"
+    }
+  },
+  {
+    "id": "helpers-192",
+    "score": 192,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and ninety-two"
+    }
+  },
+  {
+    "id": "helpers-193",
+    "score": 193,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and ninety-three"
+    }
+  },
+  {
+    "id": "helpers-194",
+    "score": 194,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and ninety-four"
+    }
+  },
+  {
+    "id": "helpers-195",
+    "score": 195,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and ninety-five"
+    }
+  },
+  {
+    "id": "helpers-196",
+    "score": 196,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and ninety-six"
+    }
+  },
+  {
+    "id": "helpers-197",
+    "score": 197,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and ninety-seven"
+    }
+  },
+  {
+    "id": "helpers-198",
+    "score": 198,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and ninety-eight"
+    }
+  },
+  {
+    "id": "helpers-199",
+    "score": 199,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "one hundred and ninety-nine"
+    }
+  },
+  {
+    "id": "helpers-200",
+    "score": 200,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred"
+    }
+  },
+  {
+    "id": "helpers-201",
+    "score": 201,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and one"
+    }
+  },
+  {
+    "id": "helpers-202",
+    "score": 202,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and two"
+    }
+  },
+  {
+    "id": "helpers-203",
+    "score": 203,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and three"
+    }
+  },
+  {
+    "id": "helpers-204",
+    "score": 204,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and four"
+    }
+  },
+  {
+    "id": "helpers-205",
+    "score": 205,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and five"
+    }
+  },
+  {
+    "id": "helpers-206",
+    "score": 206,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and six"
+    }
+  },
+  {
+    "id": "helpers-207",
+    "score": 207,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seven"
+    }
+  },
+  {
+    "id": "helpers-208",
+    "score": 208,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eight"
+    }
+  },
+  {
+    "id": "helpers-209",
+    "score": 209,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and nine"
+    }
+  },
+  {
+    "id": "helpers-210",
+    "score": 210,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and ten"
+    }
+  },
+  {
+    "id": "helpers-211",
+    "score": 211,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eleven"
+    }
+  },
+  {
+    "id": "helpers-212",
+    "score": 212,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and twelve"
+    }
+  },
+  {
+    "id": "helpers-213",
+    "score": 213,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and thirteen"
+    }
+  },
+  {
+    "id": "helpers-214",
+    "score": 214,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fourteen"
+    }
+  },
+  {
+    "id": "helpers-215",
+    "score": 215,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fifteen"
+    }
+  },
+  {
+    "id": "helpers-216",
+    "score": 216,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and sixteen"
+    }
+  },
+  {
+    "id": "helpers-217",
+    "score": 217,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seventeen"
+    }
+  },
+  {
+    "id": "helpers-218",
+    "score": 218,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eighteen"
+    }
+  },
+  {
+    "id": "helpers-219",
+    "score": 219,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and nineteen"
+    }
+  },
+  {
+    "id": "helpers-220",
+    "score": 220,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and twenty"
+    }
+  },
+  {
+    "id": "helpers-221",
+    "score": 221,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and twenty-one"
+    }
+  },
+  {
+    "id": "helpers-222",
+    "score": 222,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and twenty-two"
+    }
+  },
+  {
+    "id": "helpers-223",
+    "score": 223,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and twenty-three"
+    }
+  },
+  {
+    "id": "helpers-224",
+    "score": 224,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and twenty-four"
+    }
+  },
+  {
+    "id": "helpers-225",
+    "score": 225,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and twenty-five"
+    }
+  },
+  {
+    "id": "helpers-226",
+    "score": 226,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and twenty-six"
+    }
+  },
+  {
+    "id": "helpers-227",
+    "score": 227,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and twenty-seven"
+    }
+  },
+  {
+    "id": "helpers-228",
+    "score": 228,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and twenty-eight"
+    }
+  },
+  {
+    "id": "helpers-229",
+    "score": 229,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and twenty-nine"
+    }
+  },
+  {
+    "id": "helpers-230",
+    "score": 230,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and thirty"
+    }
+  },
+  {
+    "id": "helpers-231",
+    "score": 231,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and thirty-one"
+    }
+  },
+  {
+    "id": "helpers-232",
+    "score": 232,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and thirty-two"
+    }
+  },
+  {
+    "id": "helpers-233",
+    "score": 233,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and thirty-three"
+    }
+  },
+  {
+    "id": "helpers-234",
+    "score": 234,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and thirty-four"
+    }
+  },
+  {
+    "id": "helpers-235",
+    "score": 235,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and thirty-five"
+    }
+  },
+  {
+    "id": "helpers-236",
+    "score": 236,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and thirty-six"
+    }
+  },
+  {
+    "id": "helpers-237",
+    "score": 237,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and thirty-seven"
+    }
+  },
+  {
+    "id": "helpers-238",
+    "score": 238,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and thirty-eight"
+    }
+  },
+  {
+    "id": "helpers-239",
+    "score": 239,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and thirty-nine"
+    }
+  },
+  {
+    "id": "helpers-240",
+    "score": 240,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and forty"
+    }
+  },
+  {
+    "id": "helpers-241",
+    "score": 241,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and forty-one"
+    }
+  },
+  {
+    "id": "helpers-242",
+    "score": 242,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and forty-two"
+    }
+  },
+  {
+    "id": "helpers-243",
+    "score": 243,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and forty-three"
+    }
+  },
+  {
+    "id": "helpers-244",
+    "score": 244,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and forty-four"
+    }
+  },
+  {
+    "id": "helpers-245",
+    "score": 245,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and forty-five"
+    }
+  },
+  {
+    "id": "helpers-246",
+    "score": 246,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and forty-six"
+    }
+  },
+  {
+    "id": "helpers-247",
+    "score": 247,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and forty-seven"
+    }
+  },
+  {
+    "id": "helpers-248",
+    "score": 248,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and forty-eight"
+    }
+  },
+  {
+    "id": "helpers-249",
+    "score": 249,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and forty-nine"
+    }
+  },
+  {
+    "id": "helpers-250",
+    "score": 250,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fifty"
+    }
+  },
+  {
+    "id": "helpers-251",
+    "score": 251,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fifty-one"
+    }
+  },
+  {
+    "id": "helpers-252",
+    "score": 252,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fifty-two"
+    }
+  },
+  {
+    "id": "helpers-253",
+    "score": 253,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fifty-three"
+    }
+  },
+  {
+    "id": "helpers-254",
+    "score": 254,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fifty-four"
+    }
+  },
+  {
+    "id": "helpers-255",
+    "score": 255,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fifty-five"
+    }
+  },
+  {
+    "id": "helpers-256",
+    "score": 256,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fifty-six"
+    }
+  },
+  {
+    "id": "helpers-257",
+    "score": 257,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fifty-seven"
+    }
+  },
+  {
+    "id": "helpers-258",
+    "score": 258,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fifty-eight"
+    }
+  },
+  {
+    "id": "helpers-259",
+    "score": 259,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and fifty-nine"
+    }
+  },
+  {
+    "id": "helpers-260",
+    "score": 260,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and sixty"
+    }
+  },
+  {
+    "id": "helpers-261",
+    "score": 261,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and sixty-one"
+    }
+  },
+  {
+    "id": "helpers-262",
+    "score": 262,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and sixty-two"
+    }
+  },
+  {
+    "id": "helpers-263",
+    "score": 263,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and sixty-three"
+    }
+  },
+  {
+    "id": "helpers-264",
+    "score": 264,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and sixty-four"
+    }
+  },
+  {
+    "id": "helpers-265",
+    "score": 265,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and sixty-five"
+    }
+  },
+  {
+    "id": "helpers-266",
+    "score": 266,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and sixty-six"
+    }
+  },
+  {
+    "id": "helpers-267",
+    "score": 267,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and sixty-seven"
+    }
+  },
+  {
+    "id": "helpers-268",
+    "score": 268,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and sixty-eight"
+    }
+  },
+  {
+    "id": "helpers-269",
+    "score": 269,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and sixty-nine"
+    }
+  },
+  {
+    "id": "helpers-270",
+    "score": 270,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seventy"
+    }
+  },
+  {
+    "id": "helpers-271",
+    "score": 271,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seventy-one"
+    }
+  },
+  {
+    "id": "helpers-272",
+    "score": 272,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seventy-two"
+    }
+  },
+  {
+    "id": "helpers-273",
+    "score": 273,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seventy-three"
+    }
+  },
+  {
+    "id": "helpers-274",
+    "score": 274,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seventy-four"
+    }
+  },
+  {
+    "id": "helpers-275",
+    "score": 275,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seventy-five"
+    }
+  },
+  {
+    "id": "helpers-276",
+    "score": 276,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seventy-six"
+    }
+  },
+  {
+    "id": "helpers-277",
+    "score": 277,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seventy-seven"
+    }
+  },
+  {
+    "id": "helpers-278",
+    "score": 278,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seventy-eight"
+    }
+  },
+  {
+    "id": "helpers-279",
+    "score": 279,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and seventy-nine"
+    }
+  },
+  {
+    "id": "helpers-280",
+    "score": 280,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eighty"
+    }
+  },
+  {
+    "id": "helpers-281",
+    "score": 281,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eighty-one"
+    }
+  },
+  {
+    "id": "helpers-282",
+    "score": 282,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eighty-two"
+    }
+  },
+  {
+    "id": "helpers-283",
+    "score": 283,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eighty-three"
+    }
+  },
+  {
+    "id": "helpers-284",
+    "score": 284,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eighty-four"
+    }
+  },
+  {
+    "id": "helpers-285",
+    "score": 285,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eighty-five"
+    }
+  },
+  {
+    "id": "helpers-286",
+    "score": 286,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eighty-six"
+    }
+  },
+  {
+    "id": "helpers-287",
+    "score": 287,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eighty-seven"
+    }
+  },
+  {
+    "id": "helpers-288",
+    "score": 288,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eighty-eight"
+    }
+  },
+  {
+    "id": "helpers-289",
+    "score": 289,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and eighty-nine"
+    }
+  },
+  {
+    "id": "helpers-290",
+    "score": 290,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and ninety"
+    }
+  },
+  {
+    "id": "helpers-291",
+    "score": 291,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and ninety-one"
+    }
+  },
+  {
+    "id": "helpers-292",
+    "score": 292,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and ninety-two"
+    }
+  },
+  {
+    "id": "helpers-293",
+    "score": 293,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and ninety-three"
+    }
+  },
+  {
+    "id": "helpers-294",
+    "score": 294,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and ninety-four"
+    }
+  },
+  {
+    "id": "helpers-295",
+    "score": 295,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and ninety-five"
+    }
+  },
+  {
+    "id": "helpers-296",
+    "score": 296,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and ninety-six"
+    }
+  },
+  {
+    "id": "helpers-297",
+    "score": 297,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and ninety-seven"
+    }
+  },
+  {
+    "id": "helpers-298",
+    "score": 298,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and ninety-eight"
+    }
+  },
+  {
+    "id": "helpers-299",
+    "score": 299,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "two hundred and ninety-nine"
+    }
+  },
+  {
+    "id": "helpers-300",
+    "score": 300,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred"
+    }
+  },
+  {
+    "id": "helpers-301",
+    "score": 301,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and one"
+    }
+  },
+  {
+    "id": "helpers-302",
+    "score": 302,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and two"
+    }
+  },
+  {
+    "id": "helpers-303",
+    "score": 303,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and three"
+    }
+  },
+  {
+    "id": "helpers-304",
+    "score": 304,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and four"
+    }
+  },
+  {
+    "id": "helpers-305",
+    "score": 305,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and five"
+    }
+  },
+  {
+    "id": "helpers-306",
+    "score": 306,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and six"
+    }
+  },
+  {
+    "id": "helpers-307",
+    "score": 307,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seven"
+    }
+  },
+  {
+    "id": "helpers-308",
+    "score": 308,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eight"
+    }
+  },
+  {
+    "id": "helpers-309",
+    "score": 309,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and nine"
+    }
+  },
+  {
+    "id": "helpers-310",
+    "score": 310,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and ten"
+    }
+  },
+  {
+    "id": "helpers-311",
+    "score": 311,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eleven"
+    }
+  },
+  {
+    "id": "helpers-312",
+    "score": 312,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and twelve"
+    }
+  },
+  {
+    "id": "helpers-313",
+    "score": 313,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and thirteen"
+    }
+  },
+  {
+    "id": "helpers-314",
+    "score": 314,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fourteen"
+    }
+  },
+  {
+    "id": "helpers-315",
+    "score": 315,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fifteen"
+    }
+  },
+  {
+    "id": "helpers-316",
+    "score": 316,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and sixteen"
+    }
+  },
+  {
+    "id": "helpers-317",
+    "score": 317,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seventeen"
+    }
+  },
+  {
+    "id": "helpers-318",
+    "score": 318,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eighteen"
+    }
+  },
+  {
+    "id": "helpers-319",
+    "score": 319,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and nineteen"
+    }
+  },
+  {
+    "id": "helpers-320",
+    "score": 320,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and twenty"
+    }
+  },
+  {
+    "id": "helpers-321",
+    "score": 321,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and twenty-one"
+    }
+  },
+  {
+    "id": "helpers-322",
+    "score": 322,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and twenty-two"
+    }
+  },
+  {
+    "id": "helpers-323",
+    "score": 323,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and twenty-three"
+    }
+  },
+  {
+    "id": "helpers-324",
+    "score": 324,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and twenty-four"
+    }
+  },
+  {
+    "id": "helpers-325",
+    "score": 325,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and twenty-five"
+    }
+  },
+  {
+    "id": "helpers-326",
+    "score": 326,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and twenty-six"
+    }
+  },
+  {
+    "id": "helpers-327",
+    "score": 327,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and twenty-seven"
+    }
+  },
+  {
+    "id": "helpers-328",
+    "score": 328,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and twenty-eight"
+    }
+  },
+  {
+    "id": "helpers-329",
+    "score": 329,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and twenty-nine"
+    }
+  },
+  {
+    "id": "helpers-330",
+    "score": 330,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and thirty"
+    }
+  },
+  {
+    "id": "helpers-331",
+    "score": 331,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and thirty-one"
+    }
+  },
+  {
+    "id": "helpers-332",
+    "score": 332,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and thirty-two"
+    }
+  },
+  {
+    "id": "helpers-333",
+    "score": 333,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and thirty-three"
+    }
+  },
+  {
+    "id": "helpers-334",
+    "score": 334,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and thirty-four"
+    }
+  },
+  {
+    "id": "helpers-335",
+    "score": 335,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and thirty-five"
+    }
+  },
+  {
+    "id": "helpers-336",
+    "score": 336,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and thirty-six"
+    }
+  },
+  {
+    "id": "helpers-337",
+    "score": 337,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and thirty-seven"
+    }
+  },
+  {
+    "id": "helpers-338",
+    "score": 338,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and thirty-eight"
+    }
+  },
+  {
+    "id": "helpers-339",
+    "score": 339,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and thirty-nine"
+    }
+  },
+  {
+    "id": "helpers-340",
+    "score": 340,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and forty"
+    }
+  },
+  {
+    "id": "helpers-341",
+    "score": 341,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and forty-one"
+    }
+  },
+  {
+    "id": "helpers-342",
+    "score": 342,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and forty-two"
+    }
+  },
+  {
+    "id": "helpers-343",
+    "score": 343,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and forty-three"
+    }
+  },
+  {
+    "id": "helpers-344",
+    "score": 344,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and forty-four"
+    }
+  },
+  {
+    "id": "helpers-345",
+    "score": 345,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and forty-five"
+    }
+  },
+  {
+    "id": "helpers-346",
+    "score": 346,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and forty-six"
+    }
+  },
+  {
+    "id": "helpers-347",
+    "score": 347,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and forty-seven"
+    }
+  },
+  {
+    "id": "helpers-348",
+    "score": 348,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and forty-eight"
+    }
+  },
+  {
+    "id": "helpers-349",
+    "score": 349,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and forty-nine"
+    }
+  },
+  {
+    "id": "helpers-350",
+    "score": 350,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fifty"
+    }
+  },
+  {
+    "id": "helpers-351",
+    "score": 351,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fifty-one"
+    }
+  },
+  {
+    "id": "helpers-352",
+    "score": 352,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fifty-two"
+    }
+  },
+  {
+    "id": "helpers-353",
+    "score": 353,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fifty-three"
+    }
+  },
+  {
+    "id": "helpers-354",
+    "score": 354,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fifty-four"
+    }
+  },
+  {
+    "id": "helpers-355",
+    "score": 355,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fifty-five"
+    }
+  },
+  {
+    "id": "helpers-356",
+    "score": 356,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fifty-six"
+    }
+  },
+  {
+    "id": "helpers-357",
+    "score": 357,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fifty-seven"
+    }
+  },
+  {
+    "id": "helpers-358",
+    "score": 358,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fifty-eight"
+    }
+  },
+  {
+    "id": "helpers-359",
+    "score": 359,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and fifty-nine"
+    }
+  },
+  {
+    "id": "helpers-360",
+    "score": 360,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and sixty"
+    }
+  },
+  {
+    "id": "helpers-361",
+    "score": 361,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and sixty-one"
+    }
+  },
+  {
+    "id": "helpers-362",
+    "score": 362,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and sixty-two"
+    }
+  },
+  {
+    "id": "helpers-363",
+    "score": 363,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and sixty-three"
+    }
+  },
+  {
+    "id": "helpers-364",
+    "score": 364,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and sixty-four"
+    }
+  },
+  {
+    "id": "helpers-365",
+    "score": 365,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and sixty-five"
+    }
+  },
+  {
+    "id": "helpers-366",
+    "score": 366,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and sixty-six"
+    }
+  },
+  {
+    "id": "helpers-367",
+    "score": 367,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and sixty-seven"
+    }
+  },
+  {
+    "id": "helpers-368",
+    "score": 368,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and sixty-eight"
+    }
+  },
+  {
+    "id": "helpers-369",
+    "score": 369,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and sixty-nine"
+    }
+  },
+  {
+    "id": "helpers-370",
+    "score": 370,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seventy"
+    }
+  },
+  {
+    "id": "helpers-371",
+    "score": 371,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seventy-one"
+    }
+  },
+  {
+    "id": "helpers-372",
+    "score": 372,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seventy-two"
+    }
+  },
+  {
+    "id": "helpers-373",
+    "score": 373,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seventy-three"
+    }
+  },
+  {
+    "id": "helpers-374",
+    "score": 374,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seventy-four"
+    }
+  },
+  {
+    "id": "helpers-375",
+    "score": 375,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seventy-five"
+    }
+  },
+  {
+    "id": "helpers-376",
+    "score": 376,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seventy-six"
+    }
+  },
+  {
+    "id": "helpers-377",
+    "score": 377,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seventy-seven"
+    }
+  },
+  {
+    "id": "helpers-378",
+    "score": 378,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seventy-eight"
+    }
+  },
+  {
+    "id": "helpers-379",
+    "score": 379,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and seventy-nine"
+    }
+  },
+  {
+    "id": "helpers-380",
+    "score": 380,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eighty"
+    }
+  },
+  {
+    "id": "helpers-381",
+    "score": 381,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eighty-one"
+    }
+  },
+  {
+    "id": "helpers-382",
+    "score": 382,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eighty-two"
+    }
+  },
+  {
+    "id": "helpers-383",
+    "score": 383,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eighty-three"
+    }
+  },
+  {
+    "id": "helpers-384",
+    "score": 384,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eighty-four"
+    }
+  },
+  {
+    "id": "helpers-385",
+    "score": 385,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eighty-five"
+    }
+  },
+  {
+    "id": "helpers-386",
+    "score": 386,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eighty-six"
+    }
+  },
+  {
+    "id": "helpers-387",
+    "score": 387,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eighty-seven"
+    }
+  },
+  {
+    "id": "helpers-388",
+    "score": 388,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eighty-eight"
+    }
+  },
+  {
+    "id": "helpers-389",
+    "score": 389,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and eighty-nine"
+    }
+  },
+  {
+    "id": "helpers-390",
+    "score": 390,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and ninety"
+    }
+  },
+  {
+    "id": "helpers-391",
+    "score": 391,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and ninety-one"
+    }
+  },
+  {
+    "id": "helpers-392",
+    "score": 392,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and ninety-two"
+    }
+  },
+  {
+    "id": "helpers-393",
+    "score": 393,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and ninety-three"
+    }
+  },
+  {
+    "id": "helpers-394",
+    "score": 394,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and ninety-four"
+    }
+  },
+  {
+    "id": "helpers-395",
+    "score": 395,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and ninety-five"
+    }
+  },
+  {
+    "id": "helpers-396",
+    "score": 396,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and ninety-six"
+    }
+  },
+  {
+    "id": "helpers-397",
+    "score": 397,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and ninety-seven"
+    }
+  },
+  {
+    "id": "helpers-398",
+    "score": 398,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and ninety-eight"
+    }
+  },
+  {
+    "id": "helpers-399",
+    "score": 399,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "three hundred and ninety-nine"
+    }
+  },
+  {
+    "id": "helpers-400",
+    "score": 400,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred"
+    }
+  },
+  {
+    "id": "helpers-401",
+    "score": 401,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and one"
+    }
+  },
+  {
+    "id": "helpers-402",
+    "score": 402,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and two"
+    }
+  },
+  {
+    "id": "helpers-403",
+    "score": 403,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and three"
+    }
+  },
+  {
+    "id": "helpers-404",
+    "score": 404,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and four"
+    }
+  },
+  {
+    "id": "helpers-405",
+    "score": 405,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and five"
+    }
+  },
+  {
+    "id": "helpers-406",
+    "score": 406,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and six"
+    }
+  },
+  {
+    "id": "helpers-407",
+    "score": 407,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seven"
+    }
+  },
+  {
+    "id": "helpers-408",
+    "score": 408,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eight"
+    }
+  },
+  {
+    "id": "helpers-409",
+    "score": 409,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and nine"
+    }
+  },
+  {
+    "id": "helpers-410",
+    "score": 410,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and ten"
+    }
+  },
+  {
+    "id": "helpers-411",
+    "score": 411,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eleven"
+    }
+  },
+  {
+    "id": "helpers-412",
+    "score": 412,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and twelve"
+    }
+  },
+  {
+    "id": "helpers-413",
+    "score": 413,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and thirteen"
+    }
+  },
+  {
+    "id": "helpers-414",
+    "score": 414,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fourteen"
+    }
+  },
+  {
+    "id": "helpers-415",
+    "score": 415,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fifteen"
+    }
+  },
+  {
+    "id": "helpers-416",
+    "score": 416,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and sixteen"
+    }
+  },
+  {
+    "id": "helpers-417",
+    "score": 417,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seventeen"
+    }
+  },
+  {
+    "id": "helpers-418",
+    "score": 418,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eighteen"
+    }
+  },
+  {
+    "id": "helpers-419",
+    "score": 419,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and nineteen"
+    }
+  },
+  {
+    "id": "helpers-420",
+    "score": 420,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and twenty"
+    }
+  },
+  {
+    "id": "helpers-421",
+    "score": 421,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and twenty-one"
+    }
+  },
+  {
+    "id": "helpers-422",
+    "score": 422,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and twenty-two"
+    }
+  },
+  {
+    "id": "helpers-423",
+    "score": 423,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and twenty-three"
+    }
+  },
+  {
+    "id": "helpers-424",
+    "score": 424,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and twenty-four"
+    }
+  },
+  {
+    "id": "helpers-425",
+    "score": 425,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and twenty-five"
+    }
+  },
+  {
+    "id": "helpers-426",
+    "score": 426,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and twenty-six"
+    }
+  },
+  {
+    "id": "helpers-427",
+    "score": 427,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and twenty-seven"
+    }
+  },
+  {
+    "id": "helpers-428",
+    "score": 428,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and twenty-eight"
+    }
+  },
+  {
+    "id": "helpers-429",
+    "score": 429,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and twenty-nine"
+    }
+  },
+  {
+    "id": "helpers-430",
+    "score": 430,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and thirty"
+    }
+  },
+  {
+    "id": "helpers-431",
+    "score": 431,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and thirty-one"
+    }
+  },
+  {
+    "id": "helpers-432",
+    "score": 432,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and thirty-two"
+    }
+  },
+  {
+    "id": "helpers-433",
+    "score": 433,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and thirty-three"
+    }
+  },
+  {
+    "id": "helpers-434",
+    "score": 434,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and thirty-four"
+    }
+  },
+  {
+    "id": "helpers-435",
+    "score": 435,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and thirty-five"
+    }
+  },
+  {
+    "id": "helpers-436",
+    "score": 436,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and thirty-six"
+    }
+  },
+  {
+    "id": "helpers-437",
+    "score": 437,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and thirty-seven"
+    }
+  },
+  {
+    "id": "helpers-438",
+    "score": 438,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and thirty-eight"
+    }
+  },
+  {
+    "id": "helpers-439",
+    "score": 439,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and thirty-nine"
+    }
+  },
+  {
+    "id": "helpers-440",
+    "score": 440,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and forty"
+    }
+  },
+  {
+    "id": "helpers-441",
+    "score": 441,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and forty-one"
+    }
+  },
+  {
+    "id": "helpers-442",
+    "score": 442,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and forty-two"
+    }
+  },
+  {
+    "id": "helpers-443",
+    "score": 443,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and forty-three"
+    }
+  },
+  {
+    "id": "helpers-444",
+    "score": 444,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and forty-four"
+    }
+  },
+  {
+    "id": "helpers-445",
+    "score": 445,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and forty-five"
+    }
+  },
+  {
+    "id": "helpers-446",
+    "score": 446,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and forty-six"
+    }
+  },
+  {
+    "id": "helpers-447",
+    "score": 447,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and forty-seven"
+    }
+  },
+  {
+    "id": "helpers-448",
+    "score": 448,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and forty-eight"
+    }
+  },
+  {
+    "id": "helpers-449",
+    "score": 449,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and forty-nine"
+    }
+  },
+  {
+    "id": "helpers-450",
+    "score": 450,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fifty"
+    }
+  },
+  {
+    "id": "helpers-451",
+    "score": 451,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fifty-one"
+    }
+  },
+  {
+    "id": "helpers-452",
+    "score": 452,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fifty-two"
+    }
+  },
+  {
+    "id": "helpers-453",
+    "score": 453,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fifty-three"
+    }
+  },
+  {
+    "id": "helpers-454",
+    "score": 454,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fifty-four"
+    }
+  },
+  {
+    "id": "helpers-455",
+    "score": 455,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fifty-five"
+    }
+  },
+  {
+    "id": "helpers-456",
+    "score": 456,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fifty-six"
+    }
+  },
+  {
+    "id": "helpers-457",
+    "score": 457,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fifty-seven"
+    }
+  },
+  {
+    "id": "helpers-458",
+    "score": 458,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fifty-eight"
+    }
+  },
+  {
+    "id": "helpers-459",
+    "score": 459,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and fifty-nine"
+    }
+  },
+  {
+    "id": "helpers-460",
+    "score": 460,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and sixty"
+    }
+  },
+  {
+    "id": "helpers-461",
+    "score": 461,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and sixty-one"
+    }
+  },
+  {
+    "id": "helpers-462",
+    "score": 462,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and sixty-two"
+    }
+  },
+  {
+    "id": "helpers-463",
+    "score": 463,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and sixty-three"
+    }
+  },
+  {
+    "id": "helpers-464",
+    "score": 464,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and sixty-four"
+    }
+  },
+  {
+    "id": "helpers-465",
+    "score": 465,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and sixty-five"
+    }
+  },
+  {
+    "id": "helpers-466",
+    "score": 466,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and sixty-six"
+    }
+  },
+  {
+    "id": "helpers-467",
+    "score": 467,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and sixty-seven"
+    }
+  },
+  {
+    "id": "helpers-468",
+    "score": 468,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and sixty-eight"
+    }
+  },
+  {
+    "id": "helpers-469",
+    "score": 469,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and sixty-nine"
+    }
+  },
+  {
+    "id": "helpers-470",
+    "score": 470,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seventy"
+    }
+  },
+  {
+    "id": "helpers-471",
+    "score": 471,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seventy-one"
+    }
+  },
+  {
+    "id": "helpers-472",
+    "score": 472,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seventy-two"
+    }
+  },
+  {
+    "id": "helpers-473",
+    "score": 473,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seventy-three"
+    }
+  },
+  {
+    "id": "helpers-474",
+    "score": 474,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seventy-four"
+    }
+  },
+  {
+    "id": "helpers-475",
+    "score": 475,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seventy-five"
+    }
+  },
+  {
+    "id": "helpers-476",
+    "score": 476,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seventy-six"
+    }
+  },
+  {
+    "id": "helpers-477",
+    "score": 477,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seventy-seven"
+    }
+  },
+  {
+    "id": "helpers-478",
+    "score": 478,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seventy-eight"
+    }
+  },
+  {
+    "id": "helpers-479",
+    "score": 479,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and seventy-nine"
+    }
+  },
+  {
+    "id": "helpers-480",
+    "score": 480,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eighty"
+    }
+  },
+  {
+    "id": "helpers-481",
+    "score": 481,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eighty-one"
+    }
+  },
+  {
+    "id": "helpers-482",
+    "score": 482,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eighty-two"
+    }
+  },
+  {
+    "id": "helpers-483",
+    "score": 483,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eighty-three"
+    }
+  },
+  {
+    "id": "helpers-484",
+    "score": 484,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eighty-four"
+    }
+  },
+  {
+    "id": "helpers-485",
+    "score": 485,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eighty-five"
+    }
+  },
+  {
+    "id": "helpers-486",
+    "score": 486,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eighty-six"
+    }
+  },
+  {
+    "id": "helpers-487",
+    "score": 487,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eighty-seven"
+    }
+  },
+  {
+    "id": "helpers-488",
+    "score": 488,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eighty-eight"
+    }
+  },
+  {
+    "id": "helpers-489",
+    "score": 489,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and eighty-nine"
+    }
+  },
+  {
+    "id": "helpers-490",
+    "score": 490,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and ninety"
+    }
+  },
+  {
+    "id": "helpers-491",
+    "score": 491,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and ninety-one"
+    }
+  },
+  {
+    "id": "helpers-492",
+    "score": 492,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and ninety-two"
+    }
+  },
+  {
+    "id": "helpers-493",
+    "score": 493,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and ninety-three"
+    }
+  },
+  {
+    "id": "helpers-494",
+    "score": 494,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and ninety-four"
+    }
+  },
+  {
+    "id": "helpers-495",
+    "score": 495,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and ninety-five"
+    }
+  },
+  {
+    "id": "helpers-496",
+    "score": 496,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and ninety-six"
+    }
+  },
+  {
+    "id": "helpers-497",
+    "score": 497,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and ninety-seven"
+    }
+  },
+  {
+    "id": "helpers-498",
+    "score": 498,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and ninety-eight"
+    }
+  },
+  {
+    "id": "helpers-499",
+    "score": 499,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "four hundred and ninety-nine"
+    }
+  },
+  {
+    "id": "helpers-500",
+    "score": 500,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "five hundred"
+    }
+  },
+  {
+    "id": "helpers-501",
+    "score": 501,
+    "expect": {
+      "can_finish": false,
+      "is_bogey": false,
+      "chain": [],
+      "double_options": [],
+      "words": "five hundred and one"
+    }
+  }
+]
