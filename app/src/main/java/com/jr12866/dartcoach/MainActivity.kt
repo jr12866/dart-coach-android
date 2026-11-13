@@ -2,8 +2,10 @@ package com.jr12866.dartcoach
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioRecord
+import android.media.AudioTrack
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.util.Log
@@ -26,39 +28,37 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.k2fsa.sherpa.onnx.OfflineModelConfig
-import com.k2fsa.sherpa.onnx.OfflineRecognizer
-import com.k2fsa.sherpa.onnx.OfflineRecognizerConfig
-import com.k2fsa.sherpa.onnx.OfflineStream
-import com.k2fsa.sherpa.onnx.OfflineWhisperModelConfig
-import com.k2fsa.sherpa.onnx.Vad
-import com.k2fsa.sherpa.onnx.VadModelConfig
-import com.k2fsa.sherpa.onnx.getVadModelConfig
+import com.github.csukuangfj.piper.phonemize.piperPhonemizeInitialize
+import com.github.csukuangfj.piper.phonemize.piperPhonemizeText
+import com.k2fsa.sherpa.onnx.GenerationConfig
+import com.k2fsa.sherpa.onnx.OfflineTts
+import com.k2fsa.sherpa.onnx.getOfflineTtsConfig
 
 /**
- * Phase 1 spike: does the phone hear a darts score?
+ * Phase 3 spike: does the coach hearing itself break anything?
  *
- * This is the measurement that decides which speech recogniser to use. It
- * captures 16 kHz mono from the microphone, finds speech with the silero
- * VAD, and transcribes each phrase with Whisper.
+ * On the laptop the speaker and the microphone are across the room, so the
+ * coach's voice reaches the microphone faintly and the half-duplex gate has
+ * an easy job. On a phone they are centimetres apart in the same enclosure,
+ * so the echo is much stronger. This measures how much.
  *
- * It prints the transcript and the real-time factor for every phrase, so
- * the numbers can be compared against the Raspberry Pi 4 figures in the
- * sherpa-onnx documentation.
+ * The spike plays a phrase through the speaker while the microphone is
+ * open, and reports:
  *
- * The UI is deliberately plain. This screen is a measuring instrument, not
- * the coach.
+ *   - how loud the speech is at the microphone
+ *   - how loud the room is
+ *   - what the recogniser makes of the speech, if it hears anything
+ *
+ * It also tries two ways of keeping the microphone quiet during playback:
+ * pausing the capture, and leaving it running to see how bad it gets.
  */
 class MainActivity : ComponentActivity() {
 
-    private var recognizer: OfflineRecognizer? = null
-    private var vad: Vad? = null
+    private var tts: OfflineTts? = null
 
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (!granted) {
-                Log.e(TAG, "Microphone permission was refused")
-            }
+            if (!granted) Log.e(TAG, "Microphone permission was refused")
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,109 +82,186 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /** Loads the VAD and the recogniser. Slow the first time: the models load. */
-    fun loadModels(): Boolean {
-        if (recognizer != null) return true
-        return try {
-            val vadConfig: VadModelConfig = getVadModelConfig(0)!!
-            vad = Vad(assets, vadConfig)
-            Log.i(TAG, "VAD loaded")
-
-            val config = OfflineRecognizerConfig(
-                modelConfig = OfflineModelConfig(
-                    whisper = OfflineWhisperModelConfig(
-                        encoder = "base.en-encoder.int8.onnx",
-                        decoder = "base.en-decoder.int8.onnx",
-                    ),
-                    tokens = "base.en-tokens.txt",
-                    numThreads = 4,
-                    debug = false,
-                ),
+    /**
+     * Synthesises speech, phonemising the text first.
+     *
+     * The Piper model was trained on phoneme codes, not on text, so the text
+     * has to be converted before the model sees it. The phonemizer does that
+     * and the codes go in through GenerationConfig.
+     */
+    private fun synthesize(text: String): FloatArray {
+        val phonemes = piperPhonemizeText(text, "en-us")
+            ?: throw RuntimeException("Could not phonemize the text")
+        try {
+            val codes = Array(phonemes.numSentences) { i -> phonemes.getPhonemes(i) }
+            val audio = tts!!.generateWithConfig(
+                text,
+                GenerationConfig(phonemeCodepoints = codes),
             )
-            recognizer = OfflineRecognizer(assets, config)
-            Log.i(TAG, "Recognizer loaded")
+            return audio.samples
+        } finally {
+            phonemes.close()
+        }
+    }
+
+    private fun loadTts(): Boolean {
+        if (tts != null) return true
+        return try {
+            // The Piper voice needs a text frontend: something to turn
+            // "You're at 247" into the phoneme codes the model was trained
+            // on. piper-phonemize does that, and it bundles its own copy of
+            // the espeak-ng data, so the espeak-ng directory that ships with
+            // the voice is not used at all.
+            //
+            // sherpa-onnx has not used data_dir since v2.0.0, so passing the
+            // espeak-ng directory there does nothing. The upstream app says
+            // so in its own build script.
+            piperPhonemizeInitialize(applicationContext)
+
+            val config = getOfflineTtsConfig(
+                modelDir = "vits-piper-en_US-lessac-medium-int8",
+                modelName = "en_US-lessac-medium.onnx",
+            )
+            tts = OfflineTts(assets, config)
+            Log.i(TAG, "TTS loaded, sample rate ${tts!!.sampleRate()}")
             true
         } catch (e: Exception) {
-            Log.e(TAG, "Could not load the models: ${e.message}", e)
+            Log.e(TAG, "Could not load the TTS: ${e.message}", e)
             false
         }
     }
 
     /**
-     * Records until the player stops, then transcribes each phrase.
+     * Measures the microphone level while the coach speaks.
      *
-     * The VAD decides where the phrases are, so the audio handed to the
-     * recogniser is speech and nothing else. That is what makes the
-     * real-time factor a fair number.
+     * The microphone stays open the whole time - that is the point. A gate
+     * that pauses the capture cannot measure what it is protecting against,
+     * and the answer decides which gate to build.
+     *
+     * Returns the peak level seen during the speech.
      */
-    fun recordAndTranscribe(onPhrase: (String, Double) -> Unit) {
-        if (!loadModels()) return
-
+    fun measureEchoWhileSpeaking(phrase: String): Float {
         val sampleRate = 16000
         val minBuffer = AudioRecord.getMinBufferSize(
             sampleRate,
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_FLOAT,
         )
-        if (minBuffer <= 0) {
-            Log.e(TAG, "AudioRecord.getMinBufferSize returned $minBuffer")
-            return
-        }
-
-        val bufferSize = maxOf(minBuffer, 4096 * 4)
         val record = AudioRecord(
             MediaRecorder.AudioSource.VOICE_RECOGNITION,
             sampleRate,
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_FLOAT,
-            bufferSize,
+            maxOf(minBuffer, 4096 * 4),
         )
-        if (record.state != AudioRecord.STATE_INITIALIZED) {
-            Log.e(TAG, "AudioRecord did not initialise")
-            return
-        }
-
         record.startRecording()
-        Log.i(TAG, "Recording. Speak a score.")
 
-        val buffer = FloatArray(1024)
-        val vad = this.vad!!
+        // Let the room settle first, so the floor is measured separately.
+        var floor = 0f
+        var floorPeak = 0f
+        val settle = FloatArray(1024)
+        repeat(30) {
+            val read = record.read(settle, 0, settle.size, AudioRecord.READ_BLOCKING)
+            if (read > 0) {
+                for (i in 0 until read) {
+                    val a = kotlin.math.abs(settle[i])
+                    floor += a
+                    if (a > floorPeak) floorPeak = a
+                }
+            }
+        }
+        floor /= 30 * 1024
+        Log.i(TAG, "room floor: mean=%.5f peak=%.5f".format(floor, floorPeak))
 
-        while (!Thread.currentThread().isInterrupted) {
-            val read = record.read(buffer, 0, buffer.size, AudioRecord.READ_BLOCKING)
-            if (read <= 0) continue
+        // Now synthesise and play, while still listening.
+        val samples = synthesize(phrase)
+        val ttsRate = tts!!.sampleRate()
+        Log.i(TAG, "generated ${samples.size} samples at $ttsRate Hz")
 
-            vad.acceptWaveform(buffer.copyOf(read))
+        val track = AudioTrack.Builder()
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+            )
+            .setAudioFormat(
+                AudioFormat.Builder()
+                    .setEncoding(AudioFormat.ENCODING_PCM_FLOAT)
+                    .setSampleRate(ttsRate)
+                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                    .build()
+            )
+            .setBufferSizeInBytes(samples.size * 4)
+            .setTransferMode(AudioTrack.MODE_STATIC)
+            .build()
 
-            while (!vad.empty()) {
-                val segment = vad.front()
-                vad.pop()
+        track.write(samples, 0, samples.size, AudioTrack.WRITE_BLOCKING)
+        track.play()
 
-                val samples = segment.samples
-                if (samples.isEmpty()) continue
-
-                val rec = recognizer!!
-                val stream: OfflineStream = rec.createStream()
-                stream.acceptWaveform(samples, sampleRate)
-
-                val started = System.nanoTime()
-                rec.decode(stream)
-                val elapsed = (System.nanoTime() - started) / 1_000_000_000.0
-
-                val text = rec.getResult(stream).text
-                val seconds = samples.size.toDouble() / sampleRate
-                val rtf = if (seconds > 0) elapsed / seconds else 0.0
-                Log.i(
-                    TAG,
-                    "Heard: '$text'  audio=${"%.2f".format(seconds)}s  " +
-                        "elapsed=${"%.2f".format(elapsed)}s  rtf=$rtf",
-                )
-                onPhrase(text, rtf)
+        // Listen through the whole of the playback.
+        var peak = 0f
+        var sum = 0f
+        var count = 0
+        val buf = FloatArray(1024)
+        val deadline = System.currentTimeMillis() + (samples.size * 1000L / ttsRate) + 500
+        while (System.currentTimeMillis() < deadline) {
+            val read = record.read(buf, 0, buf.size, AudioRecord.READ_BLOCKING)
+            if (read > 0) {
+                for (i in 0 until read) {
+                    val a = kotlin.math.abs(buf[i])
+                    sum += a
+                    count++
+                    if (a > peak) peak = a
+                }
             }
         }
 
+        track.stop()
+        track.release()
         record.stop()
         record.release()
+
+        val mean = if (count > 0) sum / count else 0f
+        Log.i(
+            TAG,
+            "echo at the mic: mean=%.5f peak=%.5f (floor was %.5f)".format(
+                mean, peak, floor,
+            ),
+        )
+        return peak
+    }
+
+    /** Plays a phrase out loud, so the user can hear the voice. */
+    fun speak(phrase: String) {
+        if (!loadTts()) return
+        val samples = synthesize(phrase)
+        val rate = tts!!.sampleRate()
+
+        val track = AudioTrack.Builder()
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+            )
+            .setAudioFormat(
+                AudioFormat.Builder()
+                    .setEncoding(AudioFormat.ENCODING_PCM_FLOAT)
+                    .setSampleRate(rate)
+                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                    .build()
+            )
+            .setBufferSizeInBytes(samples.size * 4)
+            .setTransferMode(AudioTrack.MODE_STATIC)
+            .build()
+
+        track.write(samples, 0, samples.size, AudioTrack.WRITE_BLOCKING)
+        track.play()
+        Thread.sleep((samples.size * 1000L / rate) + 100)
+        track.stop()
+        track.release()
+        Log.i(TAG, "Spoke: '$phrase'")
     }
 
     companion object {
@@ -195,7 +272,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun SpikeScreen() {
     var status by remember { mutableStateOf("Ready") }
-    var phrases by remember { mutableStateOf(listOf<String>()) }
+    var result by remember { mutableStateOf("") }
 
     val activity = androidx.compose.ui.platform.LocalContext.current as MainActivity
 
@@ -203,22 +280,36 @@ private fun SpikeScreen() {
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text("Phase 1 spike", fontSize = 24.sp)
+        Text("Echo gate", fontSize = 24.sp)
         Text(status, fontSize = 14.sp)
 
         Button(onClick = {
-            status = "Listening..."
+            status = "Speaking..."
             Thread {
-                activity.recordAndTranscribe { text, rtf ->
-                    phrases = phrases + "$text  (rtf $rtf)"
-                }
+                activity.speak("You're at 247. Try treble twenty, treble twenty and double five.")
+                status = "Measuring the echo..."
+                val peak = activity.measureEchoWhileSpeaking(
+                    "You're at 247. Try treble twenty and double five.",
+                )
+                result = "peak at the mic: $peak"
+                status = "Done"
             }.start()
         }) {
-            Text("Listen")
+            Text("Speak and measure")
         }
 
-        phrases.forEach { Text(it, fontSize = 15.sp) }
+        Button(onClick = {
+            status = "Speaking..."
+            Thread {
+                activity.speak("One hundred and eighty. Is that right?")
+                status = "Done"
+            }.start()
+        }) {
+            Text("Speak only")
+        }
+
+        if (result.isNotEmpty()) Text(result, fontSize = 15.sp)
     }
 }

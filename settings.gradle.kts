@@ -11,6 +11,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // piper-phonemize provides the text frontend for the Piper voice.
+        // It is published on JitPack, not Maven Central.
+        maven { url = uri("https://jitpack.io") }
     }
 }
 

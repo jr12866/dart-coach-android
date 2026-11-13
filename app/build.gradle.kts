@@ -95,6 +95,12 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-core")
 
+    // piper-phonemize is the text frontend for the Piper voice: it turns text
+    // into the phoneme codes the model was trained on. It bundles its own
+    // copy of the espeak-ng data, which is why sherpa-onnx's own espeak-ng
+    // directory is not used.
+    implementation("com.github.csukuangfj.piper-phonemize:piper-phonemize:v1.5.9")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
 }

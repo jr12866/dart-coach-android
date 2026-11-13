@@ -83,13 +83,20 @@ try {
     $piperDir = Join-Path $tmp 'vits-piper-en_US-lessac-medium-int8'
     Expand-ArchiveBzip2 $piperZip $tmp
 
-    # The voice, its tokens, and the espeak-ng data it needs all come from
-    # the one archive.
-    Copy-Item (Join-Path $piperDir 'en_US-lessac-medium.onnx') $OutDir -Force
-    Copy-Item (Join-Path $piperDir 'tokens.txt') (Join-Path $OutDir 'piper-tokens.txt') -Force
-    $espeak = Join-Path $OutDir 'espeak-ng-data'
-    if (Test-Path $espeak) { Remove-Item $espeak -Recurse -Force }
-    Copy-Item (Join-Path $piperDir 'espeak-ng-data') $espeak -Recurse -Force
+    # The voice goes in its own directory, with its tokens file beside it.
+    # That is the layout sherpa-onnx expects: getOfflineTtsConfig takes a
+    # model directory and a model name.
+    #
+    # The espeak-ng data in the archive is deliberately NOT copied. Since
+    # sherpa-onnx v2.0.0 the text frontend is the piper-phonemize library,
+    # which bundles its own copy of the espeak data. The upstream build
+    # script drops it for the same reason, and it is 17 MB.
+    $voiceDir = Join-Path $OutDir 'vits-piper-en_US-lessac-medium-int8'
+    if (Test-Path $voiceDir) { Remove-Item $voiceDir -Recurse -Force }
+    New-Item -ItemType Directory -Path $voiceDir -Force | Out-Null
+    Copy-Item (Join-Path $piperDir 'en_US-lessac-medium.onnx') $voiceDir -Force
+    Copy-Item (Join-Path $piperDir 'en_US-lessac-medium.onnx.json') $voiceDir -Force
+    Copy-Item (Join-Path $piperDir 'tokens.txt') (Join-Path $voiceDir 'tokens.txt') -Force
 
     Write-Host ""
     Write-Host "=== models are in $OutDir ==="
