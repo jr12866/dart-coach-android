@@ -88,7 +88,10 @@ class ParityTest {
             checked++
         }
 
-        assertTrue(checked > 100, "Only $checked parser cases were checked")
+        // The corpus holds the parse cases and the confirmation cases. Only
+        // the parse cases are counted here; the confirmation ones are
+        // checked by the test below.
+        assertCorpusSize(checked, 70, "parser (parse cases)")
     }
 
     @Test
@@ -117,7 +120,7 @@ class ParityTest {
             checked++
         }
 
-        assertTrue(checked > 50, "Only $checked answer cases were checked")
+        assertCorpusSize(checked, 60, "parser (answer cases)")
     }
 
     // ----------------------------------------------------------------------

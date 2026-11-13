@@ -264,7 +264,7 @@ from the same fixtures. The Python tests remain the reference spec.
 
 Output: a measured table (model → RTF → accuracy) and a go/no-go.
 
-### Phase 2 — Port the game core to Kotlin (2–3 days)
+### Phase 2 — Port the game core to Kotlin (2–3 days) — **DONE**
 
 Straight, literal port — no cleverness, because the point is parity with a
 heavily-tuned original.
@@ -349,7 +349,7 @@ simple and true: on-device ASR, no data transmitted, no analytics, no ads.
 |---|---|---|
 | 0. Repo layout | done | — |
 | 1. sherpa-onnx + ASR spike | 1–2 d | **High** — native build + ASR quality |
-| 2. Kotlin core port | 2–3 d | Medium — parity, but mechanical |
+| 2. Kotlin core port | 2–3 d | **done** — all 7663 corpus cases match |
 | 3. The app | 3–5 d | Medium — echo gate, lifecycle |
 | 4. On-the-oche verification | 2–3 d | Medium — real-world behaviour |
 | 5. Play Store packaging | 2–3 d | Low–Medium — signing, review |
