@@ -1,4 +1,4 @@
-﻿# Decisions
+# Decisions
 
 Why this is built the way it is. Each entry records a choice that was not
 obvious, what the alternatives were, and what would reverse it.
@@ -156,20 +156,48 @@ way. Phase 4 measures it.
 
 ---
 
-## 8. The APK will be too large for the Play Store
+## 8. The models ship as an install-time Play Asset Delivery pack
 
-**Decision.** Sideload the APK. Do not publish it.
+**Decision.** One PAD asset pack, `deliveryType = "install-time"`. The models
+are part of the Play install, not downloaded by the app.
 
-**Why.** The models live in `assets/` so they are available offline with no
-download step, which is the whole point. Whisper `base.en` int8 is around
-250 MB and the Piper voice around 63 MB. With both ASR models, the APK is
-well over the 200 MB Play Store limit.
+**Why.** The size limits, verified against Google's documentation:
 
-**Alternatives.** On-demand model download (Play Asset Delivery) would fix the
-size but reintroduce a network dependency, which contradicts the goal of
-running with no network at all. Shipping `tiny.en` only would roughly halve it
-but would cost ASR accuracy on exactly the number words that matter.
+| Component | Compressed download limit |
+|---|---|
+| Base module | 500 MB |
+| Individual asset packs | 1.5 GB |
+| Cumulative, all modules + install-time packs | 4 GB |
 
-**What would reverse it.** Nothing, unless the app is published, in which case
-the models would need to move to Play Asset Delivery and the "works with no
-network" property would become "works with no network after the first run".
+Our assets are ~325 MB in total: Whisper `base.en` int8 (~250 MB), the Piper
+voice (~63 MB), silero-vad (~2 MB) and espeak-ng data (~10 MB). That fits in a
+single install-time pack with room to spare.
+
+The 200 MB figure is the *legacy APK* limit, for apps still publishing APKs
+instead of app bundles. An app bundle gets 500 MB for the base module alone.
+An earlier draft of this plan assumed 200 MB was the ceiling and concluded the
+app had to be sideloaded; that was wrong, and it would have pushed the design
+toward a download-and-verify-the-checksum scheme for no reason.
+
+**Why install-time rather than on-demand.** The app has no use until the models
+arrive, so a download screen buys nothing - the user installed a darts coach
+and wants to throw darts, not watch a progress bar. Install-time also means no
+download code at all: the models are read with the ordinary `AssetManager`,
+exactly as if they were in the app's own assets.
+
+**The one cost.** The install is ~325 MB, and Play shows a warning dialog for
+apps over 200 MB on mobile data. That is honest: the app is large because it
+contains a speech recogniser and a voice.
+
+**The alternative, if it is ever wanted.** `fast-follow` or `on-demand`, using
+`AssetPackManager`. The Gradle change is one line. The catch, from Google's
+docs, is worth knowing in advance: *"The app can't assume the existence of
+these files or their locations because these files may be deleted by the user
+or moved by the Play Asset Delivery Library across play sessions."* So the
+model loader must check for the pack at every launch rather than caching the
+path. With install-time this problem does not exist.
+
+**What would reverse it.** Only a decision to distribute outside Play, in which
+case the fallback is a plain HTTPS download from GitHub Releases with a
+manifest carrying `sha256` per asset, resumable transfers, and a "models not
+ready" startup state.

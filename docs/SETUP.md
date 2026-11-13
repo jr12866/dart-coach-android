@@ -1,4 +1,4 @@
-﻿# Setup
+# Setup
 
 ## Prerequisites
 
@@ -55,19 +55,27 @@ the native library, so `core` tests run on the JVM without the NDK.
 models/fetch-models.sh
 ```
 
-This downloads into `app/src/main/assets/`:
+This downloads into `models-pack/src/main/assets/`, which is the Play Asset
+Delivery pack:
 
 | File | Purpose | Size |
 |---|---|---|
 | `silero_vad.onnx` | voice activity detection | ~2 MB |
-| `tiny.en-encoder.int8.onnx` + decoder + tokens | Whisper ASR | ~120 MB |
 | `base.en-encoder.int8.onnx` + decoder + tokens | Whisper ASR (default) | ~250 MB |
+| `tiny.en-encoder.int8.onnx` + decoder + tokens | Whisper ASR (smaller) | ~120 MB |
 | `en_US-lessac-medium.onnx` + tokens | Piper TTS voice | ~63 MB |
 | `espeak-ng-data/` | phoneme data for Piper | ~10 MB |
+
+Total ~325 MB, which fits in a single install-time asset pack (the limit is
+1.5 GB per pack, 500 MB for the base module). See `docs/DECISIONS.md` entry 8.
 
 Whisper `base.en` is the default because that is what the Windows coach uses.
 `tiny.en` is about half the size and noticeably worse at number words - see
 `PLAN.md` Phase 1.
+
+For local development, the pack's assets are also readable directly: an
+install-time pack is served as split APKs, so a debug build of the app finds
+the models through the ordinary `AssetManager`.
 
 ## Build and install
 

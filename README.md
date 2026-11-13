@@ -1,4 +1,4 @@
-﻿# Darts Coach — Android
+# Darts Coach — Android
 
 A voice-controlled 501 darts training aid that runs entirely on the phone.
 
@@ -65,6 +65,7 @@ core/                 Pure Kotlin game logic. No Android, no sherpa, no
                       dependencies beyond the Kotlin stdlib. Tests live here.
 app/                  The Android app: audio, models, Compose UI.
 models/               Model files and the script that fetches them.
+models-pack/           The Play Asset Delivery pack that carries them.
 docs/                 Setup, build notes, and decisions.
 tools/                Parity harness against the Windows repo.
 PLAN.md               The implementation plan this repo was built from.
@@ -78,8 +79,23 @@ See `docs/SETUP.md`. In short:
 
 1. Install the Android SDK and NDK.
 2. Build sherpa-onnx for arm64-v8a (see `docs/BUILDING.md`).
-3. Run `models/fetch-models.sh` to download the VAD, Whisper and Piper models.
+3. Run `models/fetch-models.sh` to download the VAD, Whisper and Piper models
+   into the asset pack.
 4. `./gradlew :app:installDebug`
+
+## Distribution
+
+The app is published on Google Play. The models (~325 MB) ship as a
+**Play Asset Delivery** pack with `install-time` delivery, so they are part of
+the install - there is no download step on first launch, and no "downloading
+models" screen.
+
+The app declares **no `INTERNET` permission**. It cannot talk to a server
+because it has no way to. That is what makes "everything happens on your
+phone" a property of the build rather than a promise.
+
+See `docs/PUBLISHING.md` for signing, the store listing, and the Data safety
+form.
 
 ## Strategy
 

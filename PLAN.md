@@ -1,258 +1,364 @@
-# Port Darts Coach to run entirely on a Pixel 7 (offline, self-contained)
+# Port Darts Coach to a Pixel 7 — self-contained, offline after first run
 
 ## Goal
 
-The coach runs with no laptop, no network and no server: the Pixel 7 captures the
-microphone, transcribes, parses, scores, and speaks. Nothing is left running on
-the Windows machine.
+The coach runs on the phone: the Pixel 7 captures the microphone, transcribes,
+parses, scores, and speaks. No laptop, no server. Published on Google Play, so
+it installs like any other app. The models are downloaded once; after that the
+app works with no network at all.
 
 ## Verdict
 
-Feasible, and the right way to do it is **native Android (Kotlin) + sherpa-onnx**,
-not a Python-on-Android runtime.
+Feasible. The right way is **native Android (Kotlin) + sherpa-onnx**, with the
+models delivered as a **Play Asset Delivery** pack.
 
 ### Why sherpa-onnx
 
-One library covers all three of the hard parts, with official Kotlin APIs and
-Android arm64 support:
+One library covers all three hard parts, with official Kotlin APIs and Android
+arm64 support:
 
 | Piece | sherpa-onnx class | Model |
 |---|---|---|
 | VAD | `Vad` (silero-vad) | `silero_vad.onnx` (~2 MB) |
-| ASR | `OfflineRecognizer` | Whisper `tiny.en` / `base.en` ONNX |
+| ASR | `OfflineRecognizer` | Whisper `base.en` ONNX |
 | TTS | `OfflineTts` | Piper `en_US-lessac-medium` ONNX |
 
-Confirmed available:
-- `sherpa-onnx/kotlin-api/Vad.kt`, `OfflineRecognizer.kt`, `Tts.kt` — real
-  Kotlin data classes + JNI bindings, `AssetManager` constructors.
-- Android arm64 listed as supported; pre-built APKs exist for ASR and TTS.
-- Piper models converted and hosted by sherpa-onnx (`tts-models` release tag).
-- Whisper tiny.en int8 RTF **0.386 on a Raspberry Pi 4**. The Pixel 7's Tensor G3
-  (2x Cortex-X1) is far faster, so `base.en` int8 should be comfortable.
+Verified upstream:
+- `sherpa-onnx/kotlin-api/` contains `Vad.kt`, `OfflineRecognizer.kt`, `Tts.kt` —
+  real Kotlin classes over JNI bindings, with `AssetManager` constructors.
+- Android `arm64-v8a` is a supported platform.
+- Pre-built APKs exist for ASR and TTS.
+- Piper voices are converted and hosted by sherpa-onnx (`tts-models` release).
+- Whisper tiny.en int8 runs at **RTF 0.386 on a Raspberry Pi 4**. The Pixel 7's
+  Tensor G3 is far faster, so `base.en` int8 should be comfortable.
 
 ### Why not Python on Android (Termux / Pydroid)
 
 `faster-whisper` (CTranslate2) and `piper-tts` have **no Android wheels**. A
-Termux port still needs native builds of ONNX Runtime + a CTranslate2-equivalent,
-plus a resampler and an audio backend. That is more work than writing the app,
-and it leaves the game logic in a language whose Android support is weakest.
-Native Kotlin gets us `AudioRecord`, `AudioTrack`, and a maintained JNI library
-for free.
+Termux port still needs native ONNX Runtime + a CTranslate2-equivalent, plus a
+resampler and an audio backend. More work than writing the app, and it leaves
+the game logic in the language with the weakest Android story.
+
+---
+
+## Model delivery — the Play Store answer
+
+### The size limits, as verified against Google's documentation
+
+| Component | Compressed download limit |
+|---|---|
+| Base module | **500 MB** |
+| Individual feature modules | 500 MB |
+| Individual asset packs | **1.5 GB** |
+| Cumulative, all modules + install-time packs | 4 GB |
+| Cumulative, on-demand + fast-follow packs | 30 GB |
+
+The 200 MB figure is the **legacy APK** limit for apps still publishing APKs
+instead of app bundles. An app bundle gets 500 MB for the base module alone.
+
+**This corrects an earlier assumption.** The first draft of this plan treated
+200 MB as the hard ceiling and concluded the app had to be sideloaded. That was
+wrong, and it was the wrong kind of wrong — it would have pushed the whole
+design toward a download-and-verify-the-checksum scheme for no reason.
+
+Our assets:
+
+| Asset | Size |
+|---|---|
+| Whisper `base.en` int8 (encoder + decoder + tokens) | ~250 MB |
+| Piper `en_US-lessac-medium` | ~63 MB |
+| silero-vad | ~2 MB |
+| espeak-ng data | ~10 MB |
+| **Total** | **~325 MB** |
+
+That fits in a **single install-time asset pack** with room to spare, and the
+base module (the app itself, with the Kotlin code and the `sherpa-onnx-jni.so`
+native library) stays small — a few MB.
+
+### The three delivery modes
+
+| Mode | When | Contributes to store size? | Needs download code? |
+|---|---|---|---|
+| `install-time` | With the app install | Yes | **No** — read via `AssetManager` |
+| `fast-follow` | Automatically after install | No | Yes — `AssetPackManager` |
+| `on-demand` | While the app runs | No | Yes — `AssetPackManager` |
+
+**Recommendation: `install-time`.**
+
+The app installs and the models are there. There is no download screen, no
+progress bar, no "first launch failed" state, no resume logic, no checksum
+verification to write. The model paths are read with the ordinary
+`AssetManager`, exactly as they would be if they were in the app's own
+`assets/`.
+
+That is a *much* simpler app than on-demand delivery, and it is worth being
+explicit about why: the models are 325 MB, and a user who has just installed a
+darts coach wants to throw darts, not watch a progress bar. The friction of
+on-demand delivery buys nothing here because the app has no use until the
+models arrive anyway.
+
+Trade-off accepted: the install is ~325 MB, and Play shows users a warning
+dialog for apps over 200 MB when on mobile data. That is honest and expected —
+it is a large app because it contains a speech recogniser and a voice.
+
+### If on-demand turns out to be wanted later
+
+The Gradle change is one line (`deliveryType`), and the API is
+`AssetPackManager`:
+
+```kotlin
+val location = assetPackManager.getPackLocation("models")
+    ?: return null   // not downloaded yet
+val assetsPath = location.assetsPath()
+```
+
+The catch, from Google's docs, is worth knowing in advance:
+
+> The app can't assume the existence of these files or their locations because
+> these files may be deleted by the user or moved by the Play Asset Delivery
+> Library across play sessions.
+
+So the model loader must check for the pack **at every launch**, not cache the
+path. And with `install-time` this problem does not exist at all, because the
+models live in the app's own asset directory.
+
+### Fallback if Play publishing stalls
+
+A plain HTTPS download from GitHub Releases, with a manifest carrying
+`sha256` per asset and resumable transfers. This is the plan for a non-Play
+distribution and it is deliberately *not* the primary path — it means writing
+download code, a progress UI, checksum verification, resume handling, and a
+"models not ready" state that the app must handle at startup.
+
+### PAD for a non-game app
+
+The Play Asset Delivery documentation is written for games, but the mechanism
+is general: an `com.android.asset-pack` Gradle plugin, an asset pack module,
+and the `asset-delivery-ktx` runtime library. Nothing in it is game-specific.
+
+---
 
 ## Architecture
 
 ```
-┌──────────────────────── Pixel 7 (one APK, no network) ────────────────────────┐
-│                                                                                │
-│  AudioRecord (16 kHz mono, 4096-frame reads)                                   │
-│      ↓                                                                         │
-│  sherpa-onnx Vad  ──→  segments (FloatArray)                                   │
-│      ↓                                                                         │
-│  sherpa-onnx OfflineRecognizer (Whisper base.en int8)                          │
-│      ↓ transcript string                                                       │
-│  ┌────────────────────────────────────────────────────────────┐                │
-│  │  shared/core  (pure Python stdlib — ported to Kotlin)      │                │
-│  │    parser.py  → ParseResult                               │                │
-│  │    darts.py   → planner(), checkout routes, setup plans    │                │
-│  │    state.py   → GameState, turns, preferred double         │                │
-│  │    confirmation rules from main.py                         │                │
-│  └────────────────────────────────────────────────────────────┘                │
-│      ↓ suggestion text                                                         │
-│  sherpa-onnx OfflineTts (Piper)  ──→  AudioTrack                              │
-│                                                                                │
-│  Jetpack Compose UI: remaining score, suggestion, "You said 140, is that     │
-│  right?", buttons for New Game / Undo / confirm                                 │
-└────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────── Pixel 7 (one app, one install) ─────────────────────┐
+│                                                                          │
+│  AudioRecord (16 kHz mono)                                               │
+│      ↓                                                                   │
+│  sherpa-onnx Vad  ──→  speech segments                                   │
+│      ↓                                                                   │
+│  sherpa-onnx OfflineRecognizer (Whisper base.en int8)                    │
+│      ↓ transcript                                                        │
+│  ┌────────────────────────────────────────────────────────┐              │
+│  │  core/ (pure Kotlin — ported from the Python src/game/) │              │
+│  │    Darts.kt      → planner, checkout routes, setup plans │              │
+│  │    Parser.kt     → ParseResult, number words             │              │
+│  │    GameState.kt  → turns, preferred double               │              │
+│  │    CoachEngine.kt→ the confirmation state machine        │              │
+│  └────────────────────────────────────────────────────────┘              │
+│      ↓ suggestion text                                                   │
+│  sherpa-onnx OfflineTts (Piper)  ──→  AudioTrack                        │
+│                                                                          │
+│  Compose UI: remaining score, suggestion, read-back question, buttons   │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
 
-### The shared core: what is portable and what is not
+### What is portable and what is not
 
-**Portable as-is (pure stdlib, zero native deps) — port this to Kotlin:**
+**Portable as-is — pure stdlib Python, port these to Kotlin:**
 
 | File | Lines | Notes |
 |---|---|---|
 | `src/game/darts.py` | 712 | The planner. The whole value of the coach. |
 | `src/game/parser.py` | 452 | Number-word parsing, `is_confirmation`/`is_cancellation` |
 | `src/game/state.py` | 44 | `GameState`, `Turn` |
-| `src/game/persistence.py` | 39 | JSON save/load → swap for DataStore/SharedPreferences |
-| `src/display/state.py` | 66 | Scoreboard state (uses `threading` → swap for Kotlin state holder) |
+| `src/game/persistence.py` | 39 | JSON save/load → DataStore |
+| `src/display/state.py` | 66 | Scoreboard state |
 
-Only `re`, `json`, `dataclasses`, `pathlib`, `typing` are imported. Nothing here
-touches audio, models, or the network.
+Only `re`, `json`, `dataclasses`, `pathlib`, `typing`. Nothing touches audio,
+models or the network.
 
-**Not portable — rewrite against sherpa-onnx:**
+**Not portable — replace:**
 
 | Windows | Android |
 |---|---|
-| `src/audio/vad.py` (energy VAD, 1295 lines) | sherpa `Vad` (silero) — *simpler and better* |
+| `src/audio/vad.py` (1295 lines, energy VAD) | sherpa `Vad` (silero) — simpler and better |
 | `src/audio/asr.py` (faster-whisper) | sherpa `OfflineRecognizer` |
 | `src/speech/tts.py` (piper + PortAudio) | sherpa `OfflineTts` + `AudioTrack` |
 | `src/main.py` (coach loop) | Kotlin `CoachEngine` |
-| `src/phone/server.py` | *deleted* — the phone **is** the coach now |
-| `src/llm/reasoner.py` | *deleted* — LLM was already off by default; the search produces the numbers |
+| `src/phone/server.py` | deleted — the phone **is** the coach |
+| `src/llm/reasoner.py` | deleted — LLM was off by default; the search produces the numbers |
 
-**Not needed on the phone:** the LLM (`--use-llm` was off by default; the
-checkout/setup tables from `darts.py` are the source of truth), Ollama, Tailscale,
-HTTPS, and the whole `src/phone/` websocket transport.
+---
 
-### Two risks to plan around
+## Two risks to plan around
 
 **Risk 1 — ASR quality drops a model tier.** Windows uses `base.en`; sherpa
 offers `tiny.en`/`base.en`/`small.en`. Whisper `base.en` int8 on the Pixel 7
-should be real-time, but this must be *measured* on the device, not assumed.
+should be real-time, but this must be *measured* on the device.
 
-**Risk 2 — "one eighty" → "One 18."** (your Step 13 finding) was a
-*vocabulary* problem, not a capture problem. Two mitigations, both worth having:
-- sherpa-onnx **hotwords/contextual biasing** — but note the docs are explicit:
+**Risk 2 — "one eighty" → "One 18."** (the Windows Step 13 finding) was a
+*vocabulary* problem, not a capture problem. Two mitigations:
+- sherpa-onnx **hotwords/contextual biasing** — but the docs are explicit:
   *"Only transducer models support hotwords... All other models don't."*
-  Whisper is **not** a transducer, so hotwords are **unavailable** for it. This
-  mitigation does not apply if we use Whisper.
+  Whisper is **not** a transducer, so hotwords are unavailable for it.
 - The alternative is a **Zipformer transducer** (e.g.
   `sherpa-onnx-streaming-zipformer-en-2023-02-17`, 20M params, English) which
-  *does* support hotwords with `modified_beam_search`. This is the escape hatch
-  if Whisper mishears the number words.
+  *does* support hotwords with `modified_beam_search`.
 
-**This is the one genuine fork in the road and needs an early spike** (see
-Phase 1).
+**This is the one genuine fork in the road, and Phase 1 is a measurement spike
+for exactly this reason.**
+
+---
 
 ## Phases
 
-### Phase 0 — Settle the repo layout (small, do first)
+### Phase 0 — Repo layout (done)
 
-**Decided: a separate repository, `C:\git\dart-coach-android`**, created 2026-11-13.
+Separate repository, `C:\git\dart-coach-android`, created 2026-11-13 and
+pushed to https://github.com/jr12866/dart-coach-android.
+
 The Windows repo `darts-coach-windows` stays intact and working; it is not
-touched by this work.
-
-Rationale: the Python and Kotlin codebases have genuinely different toolchains
-(Gradle/NDK vs pytest/venv), and keeping them apart lets the Windows build stay
-green without any Android tooling installed.
-
-The new repo's layout:
+touched by this work and remains a working fallback.
 
 ```
 dart-coach-android/
-├── core/                  Pure Kotlin game logic (no Android, no sherpa).
-│                          JUnit tests live here.
-├── app/                   The Android app: audio, models, Compose UI.
-├── models/                Model files + fetch script.
-├── docs/                  Setup, build notes, ADR-style decisions.
-├── skill.md               Carried over from the Windows repo (strategy doc).
-├── scoring.md             Carried over from the Windows repo (strategy doc).
-├── PLAN.md                This plan.
-└── README.md
+├── core/                Pure Kotlin game logic. No Android, no sherpa.
+│                        JUnit tests here.
+├── app/                 The Android app: audio, models, Compose UI.
+├── models-pack/         The PAD asset pack module (Phase 5).
+├── models/              Model files + fetch script.
+├── docs/                SETUP, BUILDING, PARITY, DECISIONS, PUBLISHING.
+├── corpus/              Parity corpus (Python generates it).
+├── skill.md  scoring.md Strategy docs, carried over verbatim.
+├── PLAN.md  README.md
 ```
 
-`skill.md` and `scoring.md` are copied verbatim from the Windows repo. They are
-the human-readable statement of the strategy and are **not** read at runtime —
-the plan comes from the search in `Darts.kt`, the same model that generated
-`scoring.md` on the Windows side.
+`skill.md` and `scoring.md` are the human-readable statement of the strategy
+and are **not** read at runtime — the plan comes from the search in `Darts.kt`.
 
 **Parity rule:** the Kotlin core is a port, so it needs its own tests. Port the
 assertions from `tests/test_darts.py`, `test_parser.py`, `test_state.py`,
 `test_gameplay_rules.py`, `test_preferred_double.py` to Kotlin/JUnit, driven
-from the same fixtures. The existing Python tests remain the reference spec.
+from the same fixtures. The Python tests remain the reference spec.
 
 ### Phase 1 — Spike: can the Pixel 7 hear a darts score? (1–2 days)
 
-**This is the make-or-break phase. Do it before writing any of the app.**
+**Make-or-break. Do it before writing any of the app.**
 
-Goal: prove, on the real Pixel 7, that the number words survive the round trip.
-
-1. Build sherpa-onnx from source for Android arm64 (per
-   `k2-fsa.github.io/sherpa/onnx/android/build.html`). This needs the NDK.
-   Budget real time here — it is the longest single unknown.
-2. Bundle `silero_vad.onnx`, Whisper `base.en` int8, and Piper
-   `en_US-lessac-medium` in `assets/`.
+1. Build sherpa-onnx for `arm64-v8a` (see `docs/BUILDING.md`). Needs the NDK.
+   Budget real time — the longest single unknown.
+2. Bundle silero-vad, Whisper `base.en` int8, Piper `en_US-lessac-medium`.
 3. Minimal app: `AudioRecord` → sherpa `Vad` → sherpa `OfflineRecognizer` →
    print the transcript to logcat. No UI, no game logic.
-4. **Measure, in this order:**
-   - RTF on the Pixel 7 for `tiny.en` vs `base.en` vs `small.en` int8, 4 threads.
-   - Recall on a fixed corpus: the 14 phrases from your own `session.wav`
-     corpus, plus live spoken at the oche.
-   - Specifically: does "one eighty" transcribe as `180` or `One 18.`?
-   - Does "bust" survive? (your Step 13 found `Bus.` → invalid on the laptop;
-     your `_is_bust()` already handles the bare `bus.` spelling, so confirm the
-     Kotlin port keeps that.)
-5. **Decision gate:** if `base.en` mishears number words at the oche, evaluate
-   the Zipformer transducer + hotwords path in Phase 1b before proceeding.
+4. **Measure:**
+   - RTF on the Pixel 7 for `tiny.en` / `base.en` / `small.en` int8.
+   - Recall on the 14-phrase corpus from the Windows `session.wav`, plus live
+     speech at the oche.
+   - Does "one eighty" become `180` or `One 18.`?
+   - Does "bust" survive? (Windows Step 13 found `Bus.` → invalid; the
+     `_is_bust()` rule already handles the bare `bus.` spelling — confirm the
+     port keeps it.)
+5. **Gate:** if `base.en` mishears number words, evaluate the Zipformer
+   transducer + hotwords path before going further.
 
-Output of this phase: a measured table (model → RTF → transcript accuracy), and
-a go/no-go on Whisper vs Zipformer.
+Output: a measured table (model → RTF → accuracy) and a go/no-go.
 
 ### Phase 2 — Port the game core to Kotlin (2–3 days)
 
-Port `src/game/` to Kotlin. Keep it a straight, literal port — no cleverness,
-because the point is parity with a heavily-tuned Python original.
+Straight, literal port — no cleverness, because the point is parity with a
+heavily-tuned original.
 
-- `Darts.kt` ← `darts.py`: the planner, `route_to_double`, `double_speech`,
-  `number_to_words`, `planner()` cache.
+- `Darts.kt` ← `darts.py`: planner, `route_to_double`, `double_speech`,
+  `number_to_words`, the `planner()` cache.
 - `Parser.kt` ← `parser.py`: `ParseResult`, number extraction, the
   `single`/`double`/`triple` qualifier rules, `is_confirmation`,
   `is_cancellation`, `DESTRUCTIVE_COMMANDS`.
 - `GameState.kt` ← `state.py`: `GameState`, `Turn`, `preferred_double`.
-- `CoachEngine.kt` ← the confirmation state machine from `src/main.py`:
-  `pendingScore`, `pendingCommand`, the wake-word handling, the
-  `_is_unanswered_conversation` rule, and the read-back-before-counting
-  behaviour.
+- `CoachEngine.kt` ← the confirmation state machine from `src/main.py`.
 
-**The confirmation rules are the part to be most careful about.** Your codebase
-has earned those rules through live failures:
+**The confirmation rules need the most care.** They exist because of live
+failures, not theory:
+
 - Nothing counts on the first pass; a score is read back and waits for a "yes".
-- `new game` / `undo` need **"coach yes"**, not a bare "yes" (a 440 Hz tone was
-  transcribed as "I'm going to go back" and undid a real turn).
-- `one eight` vs `one eighteen` disambiguation — the rule that the second number
-  must be ≥ 20. Port it exactly, including the reasoning in the comment.
+- `new game` / `undo` need **"coach yes"**, not a bare "yes". A 440 Hz tone was
+  transcribed as "I'm going to go back" and undid a real turn.
+- `one eighteen` vs `one eighty` — the second number must be 20 or more.
+  Port it exactly, including the reasoning in the comment.
 
-Add a **golden-file parity harness**: a JSON corpus of (input → expected
-`ParseResult` + expected spoken reply), generated from the Python side, and a
-Kotlin test that asserts identical output. That is how you know the port is
-faithful without reading 1200 lines of Kotlin twice.
+A **golden-file parity harness**: a JSON corpus of (input → expected
+`ParseResult` + expected spoken reply), generated from the Python side, with a
+Kotlin test asserting identical output. See `docs/PARITY.md`.
 
 ### Phase 3 — The app (3–5 days)
 
-- **Audio:** `AudioRecord` at 16 kHz mono, `AudioRecord.getMinBufferSize` sized
-  for ~64 ms frames, read on a dedicated thread. Note your Windows VAD expects
-  16 kHz / 1024-frame chunks — keep that shape so the timing constants stay
-  comparable.
-- **TTS + the half-duplex gate:** this is the subtle part. `PiperTTS` currently
-  mutes the mic during playback with a 0.35 s echo tail. On Android the phone
-  speaker is right next to the phone mic, so **the echo problem is worse, not
-  better**. Use `AudioRecord` + `AudioTrack` with the same `VOICE_COMMUNICATION`
-  source, and keep the mic muted from the moment TTS starts until playback
-  finishes plus the echo tail. Consider `AcousticEchoCanceler` on the capture
-  session, but measure it — the Windows path explicitly left
-  `echoCancellation` off because the recogniser was tuned against raw audio.
-- **UI (Jetpack Compose):** big remaining score, the suggestion, the
-  read-back question, and buttons for New Game / Undo / Confirm. Portrait,
-  screen-on (`FLAG_KEEP_SCREEN_ON`), and a wake lock — the phone is at the oche
-  and the screen must not sleep mid-leg.
-- **Persistence:** `GameState` to `SharedPreferences`/DataStore as JSON, same
-  shape as `persistence.py`, so a saved leg resumes.
-- **No network permission at all.** That is the proof it is self-contained.
+- **Audio:** `AudioRecord` at 16 kHz mono, buffer sized for ~64 ms frames, read
+  on a dedicated thread. The Windows VAD expects 16 kHz / 1024-frame chunks —
+  keep that shape so the timing constants stay comparable.
+- **TTS + the half-duplex gate:** the subtle part. `PiperTTS` mutes the mic
+  during playback with a 0.35 s echo tail. On Android the speaker and mic are
+  centimetres apart in the same enclosure, so **the echo problem is worse**.
+  Keep the mic muted from the start of TTS until playback ends plus the echo
+  tail. Consider `AcousticEchoCanceler`, but measure it — the Windows path
+  deliberately left `echoCancellation` off because the recogniser was tuned
+  against raw audio.
+- **UI (Compose):** remaining score, suggestion, read-back question, buttons
+  for New Game / Undo / Confirm. Portrait, screen-on
+  (`FLAG_KEEP_SCREEN_ON`), wake lock — the phone is at the oche and the screen
+  must not sleep mid-leg.
+- **Persistence:** `GameState` to DataStore as JSON, same shape as
+  `persistence.py`, so a saved leg resumes.
 
 ### Phase 4 — Polish and verify on the oche (2–3 days)
 
-- Test a full 501 leg standing at the board, phone in hand.
-- Test the failure modes your Windows build already taught you about:
+- A full 501 leg standing at the board, phone in hand.
+- The failure modes the Windows build already taught us:
   - screen lock mid-leg → does the mic keep feeding?
   - the coach hearing itself speak (the echo gate).
   - backgrounding the app (another app takes the mic → mic loss).
   - a phone call interrupting.
-- Compare behaviour against the Windows coach on the same phrases.
+- Compare against the Windows coach on the same phrases.
+
+### Phase 5 — Play Store packaging (2–3 days)
+
+Only once the app works.
+
+- **PAD asset pack module** (`models-pack/`): `com.android.asset-pack` plugin,
+  `deliveryType = "install-time"`, assets under `src/main/assets/`.
+- **App module:** `assetPacks += listOf(":models-pack")`, and a
+  `play { publishReleaseApk = false }` block.
+- **Signing:** a release keystore, `signingConfigs`, and
+  `bundleConfig`. Play App Signing means the upload key can be rotated later.
+- **Play Console:** a developer account (one-time $25), the store listing
+  (icon, screenshots, a privacy policy URL), and the **Data safety** form —
+  which must declare microphone use.
+- **Target API:** Play requires the target SDK to be within one year of the
+  latest. `targetSdk = 35` is current as of this plan; check before shipping.
+- **Privacy policy:** required. The app records audio — the policy must say
+  clearly that audio is processed on-device and never leaves the phone.
+
+**Play review note.** A microphone-using app attracts scrutiny, and the Data
+safety form must be consistent with the privacy policy. Keep the claims
+simple and true: on-device ASR, no data transmitted, no analytics, no ads.
+
+---
 
 ## Effort estimate
 
 | Phase | Time | Risk |
 |---|---|---|
-| 0. Repo layout | 0.5 d | Low |
-| 1. Sherpa-onnx + ASR spike | 1–2 d | **High** — native build + ASR quality |
+| 0. Repo layout | done | — |
+| 1. sherpa-onnx + ASR spike | 1–2 d | **High** — native build + ASR quality |
 | 2. Kotlin core port | 2–3 d | Medium — parity, but mechanical |
 | 3. The app | 3–5 d | Medium — echo gate, lifecycle |
 | 4. On-the-oche verification | 2–3 d | Medium — real-world behaviour |
-| **Total** | **~9–14 days** | |
+| 5. Play Store packaging | 2–3 d | Low–Medium — signing, review |
+| **Total** | **~9–16 days** | |
 
-Roughly **2–3 weeks**. The Windows build stays intact and usable throughout, so
-there is always a working fallback.
+The Windows build stays intact throughout, so there is always a working
+fallback.
+
+---
 
 ## Open questions
 
@@ -260,30 +366,31 @@ there is always a working fallback.
 2. **Whisper vs Zipformer** — decided by the Phase 1 spike. If Whisper `base.en`
    mishears "one eighty" at the oche, switch to a Zipformer transducer, which
    supports hotwords and would fix the vocabulary problem properly.
-3. **LLM on the phone?** — currently off by default and the numbers come from
-   the search, so the answer is probably "no". Adding a small on-device LLM
-   (e.g. via MediaPipe LLM Inference / llama.cpp) is possible on a Pixel 7 but
-   is scope creep. Recommend: skip it, same as today.
-4. **Does the phone need to also be the scoreboard for other people?** — the
-   current Windows setup serves a browser scoreboard. On the phone this is
-   just the app's own UI. If you want a second screen (a tablet at the bar),
-   that is a different feature.
+3. ~~**Where the assets live**~~ — **decided: a Play Asset Delivery pack,
+   `install-time`.** The models ship inside the Play install; no download code,
+   no progress UI, no checksums to write.
+4. **LLM on the phone?** — currently off by default and the numbers come from
+   the search, so the answer is "no". A small on-device LLM is feasible on a
+   Pixel 7 but is scope creep. Recommend: skip it, same as today.
+5. **Does the phone need to be the scoreboard for other people?** — the Windows
+   setup serves a browser scoreboard. On the phone this is just the app's own
+   UI. A second screen (a tablet at the bar) is a different feature.
+
+---
 
 ## What stays the same
 
-- `skill.md` and `scoring.md` are copied verbatim into the new repo. The Android
-  app does **not** need them at runtime — the plan comes from `darts.py` — but
-  they stay as the human-readable documentation of the strategy.
+- `skill.md` and `scoring.md` are carried over verbatim. Not read at runtime —
+  the plan comes from `darts.py`/`Darts.kt`.
 - `scripts/generate_scoring.py` stays in the **Windows** repo, where it
   regenerates `scoring.md` from the Python search. The Kotlin port and the
-  Python planner must never disagree; the parity harness in Phase 2 is what
-  catches it if they do.
-- The Windows coach keeps working, unchanged, throughout. There is always a
-  working fallback while the Android build is developed.
+  Python planner must never disagree; the parity harness catches it if they do.
+- The Windows coach keeps working, unchanged, throughout.
 
 ## Not doing
 
-- No LLM on the phone (see Q3).
+- No LLM on the phone (see Q4).
 - No phone-as-webcam, no video.
 - No multi-player scoring.
 - No cloud sync of game state.
+- No analytics, no ads, no crash reporting that leaves the device.
