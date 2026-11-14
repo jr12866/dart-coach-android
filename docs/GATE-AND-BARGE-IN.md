@@ -1,7 +1,6 @@
 # The echo gate and barge-in
 
-Both were measured on a Pixel 7, with Bose QuietComfort 35 headphones
-available.
+Both were measured on a Pixel 7.
 
 ## The clipping
 
@@ -29,92 +28,74 @@ No underruns.
 The second symptom was that the coach would not accept a "yes" for the
 score it had just read back.
 
-**Cause.** Not what it looked like. The log showed the "yes" *was* heard,
-and then ignored. The gate was closed for the whole of the coach's speech,
-and the player had answered during it.
-
-The timings:
-
-```
-19:50:22.533  Gate open after 3203ms
-19:50:27.915  Heard: 'Yes'          5.4 seconds later
-```
-
-The suggestion is a long sentence - "You're at 401. Throw treble twenty,
-treble twenty and treble twenty to leave 221." is about 5.6 seconds of
-speech - and the gate was shut for 7.7 seconds after it started. Anything
-said in that window was dropped on the floor.
+**Cause.** The log showed the "yes" *was* heard, and then ignored. The gate
+was closed for the whole of the coach's speech, and the player had answered
+during it.
 
 **This is not a porting bug.** The Windows coach has the same shape: the
 gate is held for the whole of the speech plus a tail, and barge-in was
 listed as an option in `update_summary.md` and never taken, because on a
 laptop the coach is across the room.
 
-On a phone it matters much more, because the phone is 10 cm from the
-player's ear and they can answer the coach without waiting for it.
+On a phone the coach is 10 cm from the player's ear, so they can answer
+without waiting for it.
 
-## Barge-in
+## Barge-in, and how it nearly went wrong
 
-**The coach now stops when the player starts talking.**
+The coach now stops when the player starts talking. While it is speaking
+the audio is still analysed rather than thrown away.
 
-While the coach is speaking the audio is still analysed rather than
-thrown away. If a chunk is loud enough to be the player, the voice is cut
-off and the player is heard.
+The first version of the detector compared the **peak** of each chunk
+against a fixed threshold, and it cut the coach off mid-sentence:
 
-The danger is that the coach's own voice is far louder than the player's,
-so the two have to be told apart by level. Measured on the Pixel 7:
+```
+Barge-in: the player is speaking (level 0.0478)
+TTS: 48384 samples = 2194ms, played in 296ms
+```
 
-| | Peak level at the microphone |
-|---|---|
-| The coach's own voice, through the phone's speaker | 0.023 - 0.037 |
-| The player's voice, speaking over the coach | 0.052 - 0.055 |
+Three things were wrong with it.
 
-The threshold is **0.045**, between the two. It was set from the
-measurement, not guessed.
+**The threshold was measured in the wrong conditions.** It was set from
+the Bose headphones, where the coach's voice never reaches the microphone.
+With the headphones off, Android had fallen back to the phone's own
+speaker, and the coach's voice peaks at 0.21 - louder than the player.
 
-With Bluetooth headphones the coach's voice does not reach the microphone
-at all - the echo peak is 0.0019, below the room floor - so barge-in is
-completely safe there.
+**A peak is the wrong measure.** Through the phone's speaker, the coach's
+own voice has a mean of 0.0014 but a peak of 0.21: a plosive is louder
+than the player. Any single chunk can cross a peak-based threshold. The
+player's voice is sustained, so the mean over a chunk is what tells them
+apart:
+
+```
+peak: n=140 p50=0.0416 p90=0.1571 max=0.2819
+mean: n=140 p50=0.0069 p90=0.0302 max=0.0531
+```
+
+**Barge-in is not safe on the phone's own speaker at all.** Even with the
+right measure the gap is narrow, so the app now asks Android where the
+audio is going and enables barge-in only when the answer is not the phone's
+own speaker.
+
+The route has to be read from the *playback configurations*, not the device
+list. The Bose is paired and present even after Android has fallen back to
+the speaker, and that fallback is exactly what made the coach cut itself
+off.
 
 ## The numbers
 
-```
-Speaking: You're at 258. Throw treble twenty, treble twenty and treble
-          twenty to leave 78.
-TTS: 117271 samples at 22050 Hz = 5318ms, played in 5646ms
-Gate open after 7030ms (speech 5646ms, tail 350ms); 576 chunk(s) dropped
-```
-
-And with the player talking over it:
+With headphones, barge-in is safe and the coach speaks the whole phrase:
 
 ```
-Heard: '100'
-Coach says: You said one hundred. Is that right?
-Barge-in: the player is speaking (level 0.0548)
-Gate open after 1823ms (speech 1414ms, tail 350ms)
+TTS: 88242 samples at 22050 Hz = 4001ms, played in 4280ms
 ```
 
-The coach was cut off 1.4 seconds into a 5.6 second suggestion.
+With the phone's own speaker, barge-in is off and the phrase still plays in
+full.
 
 ## What is still not right
-
-**The suggestion is a long sentence.** Six seconds of speech before the
-player can do anything is a lot, and the wording is the Windows coach's,
-which was written for a laptop where the player is sitting at the desk.
-
-Two things could be done about it, and neither is done yet:
-
-- **Say less.** "You're at 258. Throw treble twenty, treble twenty, treble
-  twenty." is enough at the oche. The leave is on the screen already.
-- **Speak faster.** Piper's `length_scale` is 1.0, the same as the Windows
-  coach. At 1.2 the same sentence is about 20% shorter.
-
-Both change what the coach says, so both are the user's call rather than
-the implementer's.
 
 **The echo tail is still 0.35 seconds**, which was measured for a laptop
 whose speakers are across the room. With headphones the echo is below the
 room floor and no tail is needed at all. With the phone's own speaker the
 tail has to cover the speaker's mechanical ringing, which is probably much
-shorter than 0.35 seconds. That needs measuring with the phone on the
-board.
+shorter. That needs measuring with the phone on the board.
