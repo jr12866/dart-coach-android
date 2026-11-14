@@ -1,5 +1,7 @@
 # Port Darts Coach to a Pixel 7 — self-contained, offline after first run
 
+> **Where this is and what is left: `docs/HANDOVER.md`.**
+
 ## Goal
 
 The coach runs on the phone: the Pixel 7 captures the microphone, transcribes,
@@ -297,7 +299,7 @@ A **golden-file parity harness**: a JSON corpus of (input → expected
 `ParseResult` + expected spoken reply), generated from the Python side, with a
 Kotlin test asserting identical output. See `docs/PARITY.md`.
 
-### Phase 3 — The app (3–5 days) - in progress - mostly done
+### Phase 3 — The app (3–5 days) - in progress - mostly done - done
 
 - **Audio:** `AudioRecord` at 16 kHz mono, buffer sized for ~64 ms frames, read
   on a dedicated thread. The Windows VAD expects 16 kHz / 1024-frame chunks —
@@ -317,7 +319,7 @@ Kotlin test asserting identical output. See `docs/PARITY.md`.
   JitPack. The espeak-ng data that ships with the voice is not used:
   sherpa-onnx has ignored `data_dir` since v2.0.0.
 
-### Phase 4 — Polish and verify on the oche (2–3 days)
+### Phase 4 — Polish and verify on the oche (2–3 days) - not started
 
 - A full 501 leg standing at the board, phone in hand.
 - The failure modes the Windows build already taught us:
@@ -327,7 +329,7 @@ Kotlin test asserting identical output. See `docs/PARITY.md`.
   - a phone call interrupting.
 - Compare against the Windows coach on the same phrases.
 
-### Phase 5 — Play Store packaging (2–3 days)
+### Phase 5 — Play Store packaging (2–3 days) - not started
 
 Only once the app works.
 
@@ -358,9 +360,9 @@ simple and true: on-device ASR, no data transmitted, no analytics, no ads.
 | 0. Repo layout | done | — |
 | 1. sherpa-onnx + ASR spike | 1–2 d | **done** — RTF 0.11-0.20, all words correct |
 | 2. Kotlin core port | 2–3 d | **done** — all 7663 corpus cases match |
-| 3. The app | 3–5 d | Medium — echo gate, lifecycle |
-| 4. On-the-oche verification | 2–3 d | Medium — real-world behaviour |
-| 5. Play Store packaging | 2–3 d | Low–Medium — signing, review |
+| 3. The app | 3-5 d | **done** - works on the Pixel 7 |
+| 4. On-the-oche verification | 2-3 d | **not started** |
+| 5. Play Store packaging | 2-3 d | **not started** |
 | **Total** | **~9–16 days** | |
 
 The Windows build stays intact throughout, so there is always a working
@@ -375,8 +377,8 @@ fallback.
    on the Pixel 7: "one eighty" is `180`, "bust" is `bust`, "yes" is `Yes.`,
    at RTF 0.11-0.20. The hotwords that would have fixed the vocabulary
    problem are not needed, and the Zipformer path is dropped.
-3. ~~**Where the assets live**~~ — **decided: a Play Asset Delivery pack,
-   `install-time`.** The models ship inside the Play install; no download code,
+3. ~~**Where the assets live**~~ - **decided: a Play Asset Delivery pack,
+   `install-time`.** The models ship inside the Play install.
    no progress UI, no checksums to write.
 4. **LLM on the phone?** — currently off by default and the numbers come from
    the search, so the answer is "no". A small on-device LLM is feasible on a

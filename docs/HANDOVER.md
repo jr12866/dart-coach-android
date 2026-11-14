@@ -1,0 +1,177 @@
+# Where this is, and what is left
+
+Written 13 November 2026, at a natural stopping point.
+
+## What works
+
+The coach runs on a Pixel 7, with no laptop and no network.
+
+```
+Heard: '140'
+Coach says: You said one hundred and forty. Right?
+Heard: 'Yes.'
+Coach says: 361. Treble twenty, treble twenty and treble twenty.
+Heard: 'What does that leave?'
+Coach says: That leaves 221.
+```
+
+Everything is on the device: the microphone, the speech recognition, the
+game logic, the voice. The app requests no network permission.
+
+| | |
+|---|---|
+| **Speech to text** | Whisper `base.en` int8, sherpa-onnx. RTF 0.11-0.20. |
+| **Voice** | Piper `en_US-lessac-medium` int8, sherpa-onnx, with piper-phonemize. |
+| **Speech detection** | silero-vad. |
+| **Game logic** | A Kotlin port of the Python `src/game/`, verified against 7663 cases. |
+| **The gate** | Measured, not guessed. See `docs/TAIL.md`. |
+
+## The numbers that were measured
+
+| | |
+|---|---|
+| Recognition speed | RTF 0.11-0.20 on four threads |
+| The coach's voice at the microphone, phone speaker | peak 0.21, mean 0.0014 |
+| The coach's voice at the microphone, headphones | peak 0.0019 - below the room |
+| A player speaking over the coach | mean 0.052-0.055 |
+| The echo tail | gone within 50-100 ms of the audio stopping |
+| The suggestion | 3.5 s of speech, down from 5.5 s |
+
+## The two things that are configured from the audio route
+
+The app asks Android where the audio is going, and both of these come from
+that answer:
+
+| Route | Echo tail | Barge-in |
+|---|---|---|
+| The phone's own speaker | 0.10 s | off |
+| Bluetooth headphones | 0 s | on |
+
+Barge-in is off on the phone's speaker because the echo there is louder than
+the player, so the coach would cut itself off. With headphones the voice
+never reaches the microphone at all, so barge-in is safe.
+
+## What is left
+
+### 1. The headphone route is untested
+
+The Bose keeps falling back to the phone's speaker even though it stays
+paired. That is a Bluetooth pairing problem rather than an app problem, but
+it means the headphone path - zero tail, barge-in on - has never actually run.
+
+To check it: connect the Bose, confirm the phone's Bluetooth panel says
+*connected* rather than merely paired, then:
+
+```
+adb shell dumpsys audio | grep -o "type:[a-z_]*" | tail -3
+```
+
+It has to say `bt_a2dp`. If it says `speaker`, the headphones are not
+carrying the audio and the app will (correctly) use the phone-speaker
+settings.
+
+### 2. The echo tail at the oche
+
+The tail was measured on a desk in a quiet room. The room level matters,
+because the tail is measured relative to it, and the oche is not a quiet
+desk.
+
+The measurement is a hidden intent:
+
+```
+adb shell am start -S -n com.jr12866.dartcoach/.MainActivity --ez tail true
+adb logcat -s DartsCoach
+```
+
+Note the `-S`. Without it the activity is not restarted and the intent is
+delivered to the running instance, which is handled but is easier to reason
+about with a clean start.
+
+The tool dumps the level every 10 ms, so the curve is in the log too. That
+curve is what actually showed the answer - the summary alone was misleading
+twice, because the room is noisy enough to produce spikes well above its own
+floor.
+
+### 3. Phase 5 - the Play Store
+
+Nothing has been done on this. It is self-contained and does not need the
+phone.
+
+- A release keystore, and `signingConfigs` in `app/build.gradle.kts`.
+- `local.properties` with the keystore path and passwords, gitignored.
+- The store listing: icon, screenshots, descriptions.
+- The **Data safety** form, and a privacy policy. The app records audio and
+  processes it on the device, so the form has to say that, and the policy
+  has to agree with it.
+- The models ship as an install-time Play Asset Delivery pack, so the app
+  installs at about 190 MB. The limits are in `docs/PUBLISHING.md`.
+
+## The repositories
+
+| | |
+|---|---|
+| `C:\git\dart-coach-android` | This one. Kotlin, Android, the phone app. |
+| `C:\git\darts-coach-windows` | The original. Python, the laptop coach, still working. |
+
+They are separate because the toolchains are, and because the Windows build
+is a working product that must not be disturbed.
+
+**The Kotlin core is a port of the Python one, and the parity corpus is what
+checks it.** If the Python behaviour changes deliberately, regenerate the
+corpus and read the diff:
+
+```
+cd C:\git\darts-coach-windows
+python tools\parity\parity_gen.py --out C:\git\dart-coach-android\corpus
+cd C:\git\dart-coach-android
+.\gradlew.bat :core:test
+```
+
+The corpus is the specification. The Windows test suite stays the reference.
+
+## Building
+
+```
+sdkmanager "ndk;27.2.12479018" "cmake;3.31.6"
+git clone --depth 1 https://github.com/k2-fsa/sherpa-onnx.git third_party/sherpa-onnx
+.\tools\build-sherpa.ps1
+.\tools\fetch-models.ps1
+.\gradlew.bat :app:assembleDebug -PwithLocalModels
+adb install -r app\build\outputs\apk\debug\app-debug.apk
+```
+
+The `-PwithLocalModels` is needed for local builds: the Play Asset Delivery
+pack only reaches the device through the Play Store, and a debug APK
+installed with `adb install` never gets it.
+
+`docs/BUILDING.md` has the details, including the four version constraints
+that all have to be right at once.
+
+## Two hidden measurement tools
+
+Both are reached by an intent extra, and both exist so the numbers can be
+measured on the device rather than by eye.
+
+```
+# how long each line takes to say
+adb shell am start -S -n com.jr12866.dartcoach/.MainActivity --ez measure true
+
+# the echo tail
+adb shell am start -S -n com.jr12866.dartcoach/.MainActivity --ez tail true
+```
+
+## Where the documentation is
+
+| | |
+|---|---|
+| `PLAN.md` | The plan, and where each phase stands. |
+| `docs/TAIL.md` | The echo tail measurement, and the two wrong attempts. |
+| `docs/PHASE1-FINDINGS.md` | The recognition measurements. |
+| `docs/PHASE3-ECHO.md` | The first echo measurement, through the phone speaker. |
+| `docs/GATE-AND-BARGE-IN.md` | The gate and barge-in, and how they nearly went wrong. |
+| `docs/BLUETOOTH.md` | Bluetooth, and why the microphone stays on the phone. |
+| `docs/PARITY.md` | How the port is checked against the Python. |
+| `docs/BUILDING.md` | Building sherpa-onnx. |
+| `docs/PUBLISHING.md` | The Play Store. |
+| `docs/DECISIONS.md` | The decisions, and what would reverse each. |
+| `docs/MEASURING-TAIL.md` | How to run the tail measurement. |
