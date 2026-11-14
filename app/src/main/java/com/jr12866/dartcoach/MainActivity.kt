@@ -87,6 +87,7 @@ class MainActivity : ComponentActivity() {
 
         audio.onPhrase = { phrase -> onHeard(phrase) }
         audio.onStateChanged = { running -> listening = running }
+        audio.onBargeIn = { tts.stop() }
 
         setContent {
             MaterialTheme {
@@ -156,15 +157,23 @@ class MainActivity : ComponentActivity() {
      * The gate is the half-duplex rule: the coach must not hear itself.
      */
     private fun speak(text: String) {
+        val started = System.currentTimeMillis()
         audio.beginSpeaking()
         try {
             Log.i("DartsCoach", "Speaking: $text")
             val seconds = tts.speak(text)
-            if (seconds > 0) {
+            if (seconds > 0 && !tts.wasInterrupted()) {
                 // The speaker is still ringing. Wait for it to stop before
                 // listening again.
                 Thread.sleep((audio.echoTailSeconds * 1000).toLong())
             }
+            Log.i(
+                "DartsCoach",
+                "Gate open after ${System.currentTimeMillis() - started}ms " +
+                    "(speech ${(seconds * 1000).toInt()}ms, " +
+                    "tail ${(audio.echoTailSeconds * 1000).toInt()}ms); " +
+                    "${audio.dropped} chunk(s) dropped while speaking",
+            )
         } finally {
             audio.endSpeaking()
         }

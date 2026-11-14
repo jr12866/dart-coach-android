@@ -13,6 +13,7 @@ import android.util.Log
 import com.k2fsa.sherpa.onnx.Vad
 import com.k2fsa.sherpa.onnx.getVadModelConfig
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
 import kotlin.concurrent.thread
 
 /**
@@ -45,12 +46,35 @@ class AudioEngine(context: Context) {
     /** Called when the engine starts and stops. */
     var onStateChanged: ((Boolean) -> Unit)? = null
 
+    /**
+     * Called when the player starts speaking while the coach is talking.
+     *
+     * The coach should stop and let them finish.
+     */
+    var onBargeIn: (() -> Unit)? = null
+
+    /**
+     * The level above which a sound during the coach's speech is taken to be
+     * the player rather than the coach.
+     *
+     * Measured on a Pixel 7: the coach's own voice reaches the microphone at
+     * a peak of 0.028 through the phone's speaker. A spoken score at arm's
+     * length peaks around 0.09. The threshold sits between them.
+     *
+     * It is a guess until it is measured against the real thing, which is
+     * what Phase 4 is for.
+     */
+    var bargeInThreshold = 0.045f
+
     private var recognizer: OfflineRecognizer? = null
     private var vad: Vad? = null
     private var record: AudioRecord? = null
     private var worker: Thread? = null
 
     private val running = AtomicBoolean(false)
+
+    /** Chunks thrown away because the coach was speaking. */
+    private val droppedChunks = AtomicLong(0)
 
     /**
      * True while the coach is speaking.
@@ -163,6 +187,9 @@ class AudioEngine(context: Context) {
     /** True while the microphone is being ignored. */
     val isSpeaking: Boolean get() = speaking.get()
 
+    /** How many chunks have been dropped because the coach was speaking. */
+    val dropped: Long get() = droppedChunks.get()
+
     private fun captureLoop(recorder: AudioRecord) {
         val buffer = FloatArray(1024)
         val vad = this.vad!!
@@ -176,9 +203,35 @@ class AudioEngine(context: Context) {
             if (read <= 0) continue
 
             if (speaking.get()) {
-                // The coach is talking. Throw the audio away, and reset the
-                // VAD so the coach's own voice is not sitting in it when the
-                // gate opens.
+                // The coach is talking.
+                //
+                // The audio is still analysed, because the player might be
+                // answering. Throwing it away silently means a player who
+                // says "yes" while the coach is still talking is ignored,
+                // and the answer is lost - which is the difference between a
+                // coach you can talk to and one you have to wait for.
+                //
+                // The danger is the coach's own voice, which is far louder
+                // than the player's. It is told apart by level: the echo is
+                // measured at a peak of 0.028 on the phone's own speaker,
+                // while a spoken score at arm's length peaks around 0.09. A
+                // level above the echo threshold during playback is the
+                // player, not the coach.
+                droppedChunks.incrementAndGet()
+                val level = peakLevel(buffer, read)
+                if (level > 0.02f) {
+                    Log.i(TAG, "During speech: peak level $level")
+                }
+                if (level > bargeInThreshold) {
+                    Log.i(TAG, "Barge-in: the player is speaking (level $level)")
+                    onBargeIn?.invoke()
+                    // The VAD is reset so the coach's own voice is not
+                    // sitting in it when the gate opens.
+                    vad.reset()
+                    continue
+                }
+                // The coach's own voice. Reset the VAD so it is not sitting
+                // in the buffer when the gate opens.
                 vad.reset()
                 continue
             }
@@ -198,6 +251,16 @@ class AudioEngine(context: Context) {
                 }
             }
         }
+    }
+
+    /** The loudest sample in the chunk. */
+    private fun peakLevel(buffer: FloatArray, length: Int): Float {
+        var peak = 0f
+        for (i in 0 until length) {
+            val a = kotlin.math.abs(buffer[i])
+            if (a > peak) peak = a
+        }
+        return peak
     }
 
     /** Transcribes one phrase. */
