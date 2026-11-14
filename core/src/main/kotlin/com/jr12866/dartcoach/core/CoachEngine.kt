@@ -155,6 +155,10 @@ class CoachEngine(
                     "after ${state.turnsPlayed} turns."
                 return message
             }
+            "whats_the_leave" -> {
+                message = whatWouldThatLeave()
+                return message
+            }
             "continue" -> {
                 message = "Resuming at ${state.remainingScore}. Say your score."
                 return message
@@ -256,6 +260,49 @@ class CoachEngine(
                 }
             }
         }
+    }
+
+    /**
+     * What the current plan would leave.
+     *
+     * The leave is recomputed from the score standing rather than taken
+     * from the last suggestion, so it is right even if the score has moved
+     * on since.
+     *
+     * When the player has named a double, it is the route onto that double
+     * that is meant - the leave of the route is the shot at their double.
+     */
+    private fun whatWouldThatLeave(): String {
+        val remaining = state.remainingScore
+        if (remaining <= 0) {
+            return "The leg is finished."
+        }
+        if (remaining == 1) {
+            // The smallest double is 2, so one point can never be finished.
+            return "One point left. That cannot be finished - the smallest " +
+                "double is two."
+        }
+
+        val preferred = state.preferredDouble
+        if (preferred != null) {
+            val route = Planner.shared.routeToDouble(remaining, preferred)
+            if (route != null) {
+                return if (route.finishes) {
+                    "${doubleSpeech(preferred)} finishes it."
+                } else {
+                    "That leaves ${route.leaves} for ${doubleSpeech(preferred)}."
+                }
+            }
+        }
+
+        val plan = Planner.shared.planFor(remaining)
+        if (plan.finishes) {
+            return "That wins the leg."
+        }
+        if (plan.leaves == 0) {
+            return "That leaves nothing to finish from."
+        }
+        return "That leaves ${plan.leaves}."
     }
 
     /**

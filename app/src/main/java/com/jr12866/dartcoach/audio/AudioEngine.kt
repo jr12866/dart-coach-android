@@ -54,17 +54,32 @@ class AudioEngine(context: Context) {
     var onBargeIn: (() -> Unit)? = null
 
     /**
-     * The level above which a sound during the coach's speech is taken to be
-     * the player rather than the coach.
+     * The mean level above which a sound during the coach's speech is taken
+     * to be the player rather than the coach.
      *
-     * Measured on a Pixel 7: the coach's own voice reaches the microphone at
-     * a peak of 0.028 through the phone's speaker. A spoken score at arm's
-     * length peaks around 0.09. The threshold sits between them.
+     * Measured on a Pixel 7, through the phone's own speaker, the coach's
+     * own voice has a mean level around 0.0014 but a peak of 0.21 - a
+     * plosive is louder than the player. So the test is on the mean, and it
+     * sits above the coach's own voice.
      *
      * It is a guess until it is measured against the real thing, which is
      * what Phase 4 is for.
      */
-    var bargeInThreshold = 0.045f
+    var bargeInThreshold = 0.012f
+
+    /**
+     * Whether barge-in is allowed at all.
+     *
+     * It is safe when the coach is talking through headphones, because the
+     * voice never reaches the phone's microphone. It is **not** safe when
+     * the coach is talking through the phone's own speaker: the echo peaks
+     * at 0.21, which is louder than the player, so the coach would cut
+     * itself off.
+     *
+     * The app sets this from the audio route.
+     */
+    @Volatile
+    var bargeInEnabled = true
 
     private var recognizer: OfflineRecognizer? = null
     private var vad: Vad? = null
@@ -190,6 +205,32 @@ class AudioEngine(context: Context) {
     /** How many chunks have been dropped because the coach was speaking. */
     val dropped: Long get() = droppedChunks.get()
 
+    /** The peak level of every chunk seen while the coach was speaking. */
+    private val speechLevels = mutableListOf<Float>()
+
+    /** The mean level of every chunk seen while the coach was speaking. */
+    private val speechMeans = mutableListOf<Float>()
+
+    /**
+     * A summary of the levels seen during the coach's speech.
+     *
+     * The coach's own voice is what these are, unless the player spoke over
+     * it. They are what the barge-in threshold has to sit above.
+     */
+    fun speechLevelSummary(): String {
+        if (speechLevels.isEmpty()) return "no levels yet"
+        val sorted = speechLevels.sorted()
+        val means = speechMeans.sorted()
+        fun pct(list: List<Float>, p: Double): Float =
+            list[(list.size * p).toInt().coerceIn(0, list.size - 1)]
+        return String.format(
+            "peak: n=%d p50=%.4f p90=%.4f max=%.4f | " +
+                "mean: p50=%.4f p90=%.4f max=%.4f",
+            sorted.size, pct(sorted, 0.5), pct(sorted, 0.9), sorted.last(),
+            pct(means, 0.5), pct(means, 0.9), means.last(),
+        )
+    }
+
     private fun captureLoop(recorder: AudioRecord) {
         val buffer = FloatArray(1024)
         val vad = this.vad!!
@@ -219,11 +260,27 @@ class AudioEngine(context: Context) {
                 // player, not the coach.
                 droppedChunks.incrementAndGet()
                 val level = peakLevel(buffer, read)
-                if (level > 0.02f) {
-                    Log.i(TAG, "During speech: peak level $level")
-                }
-                if (level > bargeInThreshold) {
-                    Log.i(TAG, "Barge-in: the player is speaking (level $level)")
+                speechLevels.add(level)
+
+                // The barge-in test is on the sustained level, not the peak.
+                //
+                // The coach's own voice through the phone's speaker is
+                // almost silent for most of the speech and has the
+                // occasional loud transient - a plosive - which can be
+                // louder than the player. Measured:
+                //
+                //   min=0.0010 p50=0.0014 p90=0.0045 p99=0.0535 max=0.0535
+                //
+                // The player's voice is sustained, so the mean over a
+                // window is what tells them apart. A single loud chunk is
+                // the coach.
+                val mean = meanLevel(buffer, read)
+                speechMeans.add(mean)
+                if (bargeInEnabled && mean > bargeInThreshold) {
+                    Log.i(
+                        TAG,
+                        "Barge-in: the player is speaking (mean $mean)",
+                    )
                     onBargeIn?.invoke()
                     // The VAD is reset so the coach's own voice is not
                     // sitting in it when the gate opens.
@@ -261,6 +318,15 @@ class AudioEngine(context: Context) {
             if (a > peak) peak = a
         }
         return peak
+    }
+
+    /** The mean absolute level in the chunk. */
+    private fun meanLevel(buffer: FloatArray, length: Int): Float {
+        var sum = 0.0
+        for (i in 0 until length) {
+            sum += kotlin.math.abs(buffer[i])
+        }
+        return if (length > 0) (sum / length).toFloat() else 0f
     }
 
     /** Transcribes one phrase. */

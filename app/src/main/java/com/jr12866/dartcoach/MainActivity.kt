@@ -2,6 +2,9 @@ package com.jr12866.dartcoach
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.content.Context
+import android.media.AudioDeviceInfo
+import android.media.AudioManager
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
@@ -185,8 +188,45 @@ class MainActivity : ComponentActivity() {
      *
      * The gate is the half-duplex rule: the coach must not hear itself.
      */
+    /**
+     * Where is the coach's voice going?
+     *
+     * It matters because barge-in is only safe when the voice is not going
+     * through the phone's own speaker. With headphones the coach cannot hear
+     * itself at all; through the phone's speaker the echo peaks at 0.21,
+     * which is louder than the player, so the coach would cut itself off
+     * mid-sentence.
+     */
+    private fun isOnThePhoneSpeaker(): Boolean {
+        val manager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        // The playback configurations say where the audio is actually going.
+        // This is not the same as which devices exist: the Bose is paired
+        // and present even after Android has fallen back to the speaker, and
+        // it was that fallback that made the coach cut itself off.
+        for (config in manager.activePlaybackConfigurations) {
+            val info = config.audioDeviceInfo ?: continue
+            if (info.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) {
+                return true
+            }
+        }
+
+        // Nothing is playing yet, which is the case before the first
+        // utterance. Ask the device list which outputs exist and are
+        // currently the system's choice.
+        for (device in manager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)) {
+            if (device.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) {
+                return true
+            }
+        }
+        return false
+    }
+
     private fun speak(text: String) {
         val started = System.currentTimeMillis()
+        // Ask the route before speaking, because the barge-in test depends
+        // on where the voice is going.
+        audio.bargeInEnabled = !isOnThePhoneSpeaker()
         audio.beginSpeaking()
         try {
             Log.i("DartsCoach", "Speaking: $text")
@@ -201,7 +241,8 @@ class MainActivity : ComponentActivity() {
                 "Gate open after ${System.currentTimeMillis() - started}ms " +
                     "(speech ${(seconds * 1000).toInt()}ms, " +
                     "tail ${(audio.echoTailSeconds * 1000).toInt()}ms); " +
-                    "${audio.dropped} chunk(s) dropped while speaking",
+                    "${audio.dropped} chunk(s) dropped while speaking; " +
+                    "levels ${audio.speechLevelSummary()}",
             )
         } finally {
             audio.endSpeaking()

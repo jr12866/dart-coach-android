@@ -246,6 +246,100 @@ class CoachEngineTest {
         assertEquals(376, coach.state.remainingScore)
     }
 
+    // -- what would that leave ----------------------------------------------
+
+    @Test
+    fun `the player can ask what the plan would leave`() {
+        val coach = CoachEngine()
+        coach.handle("125")
+        coach.handle("yes")
+
+        val said = coach.handle("what would that leave?")
+        assertNotNull(said)
+        assertTrue(
+            said.contains("leaves"),
+            "expected a leave, got: $said",
+        )
+    }
+
+    @Test
+    fun `the leave question has several ways of being asked`() {
+        val coach = CoachEngine()
+        coach.handle("125")
+        coach.handle("yes")
+
+        for (question in listOf(
+            "what would that leave?",
+            "what does that leave?",
+            "what will that leave?",
+            "what's the leave?",
+            "what leave?",
+        )) {
+            val said = coach.handle(question)
+            assertNotNull(said, "no answer for '$question'")
+            assertTrue(
+                said.contains("leaves"),
+                "expected a leave for '$question', got: $said",
+            )
+        }
+    }
+
+    @Test
+    fun `a player talking to themselves is not asking about a leave`() {
+        val coach = CoachEngine()
+
+        // "leave me twenty" is a player talking to themselves. The Windows
+        // build already refuses it as a score report, and it must not be
+        // read as the question either.
+        assertNull(coach.handle("leave me twenty"))
+        assertEquals(501, coach.state.remainingScore)
+    }
+
+    @Test
+    fun `the leave is the one for the score standing`() {
+        val coach = CoachEngine()
+        coach.handle("125")
+        coach.handle("yes")
+
+        // 501 - 125 = 376. The plan for 376 leaves something, and the
+        // answer has to be about 376 rather than about the score before it.
+        val said = coach.handle("what would that leave?")
+        assertNotNull(said)
+        val leaves = said.filter { it.isDigit() }.toString()
+        assertTrue(
+            leaves.isNotEmpty(),
+            "expected a number in the answer, got: $said",
+        )
+    }
+
+    @Test
+    fun `the leave question respects a chosen double`() {
+        val coach = CoachEngine()
+        coach.handle("i prefer double 16")
+        coach.handle("125")
+        coach.handle("yes")
+
+        val said = coach.handle("what would that leave?")
+        assertNotNull(said)
+        assertTrue(
+            said.contains("double sixteen") || said.contains("finishes"),
+            "expected the chosen double in the answer, got: $said",
+        )
+    }
+
+    @Test
+    fun `the leave question on a finished leg says so`() {
+        val coach = CoachEngine()
+        coach.state.recordTurn(501)
+
+        val said = coach.handle("what would that leave?")
+        assertNotNull(said)
+        assertTrue(
+            said.contains("finished"),
+            "expected the leg to be finished, got: $said",
+        )
+    }
+
     @Test
     fun `finishing the leg is announced`() {
         val coach = CoachEngine()

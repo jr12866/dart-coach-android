@@ -211,6 +211,8 @@ object Parser {
         if (isContinue(t)) return command("continue")
         if (isBust(t)) return command("bust")
 
+        if (isWhatsTheLeave(t)) return command("whats_the_leave")
+
         // The player naming the double they want to finish on. This is asked
         // for before the score gate, because a phrase with a preference word
         // in it is never a score report, and "double 20" on its own is a dart
@@ -314,6 +316,21 @@ object Parser {
 
     private fun isContinue(text: String): Boolean =
         CONTINUE_PATTERN.containsMatchIn(text)
+
+    /**
+     * Is the player asking what the plan would leave?
+     *
+     * The coach no longer says the leave with every suggestion, because the
+     * screen shows it and saying it cost half a second. But a player
+     * looking at the board rather than the phone can ask.
+     *
+     * The patterns are deliberately specific. "what would that leave" and
+     * "what does that leave" are the question; a bare "leave" is not,
+     * because "leave me twenty" is a player talking to themselves and the
+     * Windows build already refuses it as a score report.
+     */
+    private fun isWhatsTheLeave(text: String): Boolean =
+        WHATS_THE_LEAVE_PATTERN.containsMatchIn(text)
 
     /**
      * "bust" is a documented voice command. Until now the only way to get a
@@ -628,6 +645,19 @@ object Parser {
     )
 
     private val CONTINUE_PATTERN = Regex("\\bcontinue\\b|\\bkeep (going|playing)\\b")
+
+    /**
+     * The question "what would that leave".
+     *
+     * It has to be the whole idea, not just the word "leave": "leave me
+     * twenty" is a player talking to themselves, and the score gate
+     * already refuses it.
+     */
+    private val WHATS_THE_LEAVE_PATTERN = Regex(
+        "\\bwhat\\s+(?:would|does|do|did|will|should)\\s+(?:that|this|it|the)\\s+" +
+            "leaves?\\b|\\bwhat(?:'s| is)\\s+the\\s+leaves?\\b|" +
+            "\\bwhat\\s+leaves?\\b|\\bwhat\\s+(?:would|does)\\s+leaves?\\b",
+    )
 
     private val BUST_PATTERN = Regex("\\bbust(ed)?\\b")
 
