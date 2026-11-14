@@ -103,12 +103,20 @@ class AudioEngine(context: Context) {
      * How long to keep ignoring the microphone after the coach stops
      * speaking.
      *
-     * The Windows build uses 0.35 seconds, for a laptop whose speakers are
-     * across the room. On a phone the speaker is 10 cm from the microphone,
-     * so the tail is the mechanical ringing of the speaker rather than room
-     * reverb. It is measured rather than guessed.
+     * Measured on a Pixel 7, 13 November 2026. See `docs/TAIL.md`.
+     *
+     * The coach's own voice is gone within about 50 to 100 ms of the audio
+     * stopping. On a phone the speaker is 10 cm from the microphone, so
+     * there is no room reverb to speak of: what is left is the speaker's
+     * mechanical ringing, and that is over in well under 100 ms.
+     *
+     * The Windows build used 0.35 s, which was room reverb on a laptop
+     * whose speakers were across the room.
+     *
+     * The app sets this to zero when the coach is talking through
+     * headphones, where the voice never reaches the microphone at all.
      */
-    var echoTailSeconds = 0.35
+    var echoTailSeconds = 0.10
 
     /** Loads the models. Slow the first time. */
     fun loadModels(): Boolean {

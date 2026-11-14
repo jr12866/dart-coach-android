@@ -250,9 +250,17 @@ class MainActivity : ComponentActivity() {
 
     private fun speak(text: String) {
         val started = System.currentTimeMillis()
-        // Ask the route before speaking, because the barge-in test depends
-        // on where the voice is going.
-        audio.bargeInEnabled = !isOnThePhoneSpeaker()
+        // Ask the route before speaking, because both the barge-in test
+        // and the tail depend on where the voice is going.
+        //
+        // With headphones the coach's voice never reaches the phone's
+        // microphone at all, so there is no echo to wait for and the gate
+        // can open the instant the audio stops. Through the phone's own
+        // speaker there is a little mechanical ringing, which needs a
+        // tenth of a second.
+        val onThePhone = isOnThePhoneSpeaker()
+        audio.bargeInEnabled = !onThePhone
+        audio.echoTailSeconds = if (onThePhone) PHONE_SPEAKER_TAIL else 0.0
         audio.beginSpeaking()
         try {
             Log.i("DartsCoach", "Speaking: $text")
@@ -377,6 +385,17 @@ class MainActivity : ComponentActivity() {
             coach.handle("coach yes")
             refresh()
         }.start()
+    }
+
+    companion object {
+        /**
+         * The echo tail through the phone's own speaker.
+         *
+         * Measured: the coach's voice is gone within about 50 to 100 ms
+         * of the audio stopping. A tenth of a second gives it some margin
+         * without making the player wait.
+         */
+        private const val PHONE_SPEAKER_TAIL = 0.10
     }
 }
 
