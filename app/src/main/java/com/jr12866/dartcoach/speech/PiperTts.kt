@@ -2,6 +2,7 @@ package com.jr12866.dartcoach.speech
 
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.AudioRecord
 import android.util.Log
 import android.media.AudioFormat
 import android.media.AudioTrack
@@ -50,6 +51,119 @@ class PiperTts(private val appContext: Context) {
         } catch (e: Exception) {
             false
         }
+    }
+
+    /**
+     * Measures the echo tail.
+     *
+     * The tail is how long the coach's own voice is still audible at the
+     * microphone after the audio has stopped. On a laptop it was room
+     * reverb and 0.35 seconds was right. On a phone the speaker is 10 cm
+     * from the microphone, so the tail is the speaker's mechanical
+     * ringing - much shorter and much sharper.
+     *
+     * The microphone is NOT gated during this, because the whole point is
+     * to hear what the gate would be hiding.
+     *
+     * Returns the tail in seconds.
+     */
+    fun measureTail(
+        phrase: String,
+        recorder: AudioRecord,
+        secondsAfter: Double = 1.5,
+    ): Double {
+        val made = synthesize(phrase) ?: return 0.0
+        val (samples, rate) = made
+
+        // The room, before the coach says anything.
+        val room = mutableListOf<Float>()
+        val buffer = FloatArray(160)   // 10 ms at 16 kHz
+        repeat(50) {
+            val read = recorder.read(buffer, 0, buffer.size, AudioRecord.READ_BLOCKING)
+            if (read > 0) room.add(meanLevel(buffer, read))
+        }
+        val roomLevel = if (room.isEmpty()) 0f else room.sorted()[room.size / 2]
+
+        val minBuffer = AudioTrack.getMinBufferSize(
+            rate,
+            AudioFormat.CHANNEL_OUT_MONO,
+            AudioFormat.ENCODING_PCM_FLOAT,
+        )
+        val track = AudioTrack.Builder()
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+            )
+            .setAudioFormat(
+                AudioFormat.Builder()
+                    .setEncoding(AudioFormat.ENCODING_PCM_FLOAT)
+                    .setSampleRate(rate)
+                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                    .build()
+            )
+            .setBufferSizeInBytes(maxOf(minBuffer, samples.size * 4))
+            .setTransferMode(AudioTrack.MODE_STREAM)
+            .build()
+
+        val levels = mutableListOf<Float>()
+        val started = System.currentTimeMillis()
+        try {
+            track.play()
+            var offset = 0
+            while (offset < samples.size) {
+                val chunk = minOf(1024, samples.size - offset)
+                track.write(samples, offset, chunk, AudioTrack.WRITE_BLOCKING)
+                offset += chunk
+                val read = recorder.read(buffer, 0, buffer.size, AudioRecord.READ_BLOCKING)
+                if (read > 0) levels.add(meanLevel(buffer, read))
+            }
+            // The tail: how long the voice is still there afterwards.
+            val until = started + (samples.size * 1000L / rate) +
+                (secondsAfter * 1000).toLong()
+            while (System.currentTimeMillis() < until) {
+                val read = recorder.read(buffer, 0, buffer.size, AudioRecord.READ_BLOCKING)
+                if (read > 0) levels.add(meanLevel(buffer, read))
+            }
+        } finally {
+            try { track.stop() } catch (_: Exception) {}
+            track.release()
+        }
+
+        // The tail is the time from the end of the audio until the level
+        // falls back to the room. A slice counts as "still ringing" if it
+        // is above the room by a clear margin.
+        val sliceMs = 1000.0 * buffer.size / 16000
+        val speechEnd = samples.size * 1000.0 / rate
+        var tailMs = 0.0
+        var index = 0
+        for (level in levels) {
+            val at = index * sliceMs
+            index++
+            if (at < speechEnd) continue
+            if (level > roomLevel * 2f + 0.001f) {
+                tailMs = at - speechEnd + sliceMs
+            }
+        }
+
+        Log.i(
+            "DartsCoach",
+            String.format(
+                "TAIL: room=%.5f speech=%.0fms tail=%.0fms (%.3fs) over %d slices",
+                roomLevel, speechEnd, tailMs, tailMs / 1000.0, levels.size,
+            ),
+        )
+        return tailMs / 1000.0
+    }
+
+    /** The mean absolute level in the buffer. */
+    private fun meanLevel(buffer: FloatArray, length: Int): Float {
+        var sum = 0.0
+        for (i in 0 until length) {
+            sum += kotlin.math.abs(buffer[i])
+        }
+        return if (length > 0) (sum / length).toFloat() else 0f
     }
 
     /**

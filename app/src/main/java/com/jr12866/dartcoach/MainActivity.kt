@@ -120,6 +120,11 @@ class MainActivity : ComponentActivity() {
             startListening()
         }
 
+        // A hidden way to measure the echo tail where the phone actually is.
+        if (intent?.getBooleanExtra("tail", false) == true) {
+            measureTail()
+        }
+
         // A hidden way to measure the wording on the device.
         if (intent?.getBooleanExtra("measure", false) == true) {
             measureLines(
@@ -255,6 +260,67 @@ class MainActivity : ComponentActivity() {
         suggestion = coach.suggestion
         message = coach.message
         double = coach.state.preferredDouble?.let { "Playing for D$it" } ?: ""
+    }
+
+    /**
+     * Measures the echo tail on the device.
+     *
+     * Reached by an intent extra, so the number can be measured where the
+     * phone actually is rather than on a desk.
+     */
+    private fun measureTail() {
+        Thread {
+            if (!tts.load()) {
+                Log.i("DartsCoach", "The voice would not load")
+                return@Thread
+            }
+
+            val minBuffer = android.media.AudioRecord.getMinBufferSize(
+                16000,
+                android.media.AudioFormat.CHANNEL_IN_MONO,
+                android.media.AudioFormat.ENCODING_PCM_FLOAT,
+            )
+            if (minBuffer <= 0) {
+                Log.i("DartsCoach", "AudioRecord would not start")
+                return@Thread
+            }
+            val recorder = android.media.AudioRecord(
+                android.media.MediaRecorder.AudioSource.VOICE_RECOGNITION,
+                16000,
+                android.media.AudioFormat.CHANNEL_IN_MONO,
+                android.media.AudioFormat.ENCODING_PCM_FLOAT,
+                maxOf(minBuffer, 4096 * 4),
+            )
+            if (recorder.state != android.media.AudioRecord.STATE_INITIALIZED) {
+                recorder.release()
+                Log.i("DartsCoach", "AudioRecord did not initialise")
+                return@Thread
+            }
+            recorder.startRecording()
+
+            // Three phrases, so the answer is not one sample.
+            val phrases = arrayOf(
+                "You're at 401. Treble twenty, treble twenty, treble twenty.",
+                "One hundred and forty. Is that right?",
+                "That leaves one hundred and eighty one.",
+            )
+            val tails = mutableListOf<Double>()
+            for (phrase in phrases) {
+                val tail = tts.measureTail(phrase, recorder)
+                tails.add(tail)
+                Log.i("DartsCoach", "TAIL for '$phrase' was ${"%.3f".format(tail)}s")
+            }
+
+            val mean = if (tails.isEmpty()) 0.0 else tails.sum() / tails.size
+            val longest = tails.maxOrNull() ?: 0.0
+            Log.i(
+                "DartsCoach",
+                "TAIL SUMMARY: mean=${"%.3f".format(mean)}s longest=${"%.3f".format(longest)}s " +
+                    "(the Windows build used 0.35s)",
+            )
+            recorder.stop()
+            recorder.release()
+        }.start()
     }
 
     /**
