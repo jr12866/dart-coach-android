@@ -62,8 +62,10 @@ class AudioEngine(context: Context) {
      * plosive is louder than the player. So the test is on the mean, and it
      * sits above the coach's own voice.
      *
-     * It is a guess until it is measured against the real thing, which is
-     * what Phase 4 is for.
+     * On the Bluetooth headphone route the coach's voice never reaches the
+     * microphone at all: the measured speech level was 0.00035, the same
+     * as the room floor. So the threshold is only ever in play on the
+     * phone's own speaker.
      */
     var bargeInThreshold = 0.012f
 
@@ -76,7 +78,8 @@ class AudioEngine(context: Context) {
      * at 0.21, which is louder than the player, so the coach would cut
      * itself off.
      *
-     * The app sets this from the audio route.
+     * The app sets this from the audio route. Both routes have been
+     * measured: see `docs/BLUETOOTH.md`.
      */
     @Volatile
     var bargeInEnabled = true
@@ -105,18 +108,15 @@ class AudioEngine(context: Context) {
      *
      * Measured on a Pixel 7, 13 November 2026. See `docs/TAIL.md`.
      *
-     * The coach's own voice is gone within about 50 to 100 ms of the audio
-     * stopping. On a phone the speaker is 10 cm from the microphone, so
-     * there is no room reverb to speak of: what is left is the speaker's
-     * mechanical ringing, and that is over in well under 100 ms.
-     *
-     * The Windows build used 0.35 s, which was room reverb on a laptop
-     * whose speakers were across the room.
+     * On a quiet desk the coach's own voice is gone within about 50 to
+     * 100 ms of the audio stopping. At the oche, where the room is not
+     * quiet, the measured tail was 447 - 835 ms, so the app uses 0.35 s.
      *
      * The app sets this to zero when the coach is talking through
      * headphones, where the voice never reaches the microphone at all.
+     * That was measured too: see `docs/BLUETOOTH.md`.
      */
-    var echoTailSeconds = 0.10
+    var echoTailSeconds = 0.35
 
     /** Loads the models. Slow the first time. */
     fun loadModels(): Boolean {

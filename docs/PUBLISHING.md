@@ -82,6 +82,14 @@ release bundle is built. The fetch script puts them there:
 .\tools\fetch-models.ps1
 ```
 
+**Do not pass `-PwithLocalModels` to the release build.** That flag copies
+the models into the base module as well, and then the base module and the
+asset pack claim the same asset and the bundle fails:
+
+```
+Both modules 'base' and 'models' contain asset entry 'assets/base.en-decoder.int8.onnx'.
+```
+
 To estimate the download size before uploading:
 
 ```

@@ -96,7 +96,71 @@ ideal, because the platform routes the two directions separately.
 4. **No special Bluetooth handling is needed.** The platform does the
    routing, and the app just has to not fight it.
 
+## The headphone route, measured on the real app
+
+The route was finally measured on the running app on 13 November 2026, with
+the Bose QuietComfort 35 connected over A2DP.
+
+```
+adb shell dumpsys audio | grep -o "type:[a-z_]*" | tail -3
+```
+
+The Bose was connected (`ConnectionState: STATE_CONNECTED`) and `bt_a2dp` was
+the active output. The app's own route log agreed:
+
+```
+DartsCoach: Route: bt_a2dp (headphones); Speaking: 401. Treble twenty, ...
+DartsCoach: Gate open after 4759ms (speech 3931ms, tail 0ms)
+```
+
+So both settings are measured now, not assumed:
+
+| Route | Echo tail | Barge-in |
+|---|---|---|
+| The phone's own speaker | 0.35 s | off |
+| Bluetooth headphones | 0 s | on |
+
+The echo tail measurement on the headphone route gave 0 ms for all three
+phrases. The room floor and the speech level at the microphone were both
+about 0.00035, which is the point: the coach's voice never reached the
+microphone at all.
+
+### How the app decides
+
+The decision is made before the coach speaks, so there is no playing
+configuration to ask yet. `AudioManager.getDevices()` is the only thing
+available, and it is not enough on its own: it lists every output that
+*could* be used, so the phone's own speaker is on the list even when the
+headphones are carrying the audio.
+
+Android's own rule settles it. Media goes to Bluetooth when a Bluetooth
+output is available and only falls back to the speaker when there is none.
+So the app looks for a connected A2DP output first and treats that as the
+headphone route; the speaker is used when there is no Bluetooth output.
+
+**This was the bug the measurement found.** The first version walked the
+device list and returned "speaker" as soon as it saw one, so with the Bose
+connected the app used the phone-speaker settings - the longer tail and
+barge-in off - even though the headphones were carrying the audio. The
+route log exists because of that: it made the mistake visible.
+
+### The hidden route check
+
+The route can be checked without a second person:
+
+```
+adb shell am start -S -n com.jr12866.dartcoach/.MainActivity --ez route true
+adb logcat -s DartsCoach
+```
+
+The app says one fixed line and logs the route it used:
+
+```
+DartsCoach: Route: bt_a2dp (headphones); Speaking: 401. ...
+```
+
 ## Not tested
+
 
 - The earbud microphone itself (HFP, 8 kHz). It is not used, and it should
   not be: the score is heard by the phone.

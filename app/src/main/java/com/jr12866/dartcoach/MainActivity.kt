@@ -176,6 +176,10 @@ class MainActivity : ComponentActivity() {
             Log.i("DartsCoach", "Measuring the echo tail")
             measureTail()
         }
+        if (intent.getBooleanExtra("route", false)) {
+            Log.i("DartsCoach", "Checking the audio route")
+            measureRoute()
+        }
     }
 
     override fun onDestroy() {
@@ -226,28 +230,128 @@ class MainActivity : ComponentActivity() {
      * mid-sentence.
      */
     private fun isOnThePhoneSpeaker(): Boolean {
+        val device = outputDeviceForSpeech() ?: return true
+        return device.type != AudioDeviceInfo.TYPE_BLUETOOTH_A2DP
+    }
+
+    /**
+     * The output the coach's voice is going to.
+     *
+     * The decision is made *before* the audio is played, so there is no
+     * playing configuration to ask yet. The device list is the only thing
+     * to go on, and it lists the phone's speaker even when the headphones
+     * are carrying the audio.
+     *
+     * Android's own rule settles it: media goes to Bluetooth when a
+     * Bluetooth output is available, and only falls back to the speaker
+     * when there is none. So a connected A2DP device means the headphones,
+     * whatever else is on the list.
+     *
+     * The playback configurations are still consulted first, because when
+     * something *is* playing they name the device exactly. That matters
+     * for the case where the player has turned the phone's speaker on
+     * deliberately.
+     */
+    private fun outputDeviceForSpeech(): AudioDeviceInfo? {
         val manager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        // The playback configurations say where the audio is actually going.
-        // This is not the same as which devices exist: the Bose is paired
-        // and present even after Android has fallen back to the speaker, and
-        // it was that fallback that made the coach cut itself off.
         for (config in manager.activePlaybackConfigurations) {
             val info = config.audioDeviceInfo ?: continue
-            if (info.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) {
-                return true
+            if (info.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER ||
+                info.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP
+            ) {
+                return info
             }
         }
 
-        // Nothing is playing yet, which is the case before the first
-        // utterance. Ask the device list which outputs exist and are
-        // currently the system's choice.
+        var bluetooth: AudioDeviceInfo? = null
         for (device in manager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)) {
-            if (device.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) {
-                return true
+            if (device.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP &&
+                bluetooth == null
+            ) {
+                bluetooth = device
             }
         }
-        return false
+        if (bluetooth != null) return bluetooth
+
+        for (device in manager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)) {
+            if (device.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) return device
+        }
+        return null
+    }
+
+    /**
+     * The route the coach's voice is actually going to, for the log.
+     *
+     * This is deliberately separate from the decision above. The decision
+     * only has to be right about the echo and barge-in. The log says what
+     * Android reported, so a measurement can be tied to the route it was
+     * taken on.
+     *
+     * `AudioManager.getDevices()` lists every output that *could* be used,
+     * including the phone's speaker even when the headphones are carrying
+     * the audio. It is therefore not enough on its own: the Bose is on the
+     * list whether or not it is the active device.
+     *
+     * `activePlaybackConfigurations` is the honest answer when something is
+     * playing. The device list is the fallback before the first utterance.
+     */
+    private fun describeAudioRoute(): String {
+        val manager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        val playback = manager.activePlaybackConfigurations
+            .mapNotNull { it.audioDeviceInfo }
+            .map { it.type }
+            .distinct()
+        if (playback.isNotEmpty()) {
+            return "playback=${playback.joinToString(",") { routeName(it) }}"
+        }
+
+        val outputs = manager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+            .map { it.type }
+            .distinct()
+        return "outputs=${outputs.joinToString(",") { routeName(it) }}"
+    }
+
+    /**
+     * The route the coach's voice is going to, for the log.
+     *
+     * The decision and the log are separate on purpose. The decision only
+     * has to be right about the echo and barge-in. The log says what the
+     * device was, so a measurement can be tied to the route it was taken
+     * on.
+     */
+    private fun routeDescription(): String {
+        val device = outputDeviceForSpeech()
+        return if (device == null) "no output device" else routeName(device.type)
+    }
+
+    /**
+     * A one-off spoken line, for testing a route.
+     *
+     * The normal path is the coach answering a score, which needs somebody
+     * to say the score. This says a fixed line instead, so the route can be
+     * checked without a second person.
+     */
+    private fun measureRoute() {
+        Thread {
+            if (!tts.load()) {
+                Log.i("DartsCoach", "The voice would not load")
+                return@Thread
+            }
+            speak("401. Treble twenty, treble twenty and treble twenty.")
+        }.start()
+    }
+
+    private fun routeName(type: Int): String = when (type) {
+        AudioDeviceInfo.TYPE_BUILTIN_SPEAKER -> "speaker"
+        AudioDeviceInfo.TYPE_BUILTIN_EARPIECE -> "earpiece"
+        AudioDeviceInfo.TYPE_BLUETOOTH_A2DP -> "bt_a2dp"
+        AudioDeviceInfo.TYPE_BLUETOOTH_SCO -> "bt_sco"
+        AudioDeviceInfo.TYPE_WIRED_HEADPHONES -> "wired_headphones"
+        AudioDeviceInfo.TYPE_WIRED_HEADSET -> "wired_headset"
+        AudioDeviceInfo.TYPE_USB_HEADSET -> "usb_headset"
+        else -> "type=$type"
     }
 
     private fun speak(text: String) {
@@ -265,7 +369,12 @@ class MainActivity : ComponentActivity() {
         audio.echoTailSeconds = if (onThePhone) PHONE_SPEAKER_TAIL else 0.0
         audio.beginSpeaking()
         try {
-            Log.i("DartsCoach", "Speaking: $text")
+            Log.i(
+                "DartsCoach",
+                "Route: ${routeDescription()} " +
+                    "(${if (onThePhone) "phone speaker" else "headphones"}); " +
+                    "Speaking: $text",
+            )
             val seconds = tts.speak(text)
             if (seconds > 0 && !tts.wasInterrupted()) {
                 // The speaker is still ringing. Wait for it to stop before
@@ -441,11 +550,21 @@ class MainActivity : ComponentActivity() {
         /**
          * The echo tail through the phone's own speaker.
          *
-         * Measured: the coach's voice is gone within about 50 to 100 ms
-         * of the audio stopping. A tenth of a second gives it some margin
-         * without making the player wait.
+         * On a quiet desk the coach's voice is gone within about 50 to
+         * 100 ms of the audio stopping, and 0.10 s was enough. Measured
+         * again at the oche, where the room is not quiet and the phone's
+         * speaker is 10 cm from the microphone with a surface between them,
+         * the tail was 447 - 835 ms.
+         *
+         * So 0.35 s is used: the same value the Windows build used, and it
+         * covers the shorter half of the measured range. The cost of
+         * waiting a little too long is much smaller than the cost of the
+         * coach hearing its own reply.
+         *
+         * The right number has to be measured standing at the board. See
+         * `docs/TAIL.md`.
          */
-        private const val PHONE_SPEAKER_TAIL = 0.10
+        private const val PHONE_SPEAKER_TAIL = 0.35
     }
 }
 

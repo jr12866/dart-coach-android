@@ -319,15 +319,18 @@ Kotlin test asserting identical output. See `docs/PARITY.md`.
   JitPack. The espeak-ng data that ships with the voice is not used:
   sherpa-onnx has ignored `data_dir` since v2.0.0.
 
-### Phase 4 — Polish and verify on the oche (2–3 days) - not started
+### Phase 4 — Polish and verify on the oche (2–3 days) - partly done
 
-- A full 501 leg standing at the board, phone in hand.
+- A full 501 leg standing at the board, phone in hand. **Not done.**
 - The failure modes the Windows build already taught us:
   - screen lock mid-leg → does the mic keep feeding?
-  - the coach hearing itself speak (the echo gate).
+  - the coach hearing itself speak (the echo gate). **Measured on both
+    routes: 0.35 s on the phone's speaker, 0 s on Bluetooth headphones.**
   - backgrounding the app (another app takes the mic → mic loss).
   - a phone call interrupting.
 - Compare against the Windows coach on the same phrases.
+- The echo tail still has to be measured standing at the board, where the
+  room is not a quiet desk.
 
 ### Phase 5 — Play Store packaging (2–3 days) - repository work done, console work pending
 
@@ -364,7 +367,7 @@ data is collected" under Google's definition.
 | 1. sherpa-onnx + ASR spike | 1–2 d | **done** — RTF 0.11-0.20, all words correct |
 | 2. Kotlin core port | 2–3 d | **done** — all 7663 corpus cases match |
 | 3. The app | 3-5 d | **done** - works on the Pixel 7 |
-| 4. On-the-oche verification | 2-3 d | **not started** |
+| 4. On-the-oche verification | 2-3 d | **routes measured** — full leg still to do |
 | 5. Play Store packaging | 2-3 d | **repository done** — console upload pending |
 | **Total** | **~9–16 days** | |
 

@@ -58,9 +58,10 @@ class PiperTts(private val appContext: Context) {
      *
      * The tail is how long the coach's own voice is still audible at the
      * microphone after the audio has stopped. On a laptop it was room
-     * reverb and 0.35 seconds was right. On a phone the speaker is 10 cm
-     * from the microphone, so the tail is the speaker's mechanical
-     * ringing - much shorter and much sharper.
+     * reverb and 0.35 seconds was right. On a phone it depends where the
+     * phone is: on a quiet desk the speaker's mechanical ringing is over
+     * in 50 - 100 ms, but at the oche it measured 370 - 835 ms. See
+     * `docs/TAIL.md`.
      *
      * The microphone is NOT gated during this, because the whole point is
      * to hear what the gate would be hiding.

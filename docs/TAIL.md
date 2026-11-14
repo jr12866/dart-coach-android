@@ -10,6 +10,42 @@ stopping.**
 That is much shorter than the Windows build's 0.35 seconds, and it is
 shorter than the raw measurement first suggested.
 
+## Re-measured on both routes, 13 November 2026
+
+The tail was measured again on the running app, with the route logged on
+every utterance. Two configurations: the Bose over A2DP, and the phone's own
+speaker with Bluetooth switched off.
+
+| Route | Room floor | Speech level at the mic | Tail |
+|---|---|---|---|
+| Bluetooth headphones | 0.0003 | 0.0003 - the same as the room | **0 ms** |
+| The phone's own speaker | 0.0004 | 0.0033 - 0.0060 | **447 - 835 ms** |
+
+The headphone number is the point: the speech level at the microphone was
+the same as the room floor, so the coach's voice never reached the
+microphone at all. The tail is exactly zero.
+
+The phone-speaker numbers are **longer than the 0.10 s the app was using**.
+Two runs of the three phrases gave 835 / 371 / 370 ms and 783 / 505 /
+447 ms. The curves show why: the level does not fall off smoothly, it
+steps down over a few hundred milliseconds, and there is a lot of room
+noise on top of it. One phrase's curve sits at 0.01 - 0.05 right through
+to 4400 ms and only then drops to the room floor.
+
+That is a room, not a desk. The app is at the oche, the board is in front of
+it, and the phone's speaker is 10 cm from the microphone with a surface
+between them.
+
+**The 0.10 s tail is not enough for the phone's speaker.** It was measured
+on a desk in a quiet room, where the speaker's mechanical ringing was over
+in 50 - 100 ms. At the oche the acoustic path is longer.
+
+What the right number is has to be measured at the oche, standing at the
+board. Until then, the safe thing is the old Windows value of 0.35 s rather
+than 0.10 s: the measurement says 447 - 835 ms, so 0.35 s covers the
+shorter half of it, and the cost of waiting a little too long is much
+smaller than the cost of the coach hearing its own reply.
+
 ## What the measurement first said, and why it was wrong
 
 The first version of the tool reported:
@@ -74,13 +110,18 @@ were across the room.
 
 | Route | Tail |
 |---|---|
-| The phone's own speaker | **0.10 s** |
+| The phone's own speaker | **0.35 s** |
 | Bluetooth headphones | **0 s** - the voice never reaches the microphone |
 
-The phone's own speaker keeps a tenth of a second of margin over the
-measured decay, which is enough to cover the ringing without making the
-player wait.
+The phone's own speaker used a tenth of a second, on the strength of the
+quiet-desk measurement. The oche measurement says 447 - 835 ms, so the
+app now uses 0.35 s: the same value the Windows build used, and it covers
+the shorter half of the measured range.
+
+The cost is dead time before the coach can hear you. Half a second is
+noticeable. The cost of getting it wrong is the coach hearing its own
+reply, which is worse, so the safe value wins until the oche measurement
+says otherwise.
 
 With headphones there is no tail at all, and the gate can open the instant
-the audio stops. That is worth having: the current 0.35 seconds is dead time
-before the coach can hear you.
+the audio stops.

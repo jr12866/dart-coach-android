@@ -137,6 +137,16 @@ android {
     // else, which is the whole point of the pack. Copying the models into
     // the base module as well would put the same asset in both modules and
     // the bundle would fail to build.
+    //
+    // The models are copied into a directory of their own rather than the
+    // root of the assets, and the app reads them from there when they are
+    // there. The reason is the asset pack: its own asset directory is
+    // added to the app's asset sources as well, and sharing one source
+    // directory between the two makes the base module and the pack claim
+    // the same asset - which the bundle build rejects.
+    //
+    // The `local-models` directory is checked for at runtime, so the same
+    // source works for the debug APK and the release bundle.
     if (project.hasProperty("withLocalModels") && !isReleaseBuild()) {
         sourceSets.getByName("main") {
             assets.srcDir(rootProject.file("models-pack/src/main/assets"))
