@@ -192,7 +192,7 @@ class CoachEngine(
                 // correct it. A total that finishes the leg waits too: it is
                 // the one score that cannot be argued with afterwards.
                 pendingScore = result.score
-                message = "You said ${numberToWords(result.score!!)}. Is that right?"
+                message = "You said ${numberToWords(result.score!!)}. Right?"
                 return message
             }
             "qualified_darts" -> {
@@ -213,7 +213,7 @@ class CoachEngine(
                     return message
                 }
                 pendingScore = score
-                message = "You said ${numberToWords(score)}. Is that right?"
+                message = "You said ${numberToWords(score)}. Right?"
                 return message
             }
         }
@@ -311,15 +311,14 @@ class CoachEngine(
             null
         }
         val text = if (plan != null) {
-            "You're at $remaining. Throw ${plan.speak()} to leave ${plan.leaves} " +
-                "for ${doubleSpeech(preferred!!)}."
+            // The route onto the double the player asked for. The leave is
+            // named because it is the point of the route: it is the shot at
+            // their double.
+            "$remaining. ${sentence(plan.speak())}. Leave ${plan.leaves} for " +
+                "${doubleSpeech(preferred!!)}."
         } else {
             val p = Planner.shared.planFor(remaining)
-            if (p.finishes) {
-                "You're at $remaining. Throw ${p.speak()} to win."
-            } else {
-                "You're at $remaining. Throw ${p.speak()} to leave ${p.leaves}."
-            }
+            "$remaining. ${sentence(p.speak())}."
         }
         // The suggestion is what the coach says, so it has to be the message
         // as well as the thing that is returned. In the Windows build
@@ -421,3 +420,12 @@ enum class Answer {
 
 /** The score as words: 140 is "one hundred and forty". */
 internal fun numberToWords(number: Int): String = Darts.numberToWords(number)
+
+/**
+ * Capitalises the first word of a phrase.
+ *
+ * The aim speech was a fragment that followed "Throw", so it was lower case:
+ * "treble twenty". It now starts the line, so it reads "Treble twenty".
+ */
+internal fun sentence(text: String): String =
+    if (text.isEmpty()) text else text.replaceFirstChar { it.uppercase() }

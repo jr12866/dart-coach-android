@@ -116,6 +116,35 @@ class MainActivity : ComponentActivity() {
         } else {
             startListening()
         }
+
+        // A hidden way to measure the wording on the device.
+        if (intent?.getBooleanExtra("measure", false) == true) {
+            measureLines(
+                arrayOf(
+                    "You're at 401. Throw treble twenty, treble twenty and treble twenty to leave 221.",
+                    "You're at 401. Throw treble twenty, treble twenty, treble twenty.",
+                    "401. Treble twenty, treble twenty, treble twenty.",
+                    "You said one hundred. Is that right?",
+                    "You said one hundred.",
+                    "You said 100. Right?",
+                    "Is that right?",
+                    "You're at 401. Treble twenty, treble twenty, treble twenty to leave 221.",
+                    "401. Treble twenty, treble twenty, treble twenty. Leaves 221.",
+                    "401. T20, T20, T20.",
+                    "401. Treble 20, treble 20, treble 20.",
+                    "401. Treble twenty, treble twenty, treble twenty.",
+                    "T20, T20, T20. Leaves 221.",
+                    "You said one hundred. Right?",
+                    "You said 140. Right?",
+                    "Right? 140.",
+                    "140. Right?",
+                    // The new wording, to measure it against the old.
+                    "401. Treble twenty, treble twenty and treble twenty.",
+                    "401. Treble twenty, treble twenty, treble twenty.",
+                    "You said 140. Right?",
+                )
+            )
+        }
     }
 
     override fun onDestroy() {
@@ -185,6 +214,25 @@ class MainActivity : ComponentActivity() {
         suggestion = coach.suggestion
         message = coach.message
         double = coach.state.preferredDouble?.let { "Playing for D$it" } ?: ""
+    }
+
+    /**
+     * Measures how long each line takes to say.
+     *
+     * Reached by an intent extra, so the wording can be tuned on the device
+     * rather than by eye. Nothing in the app's normal flow calls it.
+     */
+    private fun measureLines(lines: Array<String>) {
+        Thread {
+            if (!tts.load()) {
+                Log.i("DartsCoach", "The voice would not load")
+                return@Thread
+            }
+            for (line in lines) {
+                val seconds = tts.measure(line)
+                Log.i("DartsCoach", "MEASURE ${"%.2f".format(seconds ?: 0.0)}s  $line")
+            }
+        }.start()
     }
 
     private fun onNewGame() {

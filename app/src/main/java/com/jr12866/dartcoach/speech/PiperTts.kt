@@ -53,6 +53,19 @@ class PiperTts(private val appContext: Context) {
     }
 
     /**
+     * How long a line takes to say, without playing it.
+     *
+     * Used to measure the wording: the coach's lines are read at the oche
+     * and a player waiting six seconds for a suggestion is waiting too long.
+     * Returns the seconds of audio, or null if the voice could not do it.
+     */
+    fun measure(text: String): Double? {
+        val made = synthesize(text) ?: return null
+        val (samples, rate) = made
+        return samples.size.toDouble() / rate
+    }
+
+    /**
      * Synthesises speech.
      *
      * Returns the samples and the rate they are meant to be played at, or

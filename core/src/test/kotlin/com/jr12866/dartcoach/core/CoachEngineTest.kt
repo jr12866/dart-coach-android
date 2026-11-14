@@ -25,7 +25,7 @@ class CoachEngineTest {
 
         val first = coach.handle("125")
         assertNotNull(first)
-        assertEquals("You said one hundred and twenty-five. Is that right?", first)
+        assertEquals("You said one hundred and twenty-five. Right?", first)
         assertEquals(125, coach.pendingScore)
 
         // The score has not counted yet.
@@ -96,7 +96,7 @@ class CoachEngineTest {
 
         val said = coach.handle("coach, one eighty")
         assertNotNull(said)
-        assertEquals("You said one hundred and eighty. Is that right?", said)
+        assertEquals("You said one hundred and eighty. Right?", said)
     }
 
     // -- superseded questions ----------------------------------------------
@@ -228,7 +228,7 @@ class CoachEngineTest {
 
         coach.handle("125")
         assertEquals(
-            "You said one hundred and twenty-five. Is that right?",
+            "You said one hundred and twenty-five. Right?",
             coach.message,
         )
 
@@ -236,7 +236,7 @@ class CoachEngineTest {
 
         // The coach must say the plan, not repeat the read-back.
         assertTrue(
-            coach.message.contains("Throw"),
+            coach.message.contains("Treble"),
             "expected the suggestion, got: ${coach.message}",
         )
         assertFalse(
@@ -326,7 +326,7 @@ class CoachEngineTest {
         // The third dart completes the turn, so the score is read back.
         val said = coach.handle("single 5")
         assertNotNull(said)
-        assertEquals("You said ninety-seven. Is that right?", said)
+        assertEquals("You said ninety-seven. Right?", said)
     }
 
     @Test
@@ -336,6 +336,6 @@ class CoachEngineTest {
 
         val said = coach.handle("170")
         assertNotNull(said)
-        assertEquals("You said one hundred and seventy. Is that right?", said)
+        assertEquals("You said one hundred and seventy. Right?", said)
     }
 }
