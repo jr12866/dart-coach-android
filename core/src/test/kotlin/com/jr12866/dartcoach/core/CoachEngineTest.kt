@@ -223,6 +223,30 @@ class CoachEngineTest {
     }
 
     @Test
+    fun `the suggestion replaces the read-back once the score is confirmed`() {
+        val coach = CoachEngine()
+
+        coach.handle("125")
+        assertEquals(
+            "You said one hundred and twenty-five. Is that right?",
+            coach.message,
+        )
+
+        coach.handle("yes")
+
+        // The coach must say the plan, not repeat the read-back.
+        assertTrue(
+            coach.message.contains("Throw"),
+            "expected the suggestion, got: ${coach.message}",
+        )
+        assertFalse(
+            coach.message.contains("Is that right"),
+            "the read-back should not be repeated, got: ${coach.message}",
+        )
+        assertEquals(376, coach.state.remainingScore)
+    }
+
+    @Test
     fun `finishing the leg is announced`() {
         val coach = CoachEngine()
         coach.state.recordTurn(331)

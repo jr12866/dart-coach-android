@@ -301,7 +301,8 @@ class CoachEngine(
             val note = "No shot at ${doubleSpeech(preferred)} from $remaining."
             preferred = null
             suggestion = Planner.shared.planFor(remaining).displayLines.joinToString("\n")
-            return "$note $suggestion"
+            message = "$note $suggestion"
+            return message
         }
 
         val plan = if (preferred != null) {
@@ -320,6 +321,12 @@ class CoachEngine(
                 "You're at $remaining. Throw ${p.speak()} to leave ${p.leaves}."
             }
         }
+        // The suggestion is what the coach says, so it has to be the message
+        // as well as the thing that is returned. In the Windows build
+        // _give_suggestion() speaks directly; here the caller speaks
+        // `message`, so a suggestion that is only returned would leave the
+        // coach repeating the previous line.
+        message = text
         suggestion = Planner.shared.planFor(remaining).displayLines.joinToString("\n")
         return text
     }

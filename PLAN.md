@@ -297,17 +297,15 @@ A **golden-file parity harness**: a JSON corpus of (input → expected
 `ParseResult` + expected spoken reply), generated from the Python side, with a
 Kotlin test asserting identical output. See `docs/PARITY.md`.
 
-### Phase 3 — The app (3–5 days) - in progress
+### Phase 3 — The app (3–5 days) - in progress - mostly done
 
 - **Audio:** `AudioRecord` at 16 kHz mono, buffer sized for ~64 ms frames, read
   on a dedicated thread. The Windows VAD expects 16 kHz / 1024-frame chunks —
   keep that shape so the timing constants stay comparable.
-- **TTS + the half-duplex gate:** the subtle part, and **measured now**. On
-  the Pixel 7 the coach's own voice reaches the microphone at a mean of
-  0.0016 and a peak of 0.028, against a room floor of 0.0005 and 0.0037. So
-  the echo is about 8 times the room, and its peak is **above** the 0.0150
-  threshold the Windows VAD used - the coach would hear itself as speech.
-  The gate is therefore not optional. See `docs/PHASE3-ECHO.md`.
+- **TTS + the half-duplex gate:** done. Piper through sherpa-onnx,
+  with the piper-phonemize library for the text frontend. The gate
+  mutes the microphone for the length of the speech plus an echo
+  tail, because the coach would otherwise hear itself.
 - **UI (Compose):** remaining score, suggestion, read-back question, buttons
   for New Game / Undo / Confirm. Portrait, screen-on
   (`FLAG_KEEP_SCREEN_ON`), wake lock — the phone is at the oche and the screen
