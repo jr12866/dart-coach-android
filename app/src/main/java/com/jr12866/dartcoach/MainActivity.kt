@@ -3,6 +3,7 @@ package com.jr12866.dartcoach
 import android.Manifest
 import android.content.pm.PackageManager
 import android.content.Context
+import android.content.Intent
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.os.Bundle
@@ -120,10 +121,7 @@ class MainActivity : ComponentActivity() {
             startListening()
         }
 
-        // A hidden way to measure the echo tail where the phone actually is.
-        if (intent?.getBooleanExtra("tail", false) == true) {
-            measureTail()
-        }
+        handleMeasurementIntent(intent)
 
         // A hidden way to measure the wording on the device.
         if (intent?.getBooleanExtra("measure", false) == true) {
@@ -152,6 +150,29 @@ class MainActivity : ComponentActivity() {
                     "You said 140. Right?",
                 )
             )
+        }
+    }
+
+    /**
+     * Handles the hidden measurement intents.
+     *
+     * `am start` on an app that is already running delivers the new intent
+     * to the existing instance rather than starting a new one, so the
+     * check has to be in onNewIntent as well as onCreate. Without this the
+     * measurement silently did nothing, because the app is normally left
+     * running between measurements.
+     */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleMeasurementIntent(intent)
+    }
+
+    private fun handleMeasurementIntent(intent: Intent?) {
+        if (intent == null) return
+        if (intent.getBooleanExtra("tail", false)) {
+            Log.i("DartsCoach", "Measuring the echo tail")
+            measureTail()
         }
     }
 

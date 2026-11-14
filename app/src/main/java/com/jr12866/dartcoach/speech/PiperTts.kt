@@ -131,18 +131,61 @@ class PiperTts(private val appContext: Context) {
             track.release()
         }
 
-        // The tail is the time from the end of the audio until the level
-        // falls back to the room. A slice counts as "still ringing" if it
-        // is above the room by a clear margin.
+        // The tail is the time from the end of the audio until the coach's
+        // voice falls back to the room.
+        //
+        // The measure is a running median of the recent slices, not the
+        // peak of a single slice. Taking the last slice above the room
+        // meant a single noise spike in a quiet room counted as "still
+        // ringing" for as long as it happened to be late - which is how a
+        // 100 ms tail came out as 1400 ms.
+        //
+        // A real acoustic tail decays smoothly, so the median follows it
+        // down. Noise does not.
         val sliceMs = 1000.0 * buffer.size / 16000
         val speechEnd = samples.size * 1000.0 / rate
+
+        // The reference is the speech, not the room.
+        //
+        // The room is noisy enough to produce spikes well above its own
+        // floor: the measured curve shows the level back at the room
+        // within 100 ms of the audio stopping, and then noise spiking to
+        // 0.04 and 0.049 over the next second. Those spikes are the room,
+        // and comparing against the room counted them as a tail.
+        //
+        // So the reference is how loud the speech was. The tail is the time
+        // for the level to fall from there down to the room, and the way to
+        // find it is the decay: the point where the level drops sharply and
+        // stays down.
+        val speechLevels = levels.filterIndexed { index, _ ->
+            index * sliceMs < speechEnd
+        }
+        val speechLevel = if (speechLevels.isEmpty()) {
+            roomLevel
+        } else {
+            speechLevels.sorted()[speechLevels.size / 2]
+        }
+        // A tenth of the speech is well above the room and well below the
+        // speech, so it is the point where the voice has gone.
+        val margin = (speechLevel * 0.1f).coerceAtLeast(roomLevel * 3f + 0.004f)
+
+        // Find the decay: the last stretch where the level was still up.
+        // A running median over 70 ms ignores the isolated spikes.
         var tailMs = 0.0
         var index = 0
+        val recent = ArrayDeque<Float>()
         for (level in levels) {
             val at = index * sliceMs
             index++
             if (at < speechEnd) continue
-            if (level > roomLevel * 2f + 0.001f) {
+
+            recent.addLast(level)
+            while (recent.size > 7) {
+                recent.removeFirst()
+            }
+            val sorted = recent.sorted()
+            val median = sorted[sorted.size / 2]
+            if (median > margin) {
                 tailMs = at - speechEnd + sliceMs
             }
         }
@@ -150,10 +193,24 @@ class PiperTts(private val appContext: Context) {
         Log.i(
             "DartsCoach",
             String.format(
-                "TAIL: room=%.5f speech=%.0fms tail=%.0fms (%.3fs) over %d slices",
-                roomLevel, speechEnd, tailMs, tailMs / 1000.0, levels.size,
+                "TAIL: room=%.5f speechLevel=%.5f margin=%.5f " +
+                    "speech=%.0fms tail=%.0fms (%.3fs) over %d slices",
+                roomLevel, speechLevel, margin,
+                speechEnd, tailMs, tailMs / 1000.0, levels.size,
             ),
         )
+
+        // The curve, so the shape can be seen rather than only the total.
+        // A real acoustic tail falls away smoothly. A step up, or a level
+        // that stays flat, is something else - noise, or the detection
+        // picking up the room in a quiet room.
+        val curve = StringBuilder()
+        for (i in levels.indices) {
+            if (i % 5 != 0) continue    // every 50 ms
+            val at = i * sliceMs
+            curve.append(String.format("%.0f:%.4f ", at, levels[i]))
+        }
+        Log.i("DartsCoach", "CURVE $curve")
         return tailMs / 1000.0
     }
 
