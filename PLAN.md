@@ -329,27 +329,30 @@ Kotlin test asserting identical output. See `docs/PARITY.md`.
   - a phone call interrupting.
 - Compare against the Windows coach on the same phrases.
 
-### Phase 5 — Play Store packaging (2–3 days) - not started
-
-Only once the app works.
+### Phase 5 — Play Store packaging (2–3 days) - repository work done, console work pending
 
 - **PAD asset pack module** (`models-pack/`): `com.android.asset-pack` plugin,
-  `deliveryType = "install-time"`, assets under `src/main/assets/`.
-- **App module:** `assetPacks += listOf(":models-pack")`, and a
-  `play { publishReleaseApk = false }` block.
-- **Signing:** a release keystore, `signingConfigs`, and
-  `bundleConfig`. Play App Signing means the upload key can be rotated later.
+  `deliveryType = "install-time"`, assets under `src/main/assets/`. **Done.**
+- **App module:** `assetPacks += listOf(":models-pack")`, and an app-bundle
+  publishing configuration. **Done.**
+- **Signing:** a `release` signing configuration reading the keystore path and
+  passwords from `local.properties`. The keystore itself stays outside the
+  repository. **Done.**
 - **Play Console:** a developer account (one-time $25), the store listing
-  (icon, screenshots, a privacy policy URL), and the **Data safety** form —
-  which must declare microphone use.
-- **Target API:** Play requires the target SDK to be within one year of the
-  latest. `targetSdk = 35` is current as of this plan; check before shipping.
-- **Privacy policy:** required. The app records audio — the policy must say
-  clearly that audio is processed on-device and never leaves the phone.
+  (icon, screenshots, a privacy policy URL), and the **Data safety** form.
+  The copy, graphics, and answers are prepared in `docs/STORE-LISTING.md`;
+  uploading and filling in the form still need the account.
+- **Target API:** `targetSdk = 35`; check
+  https://developer.android.com/google/play/requirements/target-sdk before
+  shipping.
+- **Privacy policy:** written in `docs/PRIVACY-POLICY.md`, published from
+  `docs/store/privacy-policy.html`, and bundled in the app with a **Privacy
+  policy** button. **Done.**
 
-**Play review note.** A microphone-using app attracts scrutiny, and the Data
-safety form must be consistent with the privacy policy. Keep the claims
-simple and true: on-device ASR, no data transmitted, no analytics, no ads.
+**Play review note.** A microphone-using app attracts scrutiny. The claims are
+kept simple and true: on-device ASR, no data transmitted, no analytics, no ads.
+Because the app has no `INTERNET` permission, the Data safety answer is "no
+data is collected" under Google's definition.
 
 ---
 
@@ -362,7 +365,7 @@ simple and true: on-device ASR, no data transmitted, no analytics, no ads.
 | 2. Kotlin core port | 2–3 d | **done** — all 7663 corpus cases match |
 | 3. The app | 3-5 d | **done** - works on the Pixel 7 |
 | 4. On-the-oche verification | 2-3 d | **not started** |
-| 5. Play Store packaging | 2-3 d | **not started** |
+| 5. Play Store packaging | 2-3 d | **repository done** — console upload pending |
 | **Total** | **~9–16 days** | |
 
 The Windows build stays intact throughout, so there is always a working

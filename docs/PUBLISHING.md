@@ -8,8 +8,12 @@ download step on first launch.
 
 | | |
 |---|---|
-| Base module | The app: Kotlin code, Compose UI, `sherpa-onnx-jni.so`. A few MB. |
+| Base module | The app: Kotlin code, Compose UI, the native libraries, and the espeak-ng data that `piper-phonemize` needs. About 30 MB. |
 | Asset pack `models` | The models: ~325 MB, `install-time` delivery. |
+
+The espeak-ng data is about 20 MB and is bundled by `piper-phonemize` itself,
+so it lands in the base module rather than the asset pack. It is needed for
+the text frontend and cannot be moved without changing the dependency.
 
 Size limits, verified against Google's documentation:
 
@@ -40,6 +44,8 @@ instead of app bundles. An app bundle gets 500 MB for the base module alone.
    means the upload key can be rotated later if it leaks, but losing the only
    key means losing the ability to update the app.
 
+   `*.jks` and `*.keystore` are ignored by git.
+
 3. **`local.properties`** - keep out of version control:
 
    ```
@@ -49,7 +55,13 @@ instead of app bundles. An app bundle gets 500 MB for the base module alone.
    dartcoach.key.password=...
    ```
 
-4. **`signingConfigs`** in `app/build.gradle.kts`, reading those properties.
+   `local.properties` is already ignored by git.
+
+4. **Signing configuration.** `app/build.gradle.kts` reads those properties
+   and creates the `release` signing configuration. If all four properties
+   are present, the release build type is signed with it. If they are absent,
+   debug builds still work but the release bundle is unsigned and Play will
+   reject it.
 
 5. **Play App Signing** - accept the upload key reset in Play Console, so the
    upload key is not the signing key of record.
@@ -62,6 +74,13 @@ instead of app bundles. An app bundle gets 500 MB for the base module alone.
 
 The output is `app/build/outputs/bundle/release/app-release.aab`. Upload that
 to Play Console, not an APK.
+
+The models must be present in `models-pack/src/main/assets/` before the
+release bundle is built. The fetch script puts them there:
+
+```
+.\tools\fetch-models.ps1
+```
 
 To estimate the download size before uploading:
 
@@ -80,6 +99,20 @@ Play requires:
 - **Content rating** questionnaire.
 - **Data safety** form.
 
+The copy, the graphic specifications, the screenshot plan, and the exact
+Play Console answers are in `docs/STORE-LISTING.md`.
+
+The icon and feature graphic are already generated in `docs/store/`. They are
+made by a script rather than being opaque binary files:
+
+```
+python tools\generate-store-assets.py
+```
+
+Two real phone screenshots are in `docs/store/screenshots/` already: the main
+screen and the privacy policy. The rest need the app in the right state, so
+they have to be taken at the phone.
+
 ## The Data safety form, and the privacy policy
 
 This is the part that needs care, because the app records audio.
@@ -92,10 +125,30 @@ The facts:
   buffer.
 - The app has no analytics, no ads, no crash reporting that leaves the device.
 
-In the Data safety form that means: microphone data is collected, and it is
-**not** shared and **not** transferred off the device. The privacy policy must
-say the same thing in plain language. Google checks that the two agree, and a
-mismatch is a common cause of rejection.
+Google defines "collected" as data retrieved from the device and sent off it.
+The app has no `INTERNET` permission, so no audio or other data can be sent
+off the device. The Data safety answer is therefore **"No data is collected"**,
+not "microphone data is collected".
+
+That distinction was checked against Google's current Data safety guidance.
+The app's real microphone permission is still visible to users and reviewers,
+and the privacy policy explains exactly what is recorded and why.
+
+The privacy policy text is in:
+
+- `docs/PRIVACY-POLICY.md` - the source copy;
+- `docs/store/privacy-policy.html` - the public page to upload;
+- `app/src/main/res/raw/privacy_policy.html` - the copy bundled in the app,
+  linked from the **Privacy policy** button.
+
+The in-app link is required by Google as well as the Play Console URL. The
+**Privacy policy** button opens the public URL once
+`privacy_policy_url` in `app/src/main/res/values/strings.xml` is filled in.
+Until then it shows the bundled copy in a dialog, so the link works offline
+and on a fresh install.
+
+Before submission, replace the example email address with a monitored address
+and make sure the developer name matches the Play listing exactly.
 
 ## Review expectations
 
@@ -116,6 +169,10 @@ Ship to **internal testing** first. It is available within minutes, needs no
 review, and is where the install of a 325 MB app over mobile data should be
 tested first.
 
+An install-time asset pack only arrives through Play, so the release bundle
+cannot be tested with `adb install`. The local `-PwithLocalModels` build is
+for development only; the Play install is the test that counts.
+
 Google also publishes a pre-launch report that runs the app against common
 crash scenarios before a release goes to review. Run it and read it.
 
@@ -125,3 +182,18 @@ Play requires the target SDK to be within one year of the latest Android
 release. `targetSdk = 35` is current as of this plan; check
 https://developer.android.com/google/play/requirements/target-sdk before
 shipping, and bump it when required.
+
+## What is still manual
+
+The repository side of Phase 5 is now done. These parts need the Play
+Console account and a real device:
+
+- the developer account and the app's Play Console entry;
+- upload the first `app-release.aab` to **internal testing**;
+- publish `docs/store/privacy-policy.html` and enter its public URL;
+- replace the example privacy email in both privacy-policy copies;
+- upload the icon, feature graphic, and real screenshots;
+- fill in the content rating questionnaire;
+- complete the Data safety form using `docs/STORE-LISTING.md`;
+- enable Play App Signing and accept the upload-key reset;
+- run the pre-launch report and test the install over mobile data.

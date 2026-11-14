@@ -6,6 +6,12 @@ captures/
 .externalNativeBuild/
 .cxx/
 
+# Release signing. The keystore and its passwords must never be committed.
+# Play App Signing can rotate an upload key, but losing the only key means
+# losing the ability to update the app.
+*.jks
+*.keystore
+
 # Android
 *.apk
 *.aab

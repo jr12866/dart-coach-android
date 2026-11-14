@@ -109,4 +109,10 @@ the Windows side.
 
 ## Status
 
-The plan is in `PLAN.md`. Work has not started.
+The phone app works on a Pixel 7. The game core is ported and checked against
+the Python implementation over 7663 parity cases. The Play Store packaging -
+signing configuration, asset pack, store copy, graphics, and privacy policy -
+is in place.
+
+`docs/HANDOVER.md` says what is done and what still needs the physical device
+or the Play Console.

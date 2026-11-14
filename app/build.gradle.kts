@@ -4,6 +4,53 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+import java.util.Properties
+
+/**
+ * Release signing is configured from local.properties, which is gitignored.
+ *
+ * The properties are deliberately read at configuration time rather than in a
+ * shell script, so `bundleRelease` is the same command everywhere and the
+ * secrets never enter the build script:
+ *
+ *   dartcoach.keystore=/absolute/path/to/dart-coach-release.jks
+ *   dartcoach.keystore.password=...
+ *   dartcoach.key.alias=dart-coach
+ *   dartcoach.key.password=...
+ *
+ * A missing release signing configuration is allowed while the app is still
+ * being developed. The release bundle then remains unsigned and Play will
+ * reject it, but debug builds and the test suite still work.
+ */
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) {
+        file.inputStream().use { load(it) }
+    }
+}
+
+val releaseKeystorePath = localProperties.getProperty("dartcoach.keystore")
+val releaseKeystorePassword = localProperties.getProperty("dartcoach.keystore.password")
+val releaseKeyAlias = localProperties.getProperty("dartcoach.key.alias")
+val releaseKeyPassword = localProperties.getProperty("dartcoach.key.password")
+val hasReleaseSigning = listOf(
+    releaseKeystorePath,
+    releaseKeystorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all { !it.isNullOrBlank() }
+
+/**
+ * Whether this is a release build.
+ *
+ * `gradle bundleRelease` and `gradle assembleRelease` both build a release
+ * variant. The local-model assets are only for debug builds, because the
+ * release build ships the models in the asset pack and a duplicate copy in
+ * the base module makes the bundle fail.
+ */
+fun isReleaseBuild(): Boolean =
+    gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+
 android {
     namespace = "com.jr12866.dartcoach"
     compileSdk = 35
@@ -21,10 +68,21 @@ android {
         ndkVersion = "27.2.12479018"
 
         // The models are large. Whisper base.en int8 alone is around 250 MB,
-        // so the APK cannot fit under the 200 MB limit on Google Play. This is
-        // a sideload-only app; see docs/DECISIONS.md.
+        // so they cannot go in the base module. They ship in an install-time
+        // Play Asset Delivery pack instead; see docs/PUBLISHING.md.
         ndk {
             abiFilters += listOf("arm64-v8a")
+        }
+    }
+
+    if (hasReleaseSigning) {
+        signingConfigs {
+            create("release") {
+                storeFile = rootProject.file(releaseKeystorePath!!)
+                storePassword = releaseKeystorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
         }
     }
 
@@ -35,6 +93,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
@@ -61,13 +122,22 @@ android {
     // assets, so that the APK stays small enough for the Play Store.
     assetPacks += listOf(":models-pack")
 
+    // Play Store distribution is through an app bundle. This also makes
+    // `bundleRelease` the single release build command.
+    bundle {
+        abi { enableSplit = true }
+        language { enableSplit = false }
+    }
+
     // For local development, the models are also copied into the app's own
     // assets. A debug APK installed with `adb install` never gets the asset
     // pack, because that only arrives through the Play Store.
     //
     // The release build does not do this: it ships the pack and nothing
-    // else, which is the whole point of the pack.
-    if (project.hasProperty("withLocalModels")) {
+    // else, which is the whole point of the pack. Copying the models into
+    // the base module as well would put the same asset in both modules and
+    // the bundle would fail to build.
+    if (project.hasProperty("withLocalModels") && !isReleaseBuild()) {
         sourceSets.getByName("main") {
             assets.srcDir(rootProject.file("models-pack/src/main/assets"))
         }
@@ -76,6 +146,13 @@ android {
     androidResources {
         // Model files must be readable as-is.
         noCompress += listOf("onnx", "txt")
+    }
+
+    // Google Play receives an app bundle. A release APK is not published.
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
     }
 }
 

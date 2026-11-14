@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.os.Bundle
@@ -108,6 +109,7 @@ class MainActivity : ComponentActivity() {
                         listening = listening,
                         onNewGame = { onNewGame() },
                         onUndo = { onUndo() },
+                        onPrivacyPolicy = { openPrivacyPolicy() },
                     )
                 }
             }
@@ -292,6 +294,54 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
+     * Opens the privacy policy.
+     *
+     * Google requires the policy to be linked from inside the app as well
+     * as from the Play listing. A public URL is preferred so it is the same
+     * page Play links to. If none is configured, the policy is shown in a
+     * plain dialog, because an `android.resource://` URI cannot be opened
+     * by an external browser.
+     */
+    private fun openPrivacyPolicy() {
+        val online = getString(R.string.privacy_policy_url).trim()
+        if (online.isNotBlank()) {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(online))
+            try {
+                startActivity(intent)
+                return
+            } catch (e: Exception) {
+                Log.w("DartsCoach", "Could not open the privacy policy URL", e)
+            }
+        }
+
+        val policy = resources.openRawResource(R.raw.privacy_policy)
+            .bufferedReader()
+            .use { it.readText() }
+        android.app.AlertDialog.Builder(this)
+            .setTitle("Privacy policy")
+            .setMessage(stripHtml(policy))
+            .setPositiveButton("Close", null)
+            .show()
+    }
+
+    /** A plain-text version of the bundled policy, for the dialog. */
+    private fun stripHtml(html: String): String =
+        html
+            .replace(Regex("(?is)<style.*?</style>"), "")
+            .replace(Regex("(?is)<script.*?</script>"), "")
+            .replace(Regex("(?is)<head.*?</head>"), "")
+            .replace(Regex("<br\\s*/?>", RegexOption.IGNORE_CASE), "\n")
+            .replace(Regex("</(p|li|h1|h2|div)>", RegexOption.IGNORE_CASE), "\n")
+            .replace(Regex("<[^>]+>"), "")
+            .replace("&nbsp;", " ")
+            .replace("&amp;", "&")
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace(Regex("[ \\t]+"), " ")
+            .replace(Regex("\\n\\s*\\n\\s*\\n+"), "\n\n")
+            .trim()
+
+    /**
      * Measures the echo tail on the device.
      *
      * Reached by an intent extra, so the number can be measured where the
@@ -409,6 +459,7 @@ private fun CoachScreen(
     listening: Boolean,
     onNewGame: () -> Unit,
     onUndo: () -> Unit,
+    onPrivacyPolicy: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -503,6 +554,19 @@ private fun CoachScreen(
             ) {
                 Text("New game")
             }
+        }
+
+        Text(
+            text = "Speech and voice run on this phone. No account, no ads, no analytics.",
+            fontSize = 12.sp,
+            color = Color(0xFF7D8894),
+        )
+
+        OutlinedButton(
+            onClick = onPrivacyPolicy,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Privacy policy")
         }
     }
 }
