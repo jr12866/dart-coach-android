@@ -176,6 +176,18 @@ class CoachEngine(
                         return said
                     }
 
+                    // The leave question is a question about the turn the
+                    // player has just reported, so it is answered with that
+                    // turn in. The read-back is re-asked afterwards, rather
+                    // than thrown away, because the player has not refused
+                    // the score - they have asked a question about it.
+                    if (correction.command == "whats_the_leave") {
+                        val leave = whatWouldThatLeave()
+                        val readBack = "You said ${numberToWords(pending)}. Right?"
+                        message = "$leave $readBack"
+                        return message
+                    }
+
                     // Anything else supersedes the question. The player has
                     // moved on to something else, and leaving the question
                     // armed would let a later "yes" meant for a score
@@ -502,12 +514,32 @@ class CoachEngine(
      * from the last suggestion, so it is right even if the score has moved
      * on since.
      *
+     * The darts the player has already thrown count. A player who has hit
+     * a treble twenty and then asks what it leaves wants the answer for
+     * the score they are on, not the score they were on before the dart.
+     * The leave is the one for the darts left in the visit, which is what
+     * the coach will plan from when the visit is over.
+     *
      * When the player has named a double, it is the route onto that double
      * that is meant - the leave of the route is the shot at their double.
      */
     private fun whatWouldThatLeave(): String {
-        val remaining = state.remainingScore
-        if (remaining <= 0) {
+        // The darts the player has already thrown count. A player who has
+        // hit a treble twenty and then asks what it leaves wants the answer
+        // for the score they are on, not the score they were on before the
+        // dart.
+        //
+        // A turn reported as a bare total has no darts in it - the total is
+        // the pending score - but it is a whole visit all the same.
+        val dartsInHand = state.currentDarts.size
+        val bareTotal = dartsInHand == 0 && pendingScore != null
+        val inHand = if (dartsInHand > 0) state.currentTurnScore() else (pendingScore ?: 0)
+        val remaining = state.remainingScore - inHand
+        if (remaining < 0) {
+            // The dart in hand has already busted the leg.
+            return "That's more than you had left. That's a bust."
+        }
+        if (remaining == 0) {
             return "The leg is finished."
         }
         if (remaining == 1) {
@@ -516,11 +548,22 @@ class CoachEngine(
                 "double is two."
         }
 
+        // The darts left in the visit. A visit that is over leaves the next
+        // one with three darts.
+        val visitOver = bareTotal || dartsInHand >= MAX_DARTS_PER_TURN
+        val dartsLeft = if (visitOver) {
+            MAX_DARTS_PER_TURN
+        } else {
+            MAX_DARTS_PER_TURN - dartsInHand
+        }
+
+        val where = whereThePlayerIs(remaining, dartsLeft, inHand, visitOver)
+
         val preferred = state.preferredDouble
         if (preferred != null) {
-            val route = planner.routeToDouble(remaining, preferred)
+            val route = planner.routeToDouble(remaining, preferred, dartsLeft)
             if (route != null) {
-                return if (route.finishes) {
+                return where + if (route.finishes) {
                     "${doubleSpeech(preferred)} finishes it."
                 } else {
                     "That leaves ${route.leaves} for ${doubleSpeech(preferred)}."
@@ -528,14 +571,35 @@ class CoachEngine(
             }
         }
 
-        val plan = planner.planFor(remaining)
-        if (plan.finishes) {
-            return "That wins the leg."
+        val plan = planner.planFor(remaining, dartsLeft)
+        return where + when {
+            plan.finishes -> "That wins the leg."
+            plan.leaves == 0 -> "That leaves nothing to finish from."
+            else -> "That leaves ${plan.leaves}."
         }
-        if (plan.leaves == 0) {
-            return "That leaves nothing to finish from."
+    }
+
+    /**
+     * Says where the player is, when they have darts in hand.
+     *
+     * "What does that leave" can be asked about the score or about the
+     * plan, so the answer says both: the score they are on, and the leave
+     * of the plan from there. Without a dart in hand there is nothing to
+     * say, and the answer is left as it was.
+     */
+    private fun whereThePlayerIs(
+        remaining: Int,
+        dartsLeft: Int,
+        inHand: Int,
+        visitOver: Boolean,
+    ): String {
+        if (inHand == 0) return ""
+        if (visitOver) {
+            // The visit is over. The next one is three darts.
+            return "You're on ${numberToWords(remaining)}. "
         }
-        return "That leaves ${plan.leaves}."
+        return "You're on ${numberToWords(remaining)} with $dartsLeft " +
+            "dart${if (dartsLeft == 1) "" else "s"} left. "
     }
 
     /**

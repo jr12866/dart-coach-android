@@ -328,6 +328,7 @@ adb shell am start -S -n com.jr12866.dartcoach/.MainActivity --ez route true
 | `docs/PHASE1-FINDINGS.md` | The recognition measurements. |
 | `docs/PHASE3-ECHO.md` | The first echo measurement, through the phone speaker. |
 | `docs/GATE-AND-BARGE-IN.md` | The gate and barge-in, and how they nearly went wrong. |
+| `docs/LEAVE-QUESTION.md` | What "what does that leave?" answers, and what it counts. |
 | `docs/BLUETOOTH.md` | Bluetooth, and why the microphone stays on the phone. |
 | `docs/PARITY.md` | How the port is checked against the Python. |
 | `docs/BUILDING.md` | Building sherpa-onnx. |
