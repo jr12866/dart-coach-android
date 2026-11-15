@@ -1,4 +1,4 @@
-﻿# Normalise line endings on checkin, so the working tree gets CRLF on Windows
+# Normalise line endings on checkin, so the working tree gets CRLF on Windows
 # and LF everywhere else. The model fetch script must stay LF: it runs under
 # bash, and CRLF in a shebang line breaks it.
 
