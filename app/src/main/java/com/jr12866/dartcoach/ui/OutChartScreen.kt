@@ -77,6 +77,26 @@ fun OutChartScreen(
     var query by remember { mutableStateOf("") }
     var selected by remember { mutableStateOf<Int?>(null) }
 
+    // The out chart is Pro.
+    //
+    // It is a reference rather than something needed mid-leg, and it is the
+    // thing most likely to be worth paying for, so a player who has not
+    // bought it is told what it is rather than shown a table.
+    if (!entitlement.has(Entitlement.Feature.OUT_CHART)) {
+        OutChartLocked(onBack = onBack, onUpgrade = onUpgrade)
+        return
+    }
+
+    // The percentages are the personalised part of the chart.
+    //
+    // The free tier gives the plan - which dart to throw - and does not
+    // promise a number it cannot personalise. This is a separate gate from
+    // the chart itself, so that the chart can be made free later without
+    // the percentages going with it.
+    val showPercentages = entitlement.has(
+        Entitlement.Feature.PERSONALISED_PROBABILITIES
+    )
+
     val chart = remember(planner) { OutChart.all(planner) }
 
     // A score typed in, or the one that is open.
@@ -141,6 +161,7 @@ fun OutChartScreen(
                     showRoutes = entitlement.has(
                         Entitlement.Feature.PERSONALISED_ROUTES
                     ),
+                    showPercentages = showPercentages,
                     onUpgrade = onUpgrade,
                 )
             }
@@ -156,9 +177,77 @@ fun OutChartScreen(
                 ChartRowView(
                     row = row,
                     highlighted = row.score == wanted,
+                    showPercentages = showPercentages,
                     onClick = { selected = row.score },
                 )
             }
+        }
+    }
+}
+
+/**
+ * What a player who has not bought Pro sees.
+ *
+ * It says what the out chart is and why it is worth having, rather than
+ * showing a table they cannot use.
+ */
+@Composable
+private fun OutChartLocked(
+    onBack: () -> Unit,
+    onUpgrade: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(ScreenBackground)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Out chart",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = PrimaryText,
+            )
+            OutlinedButton(onClick = onBack) {
+                Text("Back", color = PrimaryText)
+            }
+        }
+
+        Text(
+            text = "The out chart is every score from 2 to 170, with the route " +
+                "to take from it and the chance of checking out.",
+            fontSize = 16.sp,
+            color = PrimaryText,
+        )
+
+        Text(
+            text = "It is the same advice the coach gives, written down, so " +
+                "you can look a score up without waiting to be told it.",
+            fontSize = 14.sp,
+            color = QuietText,
+        )
+
+        Button(
+            onClick = onUpgrade,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AccentGreen,
+                contentColor = ScreenBackground,
+            ),
+        ) {
+            Text(
+                text = "Get Pro",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+            )
         }
     }
 }
@@ -168,12 +257,14 @@ fun OutChartScreen(
  *
  * The score, the route, and the percentage. The percentage is the thing
  * that is different in a personalised chart, so it is the thing that is
- * given its own column.
+ * given its own column - and it is left out entirely when the player does
+ * not have the personalised probabilities.
  */
 @Composable
 private fun ChartRowView(
     row: ChartRow,
     highlighted: Boolean,
+    showPercentages: Boolean,
     onClick: () -> Unit,
 ) {
     Row(
@@ -197,16 +288,18 @@ private fun ChartRowView(
             fontSize = 16.sp,
             fontFamily = FontFamily.Monospace,
             color = if (row.bogey) QuietText else PrimaryText,
-            modifier = Modifier.weight(0.58f),
+            modifier = Modifier.weight(if (showPercentages) 0.58f else 0.78f),
         )
-        Text(
-            text = row.percentText,
-            fontSize = 15.sp,
-            fontFamily = FontFamily.Monospace,
-            color = if (row.bogey) QuietText else AccentGreen,
-            textAlign = TextAlign.End,
-            modifier = Modifier.weight(0.20f),
-        )
+        if (showPercentages) {
+            Text(
+                text = row.percentText,
+                fontSize = 15.sp,
+                fontFamily = FontFamily.Monospace,
+                color = if (row.bogey) QuietText else AccentGreen,
+                textAlign = TextAlign.End,
+                modifier = Modifier.weight(0.20f),
+            )
+        }
     }
 }
 
@@ -216,12 +309,16 @@ private fun ChartRowView(
  * The routes onto each double are behind the paywall, because which route
  * is best depends entirely on which double the player can hit - and that is
  * the thing the personalisation is about.
+ *
+ * The percentages are behind their own gate, and are left out when the
+ * player does not have them.
  */
 @Composable
 private fun ChartDetail(
     row: ChartRow,
     routes: List<ChartRoute>,
     showRoutes: Boolean,
+    showPercentages: Boolean,
     onUpgrade: () -> Unit,
 ) {
     Box(
@@ -235,8 +332,10 @@ private fun ChartDetail(
             Text(
                 text = if (row.bogey) {
                     "${row.score} cannot be finished in three darts"
-                } else {
+                } else if (showPercentages) {
                     "${row.score}  -  ${row.routeText}  (${row.percentText})"
+                } else {
+                    "${row.score}  -  ${row.routeText}"
                 },
                 fontSize = 18.sp,
                 fontFamily = FontFamily.Monospace,
@@ -285,8 +384,12 @@ private fun ChartDetail(
                     )
                     for (route in routes) {
                         Text(
-                            text = "${route.doubleLabel}  ${route.routeText}  " +
-                                "${route.percentText}",
+                            text = if (showPercentages) {
+                                "${route.doubleLabel}  ${route.routeText}  " +
+                                    "${route.percentText}"
+                            } else {
+                                "${route.doubleLabel}  ${route.routeText}"
+                            },
                             fontSize = 15.sp,
                             fontFamily = FontFamily.Monospace,
                             color = PrimaryText,

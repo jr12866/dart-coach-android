@@ -158,6 +158,15 @@ class MainActivity : ComponentActivity() {
     private var correctionAvailable by mutableStateOf(false)
 
     /**
+     * The preferred double that was stored, if there is one.
+     *
+     * It is not put on the coach until the entitlement is known, because
+     * keeping the preferred double between legs and restarts is Pro. The
+     * free tier still has the preferred double for the leg it is playing.
+     */
+    private var storedPreferredDouble by mutableStateOf<Int?>(null)
+
+    /**
      * A debug-only switch for testing the Pro flows without buying Pro.
      *
      * The switch itself lives in the debug source set, so a release build
@@ -364,6 +373,7 @@ class MainActivity : ComponentActivity() {
             val attemptsBefore = coach.learner.stats.totalAttempts
             val said = coach.handle(phrase)
             Log.i("DartsCoach", "Coach says: $said")
+            rememberPreferredDouble()
             if (coach.state.turnsPlayed != turnsBefore) {
                 // A turn was confirmed, so the coach has learned something.
                 persist()
@@ -574,9 +584,9 @@ class MainActivity : ComponentActivity() {
         scope.launch {
             val stats = store.readStats()
             val manual = store.readManual()
-            val preferred = store.readPreferredDouble()
             val legs = store.readLegs()
             measuredTail = store.readMeasuredTail()
+            storedPreferredDouble = store.readPreferredDouble()
 
             val learner = HitLearner(stats)
             val profile = PlayerProfile.merge(learner.profile(), manual)
@@ -584,7 +594,6 @@ class MainActivity : ComponentActivity() {
                 planner = Planner.build(profile),
                 learner = learner,
             )
-            coach.state.preferredDouble = preferred
             coach.legs.addAll(legs)
 
             this@MainActivity.coach = coach
@@ -663,6 +672,66 @@ class MainActivity : ComponentActivity() {
         }
 
         price = billing.price.value
+
+        // The entitlement is only known now, so the preferred double that was
+        // stored is applied now, rather than when it was read.
+        restorePreferredDouble()
+    }
+
+    /**
+     * Remembers the double the player asked for, so that it can be kept.
+     *
+     * The coach forgets a double when the score drops below it, and a new
+     * game forgets it as well, because a new leg is a new leg. Neither of
+     * those is the player changing their mind, so neither of them clears
+     * what is remembered here.
+     */
+    private fun rememberPreferredDouble() {
+        val current = coach.state.preferredDouble
+        if (current == null || current == storedPreferredDouble) return
+
+        storedPreferredDouble = current
+        if (!gate.has(Entitlement.Feature.PERSISTENT_PREFERENCES)) {
+            // The free tier plays the leg it is on with the double the
+            // player asked for, and does not keep it, so there is nothing
+            // to write.
+            return
+        }
+        scope.launch { store.savePreferredDouble(current) }
+    }
+
+    /**
+     * Puts the stored preferred double back on the coach, if the player is
+     * allowed to keep one.
+     *
+     * The free tier has the preferred double for the leg it is playing. The
+     * double that is kept across legs and restarts is Pro, so a player
+     * without it does not get the stored one, and does not keep the one that
+     * was there.
+     *
+     * The double is only put back when the coach can actually route to it
+     * from the score standing, because a double that is out of reach would
+     * only be announced and dropped again on the next suggestion.
+     */
+    private fun restorePreferredDouble() {
+        val preferred = storedPreferredDouble
+        if (!gate.has(Entitlement.Feature.PERSISTENT_PREFERENCES)) {
+            if (preferred != null) {
+                storedPreferredDouble = null
+                scope.launch { store.savePreferredDouble(null) }
+            }
+            return
+        }
+        if (preferred == null) return
+
+        val reachable = coach.planner.routeToDouble(
+            coach.state.remainingScore,
+            preferred,
+        ) != null
+        if (reachable) {
+            coach.state.preferredDouble = preferred
+            refresh()
+        }
     }
 
     /**
@@ -675,7 +744,21 @@ class MainActivity : ComponentActivity() {
     private fun persist() {
         scope.launch {
             store.saveLearned(coach.learner)
-            store.savePreferredDouble(coach.state.preferredDouble)
+            // The preferred double is kept between legs and restarts in Pro
+            // only. The free tier plays the leg it is on with the double the
+            // player asked for, and does not keep it.
+            //
+            // What is saved is the double the player asked for, rather than
+            // the one the coach is playing for right now: the coach drops a
+            // double when the score drops below it, and that is not the
+            // player changing their mind.
+            store.savePreferredDouble(
+                if (gate.has(Entitlement.Feature.PERSISTENT_PREFERENCES)) {
+                    storedPreferredDouble
+                } else {
+                    null
+                }
+            )
             store.saveLegs(coach.legs)
             // The counts have moved, so the profile and the statistics have
             // new numbers.
@@ -987,6 +1070,10 @@ class MainActivity : ComponentActivity() {
         Thread {
             coach.handle("new game")
             coach.handle("coach yes")
+            // A new leg is a new leg, so the coach forgets the double. The
+            // double the player asked for is put back for the new leg, if
+            // they are allowed to keep one.
+            restorePreferredDouble()
             refresh()
         }.start()
     }

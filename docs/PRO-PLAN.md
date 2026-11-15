@@ -232,6 +232,18 @@ There is no navigation library today — `MainActivity.kt:97-116` renders one
 > built from the same planner the coach is using rather than the population
 > one.
 >
+> **The gates are wired up.** The out chart is behind `OUT_CHART`, and a
+> player without it is shown what the chart is rather than the table. The
+> percentages are behind `PERSONALISED_PROBABILITIES` and are left out
+> without it, which is the rule about the free tier not promising a number
+> it cannot personalise. The preferred double is kept between legs and
+> restarts behind `PERSISTENT_PREFERENCES`; the free tier still plays the
+> leg it is on with the double the player asked for.
+>
+> `EntitlementTest` in the app module checks that every flag in
+> `PRO_FEATURES` is asked for somewhere in the app, by reading the app's own
+> source. Three of them were not, and the features they named were free.
+>
 > **3.3 is done.** `ProfileView` in `core` assembles what the screen shows:
 > the rate the coach is using, the rate it learned, the rate the player set,
 > and how much evidence there is behind it. `ProfileViewTest` covers it.
@@ -356,12 +368,14 @@ There is no navigation library today — `MainActivity.kt:97-116` renders one
 >
 > **The note found something.** Three of the eight gates in `PRO_FEATURES` -
 > `OUT_CHART`, `PERSONALISED_PROBABILITIES` and `PERSISTENT_PREFERENCES` -
-> are declared but never asked, so those three features are not actually
-> locked. The out chart and its percentages are free today, which is the
-> opposite of what this plan says. That has to be fixed before the first
-> release, because those are the things Pro is being sold for. See
-> `docs/ROLLBACK.md`, "What the gate actually controls, and what it does
-> not".
+> were declared but never asked, so those three features were not actually
+> locked. The out chart and its percentages were free, which is the
+> opposite of what this plan says. **That is fixed now:** the chart is
+> behind the paywall, the percentages are left out when the player does not
+> have them, and the preferred double is only kept between legs and restarts
+> in Pro. `EntitlementTest` reads the app's own source and fails if a flag
+> is ever declared and not used again, so this cannot drift apart the way it
+> had. See `docs/ROLLBACK.md`, "What the gate controls".
 
 ---
 

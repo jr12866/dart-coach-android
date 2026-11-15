@@ -52,38 +52,32 @@ Remove it from `PRO_FEATURES`. The feature becomes free.
 
 ---
 
-## What the gate actually controls, and what it does not
+## What the gate controls
 
 This is worth writing down before the day it is needed, because the list and
-the code are not quite the same thing. Three of the eight flags are
-**declared but never asked**:
+the code are not quite the same thing, and the gap was real: three of the
+eight flags were **declared but never asked**, so the out chart and its
+percentages were free. They are wired up now.
 
-| Flag | Where it is meant to bite | Asked anywhere? |
-|---|---|---|
-| `OUT_CHART` | the out chart itself | **No** |
-| `PERSONALISED_PROBABILITIES` | the percentages in the chart | **No** |
-| `PERSISTENT_PREFERENCES` | the preferred double kept across restarts | **No** |
-| `PERSONALISED_ROUTES` | the routes onto each double | Yes |
-| `LEARNED_ANALYSIS` | the analysis of what the coach has learned | Yes |
-| `SETUP_COACHING` | the setup chart | Yes |
-| `SESSION_STATS` | the session statistics | Yes |
-| `MISSED_TARGET_CORRECTION` | correcting a missed dart | Yes |
+| Flag | Where it bites |
+|---|---|
+| `OUT_CHART` | the out chart itself |
+| `PERSONALISED_PROBABILITIES` | the percentages in the chart |
+| `PERSONALISED_ROUTES` | the routes onto each double |
+| `LEARNED_ANALYSIS` | the analysis of what the coach has learned |
+| `SETUP_COACHING` | the setup chart |
+| `SESSION_STATS` | the session statistics |
+| `PERSISTENT_PREFERENCES` | the preferred double kept between legs and restarts |
+| `MISSED_TARGET_CORRECTION` | correcting a missed dart |
 
-So emptying `PRO_FEATURES` today frees the setup chart, the statistics, the
-learned analysis, the personalised routes and the missed-target correction.
-The out chart is already free, because nothing asks whether it should be.
+**A flag that is never asked is a flag that does nothing**, and a flag that
+does nothing is a promise the app does not keep. `EntitlementTest` reads the
+app's own source and fails if a flag is declared and not used, so the plan
+and the build cannot drift apart again the way they had.
 
-That is not a rollback problem. It is a gap between `docs/PRO-PLAN.md` and the
-build: the plan says the out chart is locked and that the free tier must not
-show precise percentages, and neither is true yet. **Fix that before the
-first release**, because the whole point of the paywall is that these three
-things are what the player is paying for.
-
-The fix is the same shape as everything else here: ask the question in the
-screen. `OutChartScreen` already asks about `PERSONALISED_ROUTES`; it needs
-to ask about `OUT_CHART` before drawing the chart, and about
-`PERSONALISED_PROBABILITIES` before drawing a percentage. The preferred
-double needs its persistence gated where it is saved.
+The flags are independent on purpose. The out chart can be made free in one
+release while the percentages stay Pro, which is what the rule about the
+free tier not promising a number it cannot personalise needs.
 
 ---
 
