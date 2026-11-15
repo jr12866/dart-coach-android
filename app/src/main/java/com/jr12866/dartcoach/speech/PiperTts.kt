@@ -285,6 +285,60 @@ class PiperTts(private val appContext: Context) {
     fun wasInterrupted(): Boolean = interrupted
 
     /**
+     * Plays speech without the caller gating the microphone.
+     *
+     * This is only used by the self-hearing test, where the point is for the
+     * app to hear itself through the speaker. In normal use the microphone
+     * is gated while the coach speaks, so that it does not hear its own
+     * voice.
+     */
+    fun speakUngated(text: String): Double {
+        val made = synthesize(text) ?: return 0.0
+        val (samples, rate) = made
+
+        val minBuffer = AudioTrack.getMinBufferSize(
+            rate,
+            AudioFormat.CHANNEL_OUT_MONO,
+            AudioFormat.ENCODING_PCM_FLOAT,
+        )
+        if (minBuffer <= 0) return 0.0
+
+        val track = AudioTrack.Builder()
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+            )
+            .setAudioFormat(
+                AudioFormat.Builder()
+                    .setEncoding(AudioFormat.ENCODING_PCM_FLOAT)
+                    .setSampleRate(rate)
+                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                    .build()
+            )
+            .setBufferSizeInBytes(maxOf(minBuffer, samples.size * 4))
+            .setTransferMode(AudioTrack.MODE_STREAM)
+            .build()
+
+        return try {
+            track.play()
+            var offset = 0
+            while (offset < samples.size) {
+                val chunk = minOf(1024, samples.size - offset)
+                track.write(samples, offset, chunk, AudioTrack.WRITE_BLOCKING)
+                offset += chunk
+            }
+            // Let the last of it out of the buffer.
+            Thread.sleep(300)
+            samples.size.toDouble() / rate
+        } finally {
+            try { track.stop() } catch (_: Exception) {}
+            track.release()
+        }
+    }
+
+    /**
      * Plays speech, blocking until it has finished.
      *
      * Returns the number of seconds it played for, which the caller uses to

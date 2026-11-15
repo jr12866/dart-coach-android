@@ -59,8 +59,11 @@ android {
         applicationId = "com.jr12866.dartcoach"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
+        buildFeatures {
+            buildConfig = true
+        }
 
         // The sherpa-onnx native library is built by
         // tools/build-sherpa.ps1 against this NDK. Telling AGP which one it
@@ -181,6 +184,22 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-core")
+
+    // The navigation between the coach and the Pro screens.
+    implementation("androidx.navigation:navigation-compose:2.8.5")
+
+    // The Pro purchase.
+    //
+    // The KTX module carries the coroutine extensions, so the billing calls
+    // read as suspend functions rather than listeners.
+    implementation("com.android.billingclient:billing-ktx:9.1.0")
+
+    // The player's own settings and history, kept on the phone.
+    //
+    // DataStore is used rather than SharedPreferences because the profile is
+    // written as a unit - the whole hit-rate map - and DataStore writes are
+    // transactional, so a write cannot leave half a profile behind.
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // piper-phonemize is the text frontend for the Piper voice: it turns text
     // into the phoneme codes the model was trained on. It bundles its own

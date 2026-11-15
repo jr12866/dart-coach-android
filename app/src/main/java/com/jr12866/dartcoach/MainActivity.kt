@@ -13,40 +13,38 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jr12866.dartcoach.audio.AudioEngine
+import com.jr12866.dartcoach.billing.BillingRepository
 import com.jr12866.dartcoach.core.CoachEngine
+import com.jr12866.dartcoach.core.HitLearner
+import com.jr12866.dartcoach.core.Planner
+import com.jr12866.dartcoach.core.PlayerProfile
+import com.jr12866.dartcoach.core.ProfileView
+import com.jr12866.dartcoach.core.Stats
+import com.jr12866.dartcoach.core.StatsView
+import com.jr12866.dartcoach.core.TailSetting
+import com.jr12866.dartcoach.data.SettingsStore
+import com.jr12866.dartcoach.entitlement.Entitlement
+import com.jr12866.dartcoach.entitlement.FeatureGated
+import com.jr12866.dartcoach.entitlement.NotPro
+import com.jr12866.dartcoach.entitlement.Pro
 import com.jr12866.dartcoach.speech.PiperTts
+import com.jr12866.dartcoach.ui.AppNavHost
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
@@ -60,9 +58,93 @@ import kotlinx.coroutines.withContext
  */
 class MainActivity : ComponentActivity() {
 
-    private val coach = CoachEngine()
+    /**
+     * The coach.
+     *
+     * It is created with the player's own profile once the settings have
+     * loaded, so the advice is theirs from the first suggestion rather than
+     * the population's. It is state, because the screen has to redraw when
+     * it is replaced.
+     */
+    private var coach by mutableStateOf(CoachEngine())
+
+    /**
+     * The player's settings, on the phone.
+     *
+     * This is created in `onCreate` rather than here, because a field
+     * initialiser runs before the activity has been attached to the
+     * application, and the store needs the application context. Asking for
+     * it too early gave a null pointer and killed the app on launch.
+     */
+    private lateinit var store: SettingsStore
+
+    private val billing = BillingRepository(this)
     private lateinit var audio: AudioEngine
     private lateinit var tts: PiperTts
+
+    /** The work that is not on the main thread: saving the settings. */
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    /**
+     * What the player has bought.
+     *
+     * This starts as not-Pro and is replaced once Play has been asked. The
+     * whole gate is decided in one place, so that changing what is behind
+     * the paywall is a change to one list.
+     */
+    private var entitlement by mutableStateOf<Entitlement>(NotPro)
+
+    /**
+     * The gate as it is right now.
+     *
+     * This is the feature list with the purchase on or off, so the screen
+     * asks "is this feature available" rather than "has the player bought
+     * Pro". That is what lets a feature be moved out of the paywall by
+     * editing one list.
+     */
+    private val gate: Entitlement get() = FeatureGated(
+        purchased = entitlement.isPro || testPro,
+    )
+
+    /** What Pro costs, in the player's own currency. */
+    private var price by mutableStateOf<String?>(null)
+
+    /** What went wrong with the purchase, if something did. */
+    private var purchaseError by mutableStateOf<String?>(null)
+
+    /**
+     * The profile screen's view of how the player throws.
+     *
+     * It is rebuilt whenever the counts or the player's own settings change,
+     * so the screen always shows the current numbers.
+     */
+    private var profileView by mutableStateOf(
+        ProfileView.of(HitLearner(), PlayerProfile())
+    )
+
+    /**
+     * The statistics screen's view of the player.
+     *
+     * It is rebuilt whenever a leg is finished or the counts move.
+     */
+    private var statsView by mutableStateOf(
+        StatsView(Stats.EMPTY, HitLearner())
+    )
+
+    /**
+     * The measured echo tail, in seconds.
+     *
+     * Null until it has been measured, in which case the default is used.
+     * The measurement depends on the phone, so it is measured rather than
+     * assumed.
+     */
+    private var measuredTail by mutableStateOf<Double?>(null)
+
+    /** What the tail measurement is doing right now. */
+    private var measuringTail by mutableStateOf(false)
+
+    /** What the last measurement found, for the screen. */
+    private var tailMessage by mutableStateOf("")
 
     private var remaining by mutableStateOf(501)
     private var turns by mutableStateOf(0)
@@ -70,6 +152,19 @@ class MainActivity : ComponentActivity() {
     private var message by mutableStateOf("")
     private var listening by mutableStateOf(false)
     private var double by mutableStateOf("")
+    private var turnDarts by mutableStateOf(0)
+    private var turnScore by mutableStateOf(0)
+    private var planKind by mutableStateOf("")
+    private var correctionAvailable by mutableStateOf(false)
+
+    /**
+     * A debug-only switch for testing the Pro flows without buying Pro.
+     *
+     * The switch itself lives in the debug source set, so a release build
+     * has no code that could turn Pro on. This field is only ever true in a
+     * debug build.
+     */
+    private var testPro: Boolean = false
 
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -79,6 +174,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // A debug-only way to exercise the Pro flows without a Play
+        // purchase. The release build's version of this does nothing.
+        testPro = TestProSwitch.applyTestPro(
+            applicationContext,
+            intent.getBooleanExtra("testpro", false),
+        )
+
         // The phone is at the oche and the screen must not sleep mid-leg.
         //
         // FLAG_KEEP_SCREEN_ON is enough for a foreground activity and needs
@@ -87,6 +189,13 @@ class MainActivity : ComponentActivity() {
         // the screen on, not the CPU.
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+        // The store is created here, with the application context, rather
+        // than as a field initialiser. A field initialiser runs before the
+        // activity has been attached to the application, and the store
+        // needs the application context - asking for it too early gave a
+        // null pointer and killed the app on launch.
+        store = SettingsStore(applicationContext)
+
         audio = AudioEngine(this)
         tts = PiperTts(this)
 
@@ -94,22 +203,54 @@ class MainActivity : ComponentActivity() {
         audio.onStateChanged = { running -> listening = running }
         audio.onBargeIn = { tts.stop() }
 
+        // A purchase that finishes anywhere in the app turns Pro on.
+        billing.onPurchased = {
+            scope.launch {
+                entitlement = Pro
+                refresh()
+                store.saveIsPro(true)
+                price = billing.price.value
+            }
+        }
+
+        loadSettings()
+
         setContent {
             MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = Color(0xFF0B0F14),
                 ) {
-                    CoachScreen(
+                    AppNavHost(
                         remaining = remaining,
                         turns = turns,
                         suggestion = suggestion,
                         message = message,
                         double = double,
                         listening = listening,
+                        turnDarts = turnDarts,
+                        turnScore = turnScore,
+                        planKind = planKind,
+                        correctionAvailable = correctionAvailable,
+                        entitlement = gate,
+                        planner = coach.planner,
+                        price = price,
+                        purchaseError = purchaseError,
+                        profileView = profileView,
+                        statsView = statsView,
+                        measuredTail = measuredTail,
+                        measuringTail = measuringTail,
+                        tailMessage = tailMessage,
                         onNewGame = { onNewGame() },
                         onUndo = { onUndo() },
                         onPrivacyPolicy = { openPrivacyPolicy() },
+                        onPurchase = { buyPro() },
+                        onRestore = { restorePurchase() },
+                        onSaveProfile = { view -> saveProfile(view) },
+                        onOpenProfile = { openProfile() },
+                        onOpenSettings = { openSettings() },
+                        onMeasureTail = { measureTailForThePlayer() },
+                        onResetTail = { resetTail() },
                     )
                 }
             }
@@ -124,6 +265,18 @@ class MainActivity : ComponentActivity() {
         }
 
         handleMeasurementIntent(intent)
+
+        // A hidden way to make the app hear itself, so that the whole loop
+        // - speech in, game logic, speech out - can be checked on a device
+        // without anyone having to talk to the phone.
+        //
+        // The phrase is played through the speaker with the microphone gate
+        // left open, which is the one thing the coach never does in normal
+        // use. That is the point: it proves the recogniser, the parser and
+        // the voice all work together.
+        if (intent?.getBooleanExtra("selfhears", false) == true) {
+            selfHear()
+        }
 
         // A hidden way to measure the wording on the device.
         if (intent?.getBooleanExtra("measure", false) == true) {
@@ -185,6 +338,7 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         audio.stop()
+        scope.cancel()
     }
 
     private fun startListening() {
@@ -206,8 +360,21 @@ class MainActivity : ComponentActivity() {
      */
     private fun onHeard(phrase: String) {
         Thread {
+            val turnsBefore = coach.state.turnsPlayed
+            val attemptsBefore = coach.learner.stats.totalAttempts
             val said = coach.handle(phrase)
             Log.i("DartsCoach", "Coach says: $said")
+            if (coach.state.turnsPlayed != turnsBefore) {
+                // A turn was confirmed, so the coach has learned something.
+                persist()
+            } else if (coach.pendingMissTarget != null ||
+                coach.learner.stats.totalAttempts != attemptsBefore
+            ) {
+                // A miss was corrected. The coach learned from it immediately,
+                // even though the corrected turn is still waiting to be
+                // confirmed.
+                persist()
+            }
             refresh()
             if (said != null) {
                 speak(said)
@@ -362,17 +529,18 @@ class MainActivity : ComponentActivity() {
         // With headphones the coach's voice never reaches the phone's
         // microphone at all, so there is no echo to wait for and the gate
         // can open the instant the audio stops. Through the phone's own
-        // speaker there is a little mechanical ringing, which needs a
-        // tenth of a second.
+        // speaker there is a little mechanical ringing, and how much
+        // depends on the phone, so it is measured rather than assumed.
         val onThePhone = isOnThePhoneSpeaker()
         audio.bargeInEnabled = !onThePhone
-        audio.echoTailSeconds = if (onThePhone) PHONE_SPEAKER_TAIL else 0.0
+        audio.echoTailSeconds = TailSetting.forRoute(measuredTail, onThePhone)
         audio.beginSpeaking()
         try {
             Log.i(
                 "DartsCoach",
                 "Route: ${routeDescription()} " +
                     "(${if (onThePhone) "phone speaker" else "headphones"}); " +
+                    "tail ${(audio.echoTailSeconds * 1000).toInt()}ms; " +
                     "Speaking: $text",
             )
             val seconds = tts.speak(text)
@@ -394,12 +562,244 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Loads the player's settings and builds a coach that thinks with them.
+     *
+     * This happens after the screen is up rather than before, because
+     * reading the store touches the disk and the coach should not hold up
+     * the first frame. The coach starts on the population averages and is
+     * replaced once the player's own profile has been read.
+     */
+    private fun loadSettings() {
+        scope.launch {
+            val stats = store.readStats()
+            val manual = store.readManual()
+            val preferred = store.readPreferredDouble()
+            val legs = store.readLegs()
+            measuredTail = store.readMeasuredTail()
+
+            val learner = HitLearner(stats)
+            val profile = PlayerProfile.merge(learner.profile(), manual)
+            val coach = CoachEngine(
+                planner = Planner.build(profile),
+                learner = learner,
+            )
+            coach.state.preferredDouble = preferred
+            coach.legs.addAll(legs)
+
+            this@MainActivity.coach = coach
+            profileView = ProfileView.of(learner, manual)
+            statsView = StatsView(Stats(legs), learner)
+            refresh()
+
+            loadEntitlement()
+        }
+    }
+
+    /**
+     * Saves the player's own settings for the segments they have set.
+     *
+     * The coach is rebuilt with the new numbers, so the change takes effect
+     * on the next suggestion rather than at the next restart.
+     */
+    private fun saveProfile(view: ProfileView) {
+        profileView = view
+        scope.launch {
+            store.saveManual(view.manual)
+            rebuildCoach()
+        }
+    }
+
+    /**
+     * Rebuilds the coach with the current profile.
+     *
+     * The planner is built from the profile, so this is what makes a
+     * changed hit rate take effect.
+     */
+    private suspend fun rebuildCoach() {
+        val manual = store.readManual()
+        val learner = coach.learner
+        val profile = PlayerProfile.merge(learner.profile(), manual)
+        val rebuilt = CoachEngine(
+            planner = Planner.build(profile),
+            learner = learner,
+        )
+        rebuilt.missedTargetCorrectionAvailable = coach.missedTargetCorrectionAvailable
+        rebuilt.state.preferredDouble = coach.state.preferredDouble
+        rebuilt.state.remainingScore = coach.state.remainingScore
+        rebuilt.state.turnsPlayed = coach.state.turnsPlayed
+        rebuilt.legs.addAll(coach.legs)
+        coach = rebuilt
+        refresh()
+    }
+
+    /**
+     * Works out whether the player has bought Pro.
+     *
+     * The cached answer is used first, so the app is usable straight away,
+     * and then Play is asked for the real one. Play holds the purchase, so
+     * its answer is the truth - including for a player who bought on
+     * another device.
+     */
+    private suspend fun loadEntitlement() {
+        val cached = store.isPro.first()
+        if (cached) {
+            entitlement = Pro
+            refresh()
+        }
+
+        billing.connect()
+
+        if (billing.entitlement.value) {
+            entitlement = Pro
+            refresh()
+            store.saveIsPro(true)
+        } else if (cached) {
+            // Play could not be reached, or the purchase has been refunded.
+            // The cached answer stands for now and Play is asked again next
+            // time the app starts.
+        } else {
+            store.saveIsPro(false)
+        }
+
+        price = billing.price.value
+    }
+
+    /**
+     * Saves what the coach has learned.
+     *
+     * This is called after a turn is confirmed, so the player's history
+     * carries on across restarts rather than starting again from the
+     * population averages.
+     */
+    private fun persist() {
+        scope.launch {
+            store.saveLearned(coach.learner)
+            store.savePreferredDouble(coach.state.preferredDouble)
+            store.saveLegs(coach.legs)
+            // The counts have moved, so the profile and the statistics have
+            // new numbers.
+            profileView = ProfileView.of(coach.learner, profileView.manual)
+            statsView = StatsView(Stats(coach.legs), coach.learner)
+        }
+    }
+
+    /**
+     * The player asked to buy Pro.
+     *
+     * The purchase is started and the result comes back through the billing
+     * repository, which tells the screen what happened.
+     */
+    private fun buyPro() {
+        purchaseError = null
+        scope.launch {
+            price = billing.price.value ?: price
+            val started = billing.purchase(this@MainActivity)
+            if (!started) {
+                purchaseError = billing.error.value
+            }
+        }
+    }
+
+    /**
+     * The player asked to check whether they have already bought Pro.
+     */
+    private fun restorePurchase() {
+        scope.launch {
+            val owned = billing.restore()
+            entitlement = if (owned) Pro else NotPro
+            refresh()
+            store.saveIsPro(owned)
+            if (!owned) {
+                purchaseError = "No purchase was found on this account."
+            }
+        }
+    }
+
+    /**
+     * Makes the app hear itself.
+     *
+     * The phrase is played through the speaker with the microphone gate left
+     * open, so the recogniser hears it and the coach answers. That proves
+     * the whole loop - speech in, game logic, speech out - without anyone
+     * having to talk to the phone.
+     *
+     * The gate is left open on purpose. It is the one thing the coach never
+     * does in normal use, and that is exactly what makes this a test.
+     */
+    private fun selfHear() {
+        Thread {
+            if (!tts.load()) {
+                Log.i("DartsCoach", "The voice would not load")
+                return@Thread
+            }
+            // Wait for the models and the microphone to be ready, or the
+            // first phrase is heard before the recogniser is listening.
+            Thread.sleep(3000)
+
+            val phrases = arrayOf(
+                "one forty",
+                "yes",
+            )
+            for (phrase in phrases) {
+                Log.i("DartsCoach", "SELF HEAR: '$phrase'")
+                tts.speakUngated(phrase)
+                // Give the recogniser time to transcribe and the coach time
+                // to answer before the next phrase.
+                Thread.sleep(4000)
+            }
+        }.start()
+    }
+
+    /**
+     * The player opened their profile.
+     *
+     * The view is rebuilt here rather than being kept up to date as the
+     * counts move, so that opening the screen always shows the numbers as
+     * they are now.
+     */
+    private fun openProfile() {
+        scope.launch {
+            profileView = ProfileView.of(coach.learner, profileView.manual)
+        }
+    }
+
+    /**
+     * The player opened the settings.
+     */
+    private fun openSettings() {
+        tailMessage = ""
+    }
+
+    /**
+     * The player wants to go back to the default echo delay.
+     *
+     * This forgets the measurement, so the coach uses the value that was
+     * measured on a Pixel 7 until the measurement is run again.
+     */
+    private fun resetTail() {
+        scope.launch {
+            store.saveMeasuredTail(null)
+            measuredTail = null
+            tailMessage = "Back to the default."
+        }
+    }
+
     private fun refresh() {
         remaining = coach.state.remainingScore
         turns = coach.state.turnsPlayed
         suggestion = coach.suggestion
         message = coach.message
         double = coach.state.preferredDouble?.let { "Playing for D$it" } ?: ""
+        turnDarts = coach.state.currentDarts.size
+        turnScore = coach.state.currentTurnScore()
+        planKind = coach.suggestion.lineSequence()
+            .firstOrNull { it == "Checkout" || it == "Setup" }
+            ?: ""
+        correctionAvailable = gate.has(
+            Entitlement.Feature.MISSED_TARGET_CORRECTION
+        )
+        coach.missedTargetCorrectionAvailable = correctionAvailable
     }
 
     /**
@@ -458,56 +858,109 @@ class MainActivity : ComponentActivity() {
      */
     private fun measureTail() {
         Thread {
-            if (!tts.load()) {
-                Log.i("DartsCoach", "The voice would not load")
-                return@Thread
-            }
+            val samples = runTailMeasurement()
+            if (samples.isEmpty()) return@Thread
+            Log.i(
+                "DartsCoach",
+                "TAIL SUMMARY: mean=${"%.3f".format(samples.average())}s " +
+                    "longest=${"%.3f".format(samples.max())}s " +
+                    "(the Windows build used 0.35s)",
+            )
+        }.start()
+    }
 
-            val minBuffer = android.media.AudioRecord.getMinBufferSize(
-                16000,
-                android.media.AudioFormat.CHANNEL_IN_MONO,
-                android.media.AudioFormat.ENCODING_PCM_FLOAT,
-            )
-            if (minBuffer <= 0) {
-                Log.i("DartsCoach", "AudioRecord would not start")
-                return@Thread
-            }
-            val recorder = android.media.AudioRecord(
-                android.media.MediaRecorder.AudioSource.VOICE_RECOGNITION,
-                16000,
-                android.media.AudioFormat.CHANNEL_IN_MONO,
-                android.media.AudioFormat.ENCODING_PCM_FLOAT,
-                maxOf(minBuffer, 4096 * 4),
-            )
-            if (recorder.state != android.media.AudioRecord.STATE_INITIALIZED) {
-                recorder.release()
-                Log.i("DartsCoach", "AudioRecord did not initialise")
-                return@Thread
-            }
-            recorder.startRecording()
+    /**
+     * Measures the echo tail, and returns the samples.
+     *
+     * The measurement is the same one the hidden intent runs, but it does
+     * not save the result: this is the measuring instrument, and the saved
+     * number comes from the button in the settings.
+     */
+    private fun runTailMeasurement(): List<Double> {
+        if (!tts.load()) {
+            Log.i("DartsCoach", "The voice would not load")
+            return emptyList()
+        }
 
-            // Three phrases, so the answer is not one sample.
-            val phrases = arrayOf(
-                "You're at 401. Treble twenty, treble twenty, treble twenty.",
-                "One hundred and forty. Is that right?",
-                "That leaves one hundred and eighty one.",
-            )
-            val tails = mutableListOf<Double>()
+        val minBuffer = android.media.AudioRecord.getMinBufferSize(
+            16000,
+            android.media.AudioFormat.CHANNEL_IN_MONO,
+            android.media.AudioFormat.ENCODING_PCM_FLOAT,
+        )
+        if (minBuffer <= 0) {
+            Log.i("DartsCoach", "AudioRecord would not start")
+            return emptyList()
+        }
+        val recorder = android.media.AudioRecord(
+            android.media.MediaRecorder.AudioSource.VOICE_RECOGNITION,
+            16000,
+            android.media.AudioFormat.CHANNEL_IN_MONO,
+            android.media.AudioFormat.ENCODING_PCM_FLOAT,
+            maxOf(minBuffer, 4096 * 4),
+        )
+        if (recorder.state != android.media.AudioRecord.STATE_INITIALIZED) {
+            recorder.release()
+            Log.i("DartsCoach", "AudioRecord did not initialise")
+            return emptyList()
+        }
+        recorder.startRecording()
+
+        // Three phrases, so the answer is not one sample.
+        val phrases = arrayOf(
+            "You're at 401. Treble twenty, treble twenty, treble twenty.",
+            "One hundred and forty. Is that right?",
+            "That leaves one hundred and eighty one.",
+        )
+        val tails = mutableListOf<Double>()
+        try {
             for (phrase in phrases) {
                 val tail = tts.measureTail(phrase, recorder)
                 tails.add(tail)
                 Log.i("DartsCoach", "TAIL for '$phrase' was ${"%.3f".format(tail)}s")
             }
-
-            val mean = if (tails.isEmpty()) 0.0 else tails.sum() / tails.size
-            val longest = tails.maxOrNull() ?: 0.0
-            Log.i(
-                "DartsCoach",
-                "TAIL SUMMARY: mean=${"%.3f".format(mean)}s longest=${"%.3f".format(longest)}s " +
-                    "(the Windows build used 0.35s)",
-            )
+        } finally {
             recorder.stop()
             recorder.release()
+        }
+        return tails
+    }
+
+    /**
+     * Measures the echo tail and saves it.
+     *
+     * This is the one the player runs from the settings. It saves the
+     * result, so the coach waits the right amount on this phone from then
+     * on, and it can be run again if the phone is moved somewhere noisier.
+     */
+    private fun measureTailForThePlayer() {
+        if (measuringTail) return
+        measuringTail = true
+        tailMessage = "Measuring..."
+
+        Thread {
+            try {
+                val samples = runTailMeasurement()
+                if (samples.isEmpty()) {
+                    tailMessage = "The measurement could not run."
+                    return@Thread
+                }
+
+                val chosen = TailSetting.fromMeasurement(samples)
+                scope.launch {
+                    store.saveMeasuredTail(chosen)
+                    measuredTail = chosen
+                }
+                tailMessage = "Measured: ${TailSetting.describe(chosen)}"
+                Log.i(
+                    "DartsCoach",
+                    "TAIL MEASURED: ${"%.3f".format(chosen)}s from ${samples.size} sample(s)",
+                )
+            } catch (e: Exception) {
+                Log.w("DartsCoach", "The tail measurement failed", e)
+                tailMessage = "The measurement failed."
+            } finally {
+                measuringTail = false
+            }
         }.start()
     }
 
@@ -544,148 +997,5 @@ class MainActivity : ComponentActivity() {
             coach.handle("coach yes")
             refresh()
         }.start()
-    }
-
-    companion object {
-        /**
-         * The echo tail through the phone's own speaker.
-         *
-         * On a quiet desk the coach's voice is gone within about 50 to
-         * 100 ms of the audio stopping, and 0.10 s was enough. Measured
-         * again at the oche, where the room is not quiet and the phone's
-         * speaker is 10 cm from the microphone with a surface between them,
-         * the tail was 447 - 835 ms.
-         *
-         * So 0.35 s is used: the same value the Windows build used, and it
-         * covers the shorter half of the measured range. The cost of
-         * waiting a little too long is much smaller than the cost of the
-         * coach hearing its own reply.
-         *
-         * The right number has to be measured standing at the board. See
-         * `docs/TAIL.md`.
-         */
-        private const val PHONE_SPEAKER_TAIL = 0.35
-    }
-}
-
-@Composable
-private fun CoachScreen(
-    remaining: Int,
-    turns: Int,
-    suggestion: String,
-    message: String,
-    double: String,
-    listening: Boolean,
-    onNewGame: () -> Unit,
-    onUndo: () -> Unit,
-    onPrivacyPolicy: () -> Unit,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = "Remaining",
-                fontSize = 14.sp,
-                color = Color(0xFF7D8894),
-                letterSpacing = 1.sp,
-            )
-            Text(
-                text = if (listening) "listening" else "paused",
-                fontSize = 13.sp,
-                color = if (listening) Color(0xFF4ADE80) else Color(0xFF7D8894),
-            )
-        }
-
-        Text(
-            text = remaining.toString(),
-            fontSize = 88.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Monospace,
-            color = Color(0xFFE8EDF2),
-        )
-
-        if (double.isNotEmpty()) {
-            Text(text = double, fontSize = 16.sp, color = Color(0xFFFFD166))
-        }
-
-        if (message.isNotEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color(0xFF1A222C), androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = message,
-                    fontSize = 18.sp,
-                    color = Color(0xFFFFD166),
-                )
-            }
-        }
-
-        if (suggestion.isNotEmpty()) {
-            Text(
-                text = "SUGGESTION",
-                fontSize = 13.sp,
-                color = Color(0xFF7D8894),
-                letterSpacing = 1.sp,
-            )
-            Text(
-                text = suggestion,
-                fontSize = 22.sp,
-                fontFamily = FontFamily.Monospace,
-                color = Color(0xFFE8EDF2),
-            )
-        }
-
-        Text(
-            text = "Turns: $turns",
-            fontSize = 14.sp,
-            color = Color(0xFF7D8894),
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            OutlinedButton(
-                onClick = onUndo,
-                modifier = Modifier.weight(1f),
-            ) {
-                Text("Undo")
-            }
-            Button(
-                onClick = onNewGame,
-                modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF4ADE80),
-                    contentColor = Color(0xFF0B0F14),
-                ),
-            ) {
-                Text("New game")
-            }
-        }
-
-        Text(
-            text = "Speech and voice run on this phone. No account, no ads, no analytics.",
-            fontSize = 12.sp,
-            color = Color(0xFF7D8894),
-        )
-
-        OutlinedButton(
-            onClick = onPrivacyPolicy,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text("Privacy policy")
-        }
     }
 }

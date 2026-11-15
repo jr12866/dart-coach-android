@@ -17,7 +17,17 @@ captures/
 *.aab
 *.ap_
 *.dex
-release/
+
+# The legacy Android Gradle plugin wrote its release output to a "release"
+# directory beside the module. Modern AGP writes it under build/, which is
+# already ignored above.
+#
+# This rule has to stay anchored to the root. An unanchored "release/" also
+# matches every directory named "release" at any depth, including
+# app/src/release - which is source, and holds the release build's no-op
+# test-Pro switch. Leaving it unanchored hid that file from git, so it was
+# never committed and a fresh clone could not build the release variant.
+/release/
 
 # IDE
 .idea/
@@ -29,6 +39,10 @@ release/
 # OS
 .DS_Store
 Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
 
 # --- Models ---
 #
