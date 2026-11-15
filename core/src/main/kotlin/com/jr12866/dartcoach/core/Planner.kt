@@ -12,7 +12,10 @@ package com.jr12866.dartcoach.core
  *
  * The search is not cheap, so it is built once and shared.
  */
-class Planner private constructor(private val maxScore: Int) {
+class Planner private constructor(
+    private val maxScore: Int,
+    private val profile: PlayerProfile,
+) {
 
     /** The best dart and its value, for a score and a number of darts left. */
     private data class Entry(val value: Double, val aim: Aim?)
@@ -46,6 +49,23 @@ class Planner private constructor(private val maxScore: Int) {
     /** The score being settled, while the setup sweep runs. */
     private var current: Int = maxScore
 
+    /**
+     * Every dart the player can throw at, for this player.
+     *
+     * The order is the same as the population list; only the probabilities
+     * are this player's.
+     */
+    private val aims: List<Aim> = buildAims(profile)
+
+    /**
+     * The finishing dart for each double number, for this player.
+     *
+     * Keyed by what the dart is worth, because the bull is worth 50 rather
+     * than twice its number.
+     */
+    private val finishByValue: Map<Int, Aim> =
+        aims.filter { it.finishes }.associateBy { it.value }
+
     private data class RouteTables(
         val checkout: Map<Pair<Int, Int>, Entry>,
         val setup: Map<Pair<Int, Int>, Entry>,
@@ -61,7 +81,7 @@ class Planner private constructor(private val maxScore: Int) {
         checkoutMemo[key]?.let { return it }
 
         var best = Entry(-1.0, null)
-        for (aim in AIMS) {
+        for (aim in aims) {
             val value = branch(cur, darts, aim, ::checkoutSolve)
             if (value > best.value) best = Entry(value, aim)
         }
@@ -78,7 +98,7 @@ class Planner private constructor(private val maxScore: Int) {
         store[key]?.let { return it }
 
         var best = Entry(-1.0, null)
-        for (aim in AIMS) {
+        for (aim in aims) {
             val value = branch(cur, darts, aim) { s, l -> setupSolve(s, l, guess) }
             if (value > best.value) best = Entry(value, aim)
         }
@@ -254,6 +274,20 @@ class Planner private constructor(private val maxScore: Int) {
     // -- the double the player asked for ------------------------------------
 
     /**
+     * The finishing dart for a double number, for this player.
+     *
+     * The bull is worth 50 rather than twice its number, so every double is
+     * looked up by what its dart is worth. Twenty-five is the outer bull, so
+     * it is taken to mean the double bull.
+     */
+    private fun aimForDouble(double: Int): Aim? {
+        val target = if (double == 25) Darts.BULL_DOUBLE else double
+        if (target !in 1..20 && target != Darts.BULL_DOUBLE) return null
+        val value = if (target == Darts.BULL_DOUBLE) Darts.BULL_DOUBLE else 2 * target
+        return finishByValue[value]
+    }
+
+    /**
      * The darts that get a shot at `double` from `score`, or null if there is
      * no way.
      *
@@ -347,7 +381,7 @@ class Planner private constructor(private val maxScore: Int) {
         // Only the double they asked for may end the leg. The other finishing
         // darts stay on the board as ordinary scoring darts, because a player
         // who wants double sixteen still wants to throw at the bull.
-        val options = AIMS.map { aim ->
+        val options = aims.map { aim ->
             if (!aim.finishes || aim.label == finish.label) aim
             else aim.copy(finishes = false)
         }
@@ -458,19 +492,46 @@ class Planner private constructor(private val maxScore: Int) {
     }
 
     /**
+     * The chance of checking out `score` with the darts left in the visit.
+     *
+     * The three-dart table is the normal one. A shorter visit uses the
+     * checkout search directly, so a correction can be planned from the
+     * darts that are actually left.
+     */
+    private fun checkoutValue(score: Int, darts: Int): Double {
+        if (score <= 0) return 0.0
+        if (darts <= 0) return 0.0
+        if (score > Darts.MAX_CHECKOUT) return 0.0
+        if (darts == MAX_DARTS_PER_TURN) return checkoutValue(score)
+        return checkoutSolve(score, darts).value
+    }
+
+    /**
      * The darts to throw at `score`, plus the plan if the first one drops.
      */
-    fun planFor(score: Int): Plan {
+    fun planFor(score: Int): Plan = planFor(score, MAX_DARTS_PER_TURN)
+
+    /**
+     * The darts to throw at `score` with only `dartsRemaining` darts left in
+     * the visit.
+     *
+     * This is the plan after a corrected miss: the darts already thrown
+     * count, so the coach must not suggest them again.
+     */
+    fun planFor(score: Int, dartsRemaining: Int): Plan {
         if (score <= 0) return Plan(score = score)
         if (score == 1) {
             // The smallest double is 2, so one point can never be finished.
             return Plan(score = score)
         }
 
-        // Scores that cannot be finished in three darts (bogey numbers) are
-        // set up instead of checked out.
-        val setup = score > Darts.MAX_CHECKOUT || checkoutValue(score) == 0.0
-        val walked = walk(score, score, 3, setup)
+        val darts = dartsRemaining.coerceIn(0, MAX_DARTS_PER_TURN)
+        if (darts == 0) return Plan(score = score)
+
+        // Scores that cannot be finished in the darts left are set up
+        // instead of checked out.
+        val setup = score > Darts.MAX_CHECKOUT || checkoutValue(score, darts) == 0.0
+        val walked = walk(score, score, darts, setup)
         val aims = walked.first
         val leaves = walked.second
         val finishes = walked.third
@@ -479,17 +540,17 @@ class Planner private constructor(private val maxScore: Int) {
         var fallbackLeaves = score
         if (aims.isNotEmpty() && aims[0].wobbleValue != 0) {
             val wobbled = score - aims[0].wobbleValue
-            if (wobbled > 0) {
-                val w = walk(score, wobbled, 2, setup)
+            if (wobbled > 0 && darts > 1) {
+                val w = walk(score, wobbled, darts - 1, setup)
                 fallback = w.first
                 fallbackLeaves = w.second
             }
         }
 
         val doubles = if (setup) {
-            if (leaves > 0) doubleChances(leaves) else emptyList()
+            if (leaves > 0) doubleChances(leaves, darts) else emptyList()
         } else {
-            doubleChances(score)
+            doubleChances(score, darts)
         }
 
         return Plan(
@@ -499,7 +560,11 @@ class Planner private constructor(private val maxScore: Int) {
             finishes = finishes,
             fallbackAims = fallback,
             fallbackLeaves = fallbackLeaves,
-            probability = turnValue(score),
+            probability = if (darts == MAX_DARTS_PER_TURN) {
+                turnValue(score)
+            } else {
+                checkoutValue(score, darts)
+            },
             doubles = doubles,
         )
     }
@@ -515,8 +580,18 @@ class Planner private constructor(private val maxScore: Int) {
         /** The shared planner. Building it is the expensive part. */
         val shared: Planner by lazy { build() }
 
-        /** Builds the planner. */
-        fun build(): Planner = Planner(Darts.MAX_SCORE).build()
+        /**
+         * Builds the planner.
+         *
+         * With no profile this is the planner the coach was ported with: the
+         * population averages. A profile makes the probabilities that
+         * player's own.
+         *
+         * Building takes about 100-170 ms, which is quick enough to do
+         * whenever a hit rate changes.
+         */
+        fun build(profile: PlayerProfile = PlayerProfile()): Planner =
+            Planner(Darts.MAX_SCORE, profile).build()
     }
 }
 

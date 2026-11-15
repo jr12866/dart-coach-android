@@ -8,15 +8,29 @@ package com.jr12866.dartcoach.core
 data class ParseResult(
     /**
      * "turn_score", "qualified_darts", "bust", "new_game", "undo",
-     * "whats_my_score", "continue", "prefer_double", or "invalid".
+     * "whats_my_score", "continue", "prefer_double", "report_miss", or
+     * "invalid".
      */
     val command: String,
     /** The turn score, when the command carries one. */
     val score: Int? = null,
     /** The individual darts, when the player reported them one at a time. */
     val darts: List<Int>? = null,
+    /**
+     * The same darts as segments, when the player said which bed and which
+     * ring each one was.
+     *
+     * The values alone cannot say whether a sixteen was a single sixteen or
+     * a double eight, and the learner needs to know. This is null when the
+     * player reported a bare total instead of naming the darts.
+     */
+    val dartSegments: List<Segment>? = null,
     /** The double the player asked to finish on. */
     val double: Int? = null,
+    /** The target the player says they meant to hit, when correcting a miss. */
+    val intendedSegment: Segment? = null,
+    /** The segment that actually landed, when correcting a miss. */
+    val actualSegment: Segment? = null,
     /**
      * True when the parser found a score report and would not take it. The
      * player stood at the oche expecting to be scored, so they have to be
@@ -54,6 +68,9 @@ object Parser {
     /** The multipliers a dart qualifier carries. */
     private val QUALIFIERS = mapOf(
         "single" to 1, "double" to 2, "triple" to 3, "treble" to 3,
+        // Whisper writes "treble" as "trouble" often enough that treating it
+        // as a treble is safer than silently hearing a bare number.
+        "trouble" to 3,
     )
 
     /** The number words, including zero and the tens. */
@@ -213,6 +230,11 @@ object Parser {
 
         if (isWhatsTheLeave(t)) return command("whats_the_leave")
 
+        // A miss is checked before the score gate because these phrases are
+        // deliberately not score reports: "I hit 8 instead" would otherwise
+        // be heard as a turn worth eight.
+        reportMiss(t)?.let { return it }
+
         // The player naming the double they want to finish on. This is asked
         // for before the score gate, because a phrase with a preference word
         // in it is never a score report, and "double 20" on its own is a dart
@@ -228,7 +250,8 @@ object Parser {
             return ParseResult(command = "invalid")
         }
 
-        val qualifiedDarts = extractQualifiedDarts(t)
+        val qualifiedSegments = extractQualifiedSegments(t)
+        val qualifiedDarts = qualifiedSegments?.map { it.value }
         val bareNumbers = extractBareNumbers(t)
 
         // From here the utterance has passed the score gate and a number was
@@ -249,7 +272,11 @@ object Parser {
             if (!isValidThreeDartScore(qualifiedDarts.sum())) {
                 return ParseResult(command = "invalid", refused = true)
             }
-            return ParseResult(command = "qualified_darts", darts = qualifiedDarts)
+            return ParseResult(
+                command = "qualified_darts",
+                darts = qualifiedDarts,
+                dartSegments = qualifiedSegments,
+            )
         }
 
         if (bareNumbers != null) {
@@ -344,6 +371,179 @@ object Parser {
     }
 
     /**
+     * The player's report of a missed dart.
+     *
+     * The common spoken forms are supported: "I missed double 16 and hit
+     * single 8", "I hit single 8 instead", and "I hit 8". The intended
+     * target may be omitted; the coach then uses the target it aimed at.
+     *
+     * A phrase that is shaped like a correction but does not say what
+     * landed comes back as [ParseResult.command] "report_miss" with no
+     * actual segment. That is not the same as not being a correction: the
+     * player has said something about a miss, and the coach has to ask them
+     * to say the landing again rather than standing silent. The reason is
+     * that Whisper was heard to write the spoken "8" as "eat", and a
+     * player who gets no reply has no way to know the coach did not
+     * understand.
+     */
+    private fun reportMiss(text: String): ParseResult? {
+        if (!MISS_PATTERN.containsMatchIn(text)) return null
+
+        val segments = extractQualifiedSegments(text)
+
+        // The landing and the intended target are told apart by the verb in
+        // front of them, not by what they are.
+        //
+        // "I missed double 16 and hit single 8" names two darts: the one
+        // after "missed" is the target that was missed and the one after
+        // "hit" is what landed. "I hit single 8 instead" names one dart, and
+        // it follows "hit", so it is the landing. "I missed double 16" names
+        // one dart, and it follows "missed", so it is the target - there is
+        // no landing in the sentence at all.
+        //
+        // The last case is the one that has to be got right. Reading it the
+        // other way round would tell the player they hit the very double
+        // they said they missed, and would correct the turn to a dart that
+        // never landed.
+        val missed = dartAfter(text, MISSED_VERB_PATTERN)
+        val hit = dartAfter(text, HIT_VERB_PATTERN)
+
+        val actual: Segment?
+        val intended: Segment?
+        when {
+            hit != null -> {
+                // The dart that landed is the one after "hit". The one after
+                // "missed" is the target.
+                actual = hit
+                intended = missed
+            }
+            missed != null -> {
+                // Only the target was named. There is no landing in the
+                // sentence, so there is nothing to correct to.
+                actual = null
+                intended = missed
+            }
+            segments != null && segments.size >= 2 -> {
+                // Two darts and no verb to tell them apart. The first is
+                // the target and the second is what landed, which is the
+                // order the phrase is normally spoken in.
+                intended = segments.first()
+                actual = segments.last()
+            }
+            segments != null && segments.size == 1 -> {
+                actual = segments.first()
+                intended = null
+            }
+            else -> {
+                val value = extractMissValue(text)
+                actual = value?.let { DartThrow.fromValue(it)?.segment }
+                // A single bare number in a miss report is the landing, not
+                // the target: "I hit 8 instead" is what landed, and the
+                // target is left to the coach's own last suggestion.
+                intended = null
+            }
+        }
+
+        if (actual == null) {
+            // Correction-shaped, but no landing in it. The engine asks for
+            // the landing rather than guessing.
+            return ParseResult(
+                command = "report_miss",
+                intendedSegment = intended,
+            )
+        }
+
+        return ParseResult(
+            command = "report_miss",
+            intendedSegment = intended,
+            actualSegment = actual,
+        )
+    }
+
+    /**
+     * The dart that follows a verb in the phrase, if any.
+     *
+     * This is what tells "I missed double 16" from "I hit single 8". Both
+     * name one dart and both are corrections, but the first is the target
+     * that was missed and the second is the landing.
+     *
+     * The bull is found here too. It is the one part of the board with a
+     * name rather than a number, so it has to be read from the words, and
+     * it has to be read from the words *after the verb*: "I missed the bull
+     * and hit single 8" is the bull missed and the eight landed, and the
+     * other way round would be nonsense.
+     */
+    private fun dartAfter(text: String, verb: Regex): Segment? {
+        val match = verb.find(text) ?: return null
+        val after = text.substring(match.range.last + 1)
+        return nearestDart(after)
+    }
+
+    /**
+     * The first dart in a phrase, whether it is named by a qualifier, by
+     * the name of the bull, or by its value.
+     *
+     * "First" matters. "I hit the bull and single 8 instead" names two
+     * darts, and the one nearest the verb is the landing; taking the
+     * qualified one because it is easier to parse would read the eight as
+     * the landing and leave the bull unmentioned.
+     */
+    private fun nearestDart(text: String): Segment? {
+        val qualified = QUALIFIED_DART_PATTERN.find(text)
+        val bull = BULL_PATTERN.find(text)
+        val value = extractBareNumbers(
+            BULL_PHRASE_PATTERN.replace(text, " ")
+        )?.singleOrNull()
+
+        var bestStart = Int.MAX_VALUE
+        var best: Segment? = null
+
+        if (qualified != null) {
+            bestStart = qualified.range.first
+            best = extractQualifiedSegments(text)?.firstOrNull()
+        }
+
+        if (bull != null && bull.range.first < bestStart) {
+            bestStart = bull.range.first
+            best = extractBullSegment(text)
+        }
+
+        if (value != null && bestStart == Int.MAX_VALUE) {
+            best = DartThrow.fromValue(value)?.segment
+        }
+
+        return best
+    }
+
+    /**
+     * The bull, when the phrase names it.
+     *
+     * The bull is the one part of the board that has a name of its own
+     * rather than a number, so it has to be read from the words. "the bull"
+     * is the double bull and "outer bull" is the twenty-five; a bare "bull"
+     * is the double bull, because that is the one players mean when they
+     * say "the bull".
+     */
+    private fun extractBullSegment(text: String): Segment? {
+        if (!BULL_PATTERN.containsMatchIn(text)) return null
+        val outer = OUTER_BULL_PATTERN.containsMatchIn(text)
+        return if (outer) Segment(25, 1) else Segment(25, 2)
+    }
+
+    /**
+     * The single dart value in a miss report.
+     *
+     * This deliberately ignores qualified dart phrases, which have already
+     * been handled by [extractQualifiedSegments], and the words naming the
+     * bull, which are not numbers at all.
+     */
+    private fun extractMissValue(text: String): Int? {
+        val withoutQualified = QUALIFIED_DART_PATTERN.replace(text, " ")
+        val withoutBull = BULL_PHRASE_PATTERN.replace(withoutQualified, " ")
+        return extractBareNumbers(withoutBull)?.singleOrNull()
+    }
+
+    /**
      * The double the player named, if this phrase is them naming one.
      *
      * "I prefer double 20" and "I'd rather have double eighteen" ask the
@@ -374,19 +574,28 @@ object Parser {
     }
 
     /** "double 18" and "double eighteen" are the same dart. */
-    private fun extractQualifiedDarts(text: String): List<Int>? {
+    private fun extractQualifiedDarts(text: String): List<Int>? =
+        extractQualifiedSegments(text)?.map { it.value }
+
+    /**
+     * The qualified darts in a phrase, as segments.
+     *
+     * Each one keeps the bed it was on and the ring it was in, which is what
+     * the hit-rate learner counts. The values come out of the segments.
+     */
+    private fun extractQualifiedSegments(text: String): List<Segment>? {
         val matches = QUALIFIED_DART_PATTERN.findAll(text).toList()
         if (matches.isEmpty()) return null
 
-        val darts = mutableListOf<Int>()
+        val segments = mutableListOf<Segment>()
         for (m in matches) {
             val qualifier = m.groupValues[1].lowercase()
             val value = m.groupValues[2].lowercase()
             val multiplier = QUALIFIERS[qualifier] ?: continue
             val number = value.toIntOrNull() ?: NUMBER_WORDS[value] ?: continue
-            darts.add(number * multiplier)
+            segments.add(Segment(number, multiplier))
         }
-        return darts
+        return segments
     }
 
     /**
@@ -663,14 +872,66 @@ object Parser {
 
     private val BUS_FULLMATCH = Regex("bus\\.?")
 
+    /**
+     * A phrase that reports a missed dart.
+     *
+     * "Missed" on its own is enough. "I hit 8 instead" is also enough,
+     * because "instead" makes it a correction rather than an ordinary dart
+     * report.
+     *
+     * A bull named with "instead" counts too. The bull is the one part of
+     * the board with a name rather than a number, so without this a player
+     * who missed T20 and hit the bull would say "I hit the bull instead" and
+     * be told nothing at all.
+     */
+    private val MISS_PATTERN = Regex(
+        "\\bmiss(?:ed)?\\b|\\binstead\\b|\\bgot\\s+\\d+\\b|" +
+            "\\bhit\\s+(?:the\\s+)?(?:outer\\s+|double\\s+)?bull\\b",
+    )
+
     private val BULL_PATTERN = Regex("\\bbull\\b")
+
+    /**
+     * The outer bull, named as such.
+     *
+     * A bare "bull" is the double bull, which is the one players mean. The
+     * outer bull has to be said as "outer bull" or "25".
+     */
+    private val OUTER_BULL_PATTERN = Regex("\\bouter\\s+bull\\b|\\bgreen\\s+bull\\b")
+
+    /**
+     * The verb that names the target that was missed.
+     *
+     * The dart after this verb is what the player was aiming at and did not
+     * get, so it is the target of the correction and not the landing.
+     */
+    private val MISSED_VERB_PATTERN = Regex("\\bmiss(?:ed)?\\b")
+
+    /**
+     * The verb that names what actually landed.
+     *
+     * The dart after this verb is the landing, so it is what the last dart
+     * in the turn is replaced with.
+     */
+    private val HIT_VERB_PATTERN = Regex("\\b(?:hit|landed|scored)\\b")
+
+    /**
+     * The words that name the bull, for taking the numbers out of a phrase.
+     *
+     * The bull is not a number, so it has to be taken out before the bare
+     * numbers are read, or "I hit the bull and 8" would be read as one
+     * number.
+     */
+    private val BULL_PHRASE_PATTERN = Regex(
+        "\\b(?:the\\s+)?(?:outer\\s+|double\\s+)?bull\\b|\\bgreen\\s+bull\\b",
+    )
 
     private val PREFERRED_DOUBLE_PATTERN = Regex(
         "\\bdouble\\s+(\\d{1,2}|${DOUBLE_WORD_NUMBERS.joinToString("|")}|bull)\\b"
     )
 
     private val QUALIFIED_DART_PATTERN = Regex(
-        "\\b(single|double|triple|treble)\\s+(\\d+|" +
+        "\\b(single|double|triple|treble|trouble)\\s+(\\d+|" +
             NUMBER_WORDS.keys.sortedByDescending { it.length }.joinToString("|") +
             ")\\b"
     )

@@ -20,23 +20,6 @@ val NUMBER_WORDS: Map<Int, String> = mapOf(
     19 to "nineteen", 20 to "twenty",
 )
 
-/** Share of attempts that land in the treble bed. */
-private val TREBLE_HIT: Map<Int, Double> = mapOf(
-    2 to 0.07, 3 to 0.09, 4 to 0.11, 5 to 0.13, 6 to 0.16, 7 to 0.19,
-    8 to 0.22, 9 to 0.25, 10 to 0.29, 11 to 0.33, 12 to 0.38, 13 to 0.42,
-    14 to 0.46, 15 to 0.49, 16 to 0.51, 17 to 0.53, 18 to 0.55, 19 to 0.56,
-    20 to 0.58,
-)
-
-/** Chance of hitting a single. */
-private const val SINGLE_HIT = 0.90
-
-/** Chance of hitting the outer bull. */
-private const val SB_HIT = 0.90
-
-/** Chance of hitting the double bull. */
-private const val DB_HIT = 0.50
-
 /**
  * Share of a miss that drops into the single bed above the target.
  *
@@ -44,9 +27,6 @@ private const val DB_HIT = 0.50
  * leaves 20 for D10, while a missed D19 leaves 19, which no double can take.
  */
 private const val WOBBLE_CHANCE = 0.5
-
-/** The chance of hitting a double, which gets easier as the double gets bigger. */
-private fun doubleHit(n: Int): Double = 0.30 + 0.0085 * n
 
 /**
  * A target the player can throw at.
@@ -70,7 +50,21 @@ data class Aim(
     val wobbleValue: Int,
     /** True for the darts that can finish a leg: the doubles and the bull. */
     val finishes: Boolean,
-)
+) {
+    /**
+     * The segment this aim is, for the hit-rate learner.
+     *
+     * The bull is bed 25, and the two bulls are told apart by the ring
+     * rather than the bed, the same way the value is.
+     */
+    val segment: Segment
+        get() = when (kind) {
+            "treble" -> Segment(label.removePrefix("T").toInt(), 3)
+            "double" -> Segment(label.removePrefix("D").toInt(), 2)
+            "bull" -> if (label == "Bull") Segment(25, 2) else Segment(25, 1)
+            else -> Segment(value, 1)
+        }
+}
 
 /**
  * Every dart the player can throw at, in the order the planner prefers them.
@@ -79,9 +73,18 @@ data class Aim(
  * planner takes the first aim that beats the current best, so two aims with
  * the same value are broken by this order.
  */
-internal val AIMS: List<Aim> = buildList {
+internal val AIMS: List<Aim> = buildAims(PlayerProfile())
+
+/**
+ * The same list, built for a player rather than for the population.
+ *
+ * The order is the same as [AIMS] and must stay the same: the planner breaks
+ * ties on the order of this list, so reordering it changes the advice the
+ * coach gives. Only the probabilities differ.
+ */
+internal fun buildAims(profile: PlayerProfile): List<Aim> = buildList {
     for (n in 20 downTo 2) {
-        val p = TREBLE_HIT[n]!!
+        val p = profile.trebleChance(n)
         add(
             Aim(
                 label = "T$n",
@@ -102,8 +105,8 @@ internal val AIMS: List<Aim> = buildList {
             speech = "double bull",
             value = 50,
             kind = "bull",
-            pHit = DB_HIT,
-            pWobble = (1 - DB_HIT) * WOBBLE_CHANCE,
+            pHit = profile.doubleBullHit,
+            pWobble = (1 - profile.doubleBullHit) * WOBBLE_CHANCE,
             wobbleValue = 25,
             finishes = true,
         )
@@ -115,7 +118,7 @@ internal val AIMS: List<Aim> = buildList {
             speech = "outer bull",
             value = 25,
             kind = "bull",
-            pHit = SB_HIT,
+            pHit = profile.outerBullHit,
             pWobble = 0.0,
             wobbleValue = 0,
             finishes = false,
@@ -123,7 +126,7 @@ internal val AIMS: List<Aim> = buildList {
     )
 
     for (n in 20 downTo 1) {
-        val p = doubleHit(n)
+        val p = profile.doubleChance(n)
         add(
             Aim(
                 label = "D$n",
@@ -145,7 +148,7 @@ internal val AIMS: List<Aim> = buildList {
                 speech = "single ${NUMBER_WORDS[n]}",
                 value = n,
                 kind = "single",
-                pHit = SINGLE_HIT,
+                pHit = profile.singleHit,
                 pWobble = 0.0,
                 wobbleValue = 0,
                 finishes = false,
