@@ -67,7 +67,7 @@ move.
 | Decision | Choice | Why |
 |---|---|---|
 | Model | One-time IAP | The value is a static algorithm and a static dataset. A subscription over that churns into refunds. |
-| Price | **$2.99** | The 325 MB install is paid *before* the paywall is seen. Small prices convert better at that point. |
+| Price | **$2.99** | The 130 MB download is paid *before* the paywall is seen. Small prices convert better at that point. |
 | Free tier | **Soft gate** | The free tier coaches the live leg; Pro adds the depth. In a Play-driven market the free tier is the only thing most reviewers and the ranking algorithm see, so a demo-tier costs rating volume, and rating volume is what makes the next install cheap. |
 | Hit rates | Learned by default, manual override | Manual-only is 40 sliders nobody touches. Learned-only is nonsense for the first few sessions. |
 | Checkout | Play Billing only | Keeps "no account" true and needs no server. A direct purchase can be added later and set the same local flag. |
@@ -342,13 +342,26 @@ There is no navigation library today — `MainActivity.kt:97-116` renders one
 
 ## Phase 6 — Ship
 
-- [ ] **6.1 Version name and code** — `0.2.0`, version code 2
+- [x] **6.1 Version name and code** — `0.2.0`, version code 2
 - [ ] **6.2 Play Console** — the IAP product, its price, and the listing
-- [ ] **6.3 Internal testing first** — the 325 MB install is the thing to
+- [ ] **6.3 Internal testing first** — the 130 MB download is the thing to
   test over mobile data
 - [ ] **6.4 The pre-launch report**, read rather than skimmed
-- [ ] **6.5 A rollback note** — how to make the app free again if the paywall
-  turns out to be wrong, and how to change the price without a release
+- [x] **6.5 A rollback note** — `docs/ROLLBACK.md`: how to make the app free
+  again if the paywall turns out to be wrong, and how to change the price
+  without a release
+
+> **6.1 and 6.5 are done.** The version was already set in
+> `app/build.gradle.kts`, and the rollback note is written.
+>
+> **The note found something.** Three of the eight gates in `PRO_FEATURES` -
+> `OUT_CHART`, `PERSONALISED_PROBABILITIES` and `PERSISTENT_PREFERENCES` -
+> are declared but never asked, so those three features are not actually
+> locked. The out chart and its percentages are free today, which is the
+> opposite of what this plan says. That has to be fixed before the first
+> release, because those are the things Pro is being sold for. See
+> `docs/ROLLBACK.md`, "What the gate actually controls, and what it does
+> not".
 
 ---
 

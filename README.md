@@ -89,10 +89,11 @@ See `docs/SETUP.md`. In short:
 
 ## Distribution
 
-The app is published on Google Play. The models (~325 MB) ship as a
+The app is published on Google Play. The models (172 MB) ship as a
 **Play Asset Delivery** pack with `install-time` delivery, so they are part of
 the install - there is no download step on first launch, and no "downloading
-models" screen.
+models" screen. The download is about 130 MB and the app occupies about 240 MB
+on the phone.
 
 The app declares an `INTERNET` permission, and it is used for one thing:
 talking to Google Play about the Pro purchase. The coach itself works with

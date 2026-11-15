@@ -189,9 +189,10 @@ and wants to throw darts, not watch a progress bar. Install-time also means no
 download code at all: the models are read with the ordinary `AssetManager`,
 exactly as if they were in the app's own assets.
 
-**The one cost.** The install is ~325 MB, and Play shows a warning dialog for
-apps over 200 MB on mobile data. That is honest: the app is large because it
-contains a speech recogniser and a voice.
+**The one cost.** The download is about 130 MB and the app occupies about 240 MB
+on the phone. That is honest: the app is large because it contains a speech
+recogniser and a voice. It is under the 200 MB that makes Play warn the user
+before an install over mobile data.
 
 **The alternative, if it is ever wanted.** `fast-follow` or `on-demand`, using
 `AssetPackManager`. The Gradle change is one line. The catch, from Google's
@@ -302,7 +303,7 @@ a static dataset. There is nothing that changes month to month, so there is
 nothing a subscription renews. A subscription over a fixed dataset churns
 into refunds and bad reviews, and the review text says "nothing new".
 
-**Why $2.99.** The install is around 325 MB, and that cost is paid *before*
+**Why $2.99.** The download is around 130 MB, and that cost is paid *before*
 the player ever sees the paywall. By the time they reach the paywall they
 have already committed to a large download, which is the moment a small
 price converts best. The price can be changed in Play Console without a

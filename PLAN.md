@@ -63,19 +63,22 @@ instead of app bundles. An app bundle gets 500 MB for the base module alone.
 wrong, and it was the wrong kind of wrong — it would have pushed the whole
 design toward a download-and-verify-the-checksum scheme for no reason.
 
-Our assets:
+Our assets, as measured on the built bundle:
 
 | Asset | Size |
 |---|---|
-| Whisper `base.en` int8 (encoder + decoder + tokens) | ~250 MB |
-| Piper `en_US-lessac-medium` | ~63 MB |
-| silero-vad | ~2 MB |
-| espeak-ng data | ~10 MB |
-| **Total** | **~325 MB** |
+| Whisper `base.en` int8 (encoder + decoder + tokens) | 153 MB |
+| Piper `en_US-lessac-medium` | 18 MB |
+| silero-vad | 0.6 MB |
+| **Total, in the pack** | **172 MB** |
 
 That fits in a **single install-time asset pack** with room to spare, and the
-base module (the app itself, with the Kotlin code and the `sherpa-onnx-jni.so`
-native library) stays small — a few MB.
+base module (the app itself, with the Kotlin code, the native libraries and the
+espeak-ng data) is 66 MB.
+
+These are measured, not estimated. The first draft of this plan put the models
+at 325 MB, from the size of the *unquantised* Whisper models. The int8
+quantisation is what makes them half that.
 
 ### The three delivery modes
 
@@ -94,14 +97,15 @@ verification to write. The model paths are read with the ordinary
 `assets/`.
 
 That is a *much* simpler app than on-demand delivery, and it is worth being
-explicit about why: the models are 325 MB, and a user who has just installed a
+explicit about why: the models are 172 MB, and a user who has just installed a
 darts coach wants to throw darts, not watch a progress bar. The friction of
 on-demand delivery buys nothing here because the app has no use until the
 models arrive anyway.
 
-Trade-off accepted: the install is ~325 MB, and Play shows users a warning
-dialog for apps over 200 MB when on mobile data. That is honest and expected —
-it is a large app because it contains a speech recogniser and a voice.
+Trade-off accepted: the download is about 130 MB and the app occupies about
+240 MB on the phone. That is a large app because it contains a speech
+recogniser and a voice, but it is under the 200 MB that makes Play warn the
+user before installing over mobile data.
 
 ### If on-demand turns out to be wanted later
 
@@ -353,9 +357,14 @@ Kotlin test asserting identical output. See `docs/PARITY.md`.
   policy** button. **Done.**
 
 **Play review note.** A microphone-using app attracts scrutiny. The claims are
-kept simple and true: on-device ASR, no data transmitted, no analytics, no ads.
-Because the app has no `INTERNET` permission, the Data safety answer is "no
-data is collected" under Google's definition.
+kept simple and true: on-device ASR, no analytics, no ads, and the microphone
+audio never leaves the phone.
+
+The app now declares `INTERNET`, for the Pro purchase, so the Data safety
+answer is no longer "no data is collected". It is **purchase history is
+collected, nothing else**: Google's definition of "collected" is data sent off
+the device, and the purchase is sent while the microphone audio is not. The
+answers are in `docs/STORE-LISTING.md`.
 
 ---
 
