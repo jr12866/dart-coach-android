@@ -34,7 +34,11 @@ sherpa-onnx OfflineTts (Piper)      <- replaces piper-tts + PortAudio
 AudioTrack
 ```
 
-All three models run on the device. The app requests no network permission.
+All three models run on the device. The coach needs no network at all.
+
+The one network connection in the app is to Google Play, to take the payment
+for the optional **Darts Coach Pro** upgrade. Nothing else uses it, and the
+microphone audio never goes anywhere near it.
 
 ## The core is a port, and that is deliberate
 
@@ -90,12 +94,39 @@ The app is published on Google Play. The models (~325 MB) ship as a
 the install - there is no download step on first launch, and no "downloading
 models" screen.
 
-The app declares **no `INTERNET` permission**. It cannot talk to a server
-because it has no way to. That is what makes "everything happens on your
-phone" a property of the build rather than a promise.
+The app declares an `INTERNET` permission, and it is used for one thing:
+talking to Google Play about the Pro purchase. The coach itself works with
+the phone in aeroplane mode, and no code in the app sends the microphone audio
+anywhere.
 
 See `docs/PUBLISHING.md` for signing, the store listing, and the Data safety
 form.
+
+## Darts Coach Pro
+
+Pro is a one-time purchase of $2.99, handled by Google Play. There is no
+account and no server: the purchase lives in the Play Store, the app asks Play
+what the account owns, and the answer is cached on the phone so the app still
+works when Play cannot be reached.
+
+What Pro adds:
+
+- **Personalised hit rates** - the coach learns how well you throw from your
+  own play and gives you the routes that suit you
+- **The out chart** - every score from 2 to 170, with the route and the chance
+  of checking out
+- **Setup coaching** - what to aim at from 171 to 350
+- **Persistent preferences** - the double you finish on, kept between legs
+- **Your statistics** - your real checkout percentage and where your misses go
+- **Missed-target corrections** - say what you actually hit when you miss the
+  intended dart, and the coach replaces it and re-plans the rest of your turn
+  as a checkout or a setup
+
+The live coach is free. The scorekeeping, the read-back, the undo and the
+suggestion at the oche all work without paying.
+
+`docs/PRO-PLAN.md` is the plan for how Pro was built, and what is still to
+come.
 
 ## Strategy
 

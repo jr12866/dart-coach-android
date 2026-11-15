@@ -39,9 +39,17 @@ privacy text, and the Play Console Data safety answers in agreement.
 > **Private by design**
 >
 > Speech recognition and the coach's voice both run on your phone. Darts Coach
-> has no account, no ads, no analytics, and no internet permission. Your
-> microphone audio is processed on the device and never leaves it.
+> has no account, no ads, and no analytics. Your microphone audio is processed
+> on the device and never leaves it. The only network connection is to Google
+> Play, to take payment for the optional Pro upgrade.
 >
+> **Darts Coach Pro - one purchase, no subscription**
+>
+> Pro is $2.99, once. It works out your own hit rates from your own play, and
+> gives you the routes that suit you rather than the ones that suit everyone.
+> It adds the full out chart for every score from 2 to 170, the setup coaching
+> for the middle of the leg, and your own statistics. The live coach keeps
+> working either way.>
 > A large first install is expected: the speech models and the voice are
 > included in the app so it works offline and does not need a download step.
 >
@@ -114,42 +122,65 @@ The questionnaire is entered in Play Console. The expected answers are:
 - Violence, sexuality, language, controlled substances: none
 - User-generated content: none
 - Users can communicate with each other: no
-- Digital purchases: no
+- Digital purchases: **yes** - Darts Coach Pro, a one-time purchase of $2.99,
+  handled by Google Play. No subscription.
 - The app is a darts training utility, not a game with gambling or wagering
 
 ## Ads
 
 The app contains no ads.
 
+## In-app purchases
+
+| | |
+|---|---|
+| Name | Darts Coach Pro |
+| Type | One-time purchase, not a subscription |
+| Price | $2.99 (or the local equivalent, set in Play Console) |
+| What it unlocks | Personalised hit rates, the routes onto each of your doubles, the full out chart, the setup coaching, persistent preferences, and the analysis of where your misses go |
+
+The free tier is a working coach. The live suggestion, the scorekeeping, the
+read-back and the undo all work without paying, and the player can set any
+hit rate by hand, which makes the coach better for them.
+
+The free tier does not show the percentages, because it is not able to
+personalise them. It gives the plan - which dart to throw - which is what a
+player needs at the oche.
+
 ## Data safety
 
-Use the following answers. They are based on the app's actual manifest and
-dependencies.
+The answers below are based on the app's actual manifest and dependencies.
 
 ### Data collection
 
-**No data is collected.**
-
-Google's definition of collection is data that is retrieved from the device
-and sent off it. Darts Coach accesses microphone audio and processes it only
-in memory on the device. It has no `INTERNET` permission, so the audio cannot
-leave the phone. Google explicitly says that data accessed only on the device
-and not sent off it does not need to be disclosed as collected.
+**Purchase data is collected. Nothing else is.**
 
 | Question | Answer |
 |---|---|
-| Does your app collect or share any of the required user data types? | **No** |
-| Is all of the user data collected by your app encrypted in transit? | **Not applicable** |
-| Do you provide a way for users to request that their data is deleted? | **Not applicable** — the app has no account or server-side user data |
+| Does your app collect or share any of the required user data types? | **Yes** - purchases only |
+| Which type? | **Purchase history** - the Google Play Billing Library reports what the account has bought |
+| Is all of the user data collected by your app encrypted in transit? | **Yes** - the purchase is handled by Google Play, over Play's own encrypted connection |
+| Do you provide a way for users to request that their data is deleted? | **Not applicable** - the app has no account and no server-side user data of its own. The purchase is deleted through Google Play. |
+
+The microphone is the one that looks like it should be declared and is not.
+
+Google defines "collected" as data that is retrieved from the device and sent
+off it. The app's microphone audio is processed only in memory on the device
+and is never sent anywhere - no code in the app reads the audio buffer and
+writes it to a socket. The app's `INTERNET` permission is used for exactly one
+thing, talking to Google Play about the purchase.
+
+The purchase data is sent, so it is declared. The microphone audio is not
+sent, so it is not.
 
 ### Security practices
 
 | Question | Answer |
 |---|---|
-| Does your app use encryption? | **No** — no data is transmitted |
+| Does your app use encryption? | **Yes** - for the purchase, handled by Google Play |
 | Does your app collect data from children? | **No** |
 | Has your app been independently validated against a security standard? | **No** |
-| Does your app contain third-party SDKs that collect or share user data? | **No** |
+| Does your app contain third-party SDKs that collect or share user data? | **Yes** - the Google Play Billing Library, which handles the purchase. No advertising, analytics, or crash-reporting SDKs. |
 | Does your app use a recognized security standard? | **No** |
 
 The app does include `piper-phonemize` and the sherpa-onnx Kotlin API, but
@@ -162,7 +193,7 @@ or transmit data.
 |---|---|
 | `RECORD_AUDIO` | Hear the player's spoken score and transcribe it on the device |
 | Microphone | Required for the app's core function |
-| No `INTERNET` permission | The app has no networking capability |
+| `INTERNET` | Talk to Google Play to take the payment for Darts Coach Pro. Nothing else uses it. |
 
 ### Privacy policy
 

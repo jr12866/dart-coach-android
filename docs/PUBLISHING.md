@@ -123,7 +123,8 @@ they have to be taken at the phone.
 
 ## The Data safety form, and the privacy policy
 
-This is the part that needs care, because the app records audio.
+This is the part that needs care, because the app records audio and now also
+sells something.
 
 The facts:
 
@@ -132,15 +133,16 @@ The facts:
 - Audio is **never transmitted** and never stored beyond the recognition
   buffer.
 - The app has no analytics, no ads, no crash reporting that leaves the device.
+- The app **does** declare `INTERNET`, and it is used for exactly one thing:
+  talking to Google Play about the Pro purchase.
 
 Google defines "collected" as data retrieved from the device and sent off it.
-The app has no `INTERNET` permission, so no audio or other data can be sent
-off the device. The Data safety answer is therefore **"No data is collected"**,
-not "microphone data is collected".
+The microphone audio is processed only on the device and never sent off it, so
+it is not disclosed as collected. The purchase data *is* sent - to Google
+Play, by the Play Billing Library - so it *is* disclosed, as purchase history.
 
-That distinction was checked against Google's current Data safety guidance.
-The app's real microphone permission is still visible to users and reviewers,
-and the privacy policy explains exactly what is recorded and why.
+That is the honest answer: the app collects the purchase and nothing else.
+The exact wording for each question is in `docs/STORE-LISTING.md`.
 
 The privacy policy text is in:
 
@@ -148,6 +150,15 @@ The privacy policy text is in:
 - `docs/store/privacy-policy.html` - the public page to upload;
 - `app/src/main/res/raw/privacy_policy.html` - the copy bundled in the app,
   linked from the **Privacy policy** button.
+
+The last two are **generated from the first**, so they cannot drift apart:
+
+```
+python tools\generate-privacy-policy.py
+```
+
+Edit the markdown, run the script, and all three copies agree. Run it before
+every release.
 
 The in-app link is required by Google as well as the Play Console URL. The
 **Privacy policy** button opens the public URL once
@@ -158,18 +169,85 @@ and on a fresh install.
 Before submission, replace the example email address with a monitored address
 and make sure the developer name matches the Play listing exactly.
 
+## Selling Pro
+
+Pro is a one-time in-app purchase, handled by Google Play.
+
+### The product
+
+Create it in the Play Console under **Monetization > Products > One-time
+products**:
+
+| | |
+|---|---|
+| Product id | `dartcoach_pro` |
+| Name | Darts Coach Pro |
+| Description | The personalised coach: your own hit rates, the full out chart, the setup coaching and your statistics. |
+
+The product id has to match `BillingRepository.PRODUCT_ID` exactly, or the
+app will not find the product.
+
+### The price
+
+$2.99, or the local equivalent. Play handles the currency and the tax, and
+the app shows the price Play gives it rather than a price written into the
+code, so it is right for the player's country.
+
+**The price can be changed in the Play Console without a new release.** What
+*cannot* be changed without a release is which features are behind the
+paywall - that is the `PRO_FEATURES` list in
+`app/src/main/java/com/jr12866/dartcoach/entitlement/Entitlement.kt`.
+
+### Testing the purchase
+
+Billing cannot be tested with a sideloaded APK. The purchase flow needs the
+Play Store app signed in to a test account.
+
+1. Add a test account in the Play Console, or use your own account.
+2. Upload to **internal testing** and install from there.
+3. Buy Pro. It is a one-time purchase, so it can be bought as many times as
+   needed for testing.
+4. Check that the Pro screens open and the paywall does not come back.
+5. Refund it from the Play Console to test the other path.
+
+### Restore
+
+There is nothing to restore from - Play holds the purchase, and it follows
+the player's Google account to any device. The **Restore purchase** button
+asks Play what the account owns. The answer is cached on the phone so the app
+works when Play cannot be reached.
+
+### The cost of the network permission
+
+The app used to declare no `INTERNET` permission at all, and that was a
+verifiable property of the build rather than a promise. It is now declared,
+for the purchase.
+
+What is still true, and what the app says:
+
+- the coach works with the phone in aeroplane mode;
+- the microphone audio is processed in memory and never sent;
+- no code in the app reads the audio buffer and writes it to a socket;
+- there is no analytics, advertising, or crash-reporting SDK.
+
+What has changed is the wording, and it has been narrowed rather than
+withdrawn: the coach needs no network, and the only thing that uses one is
+the purchase.
+
 ## Review expectations
 
 A microphone-using app attracts scrutiny. Keep the claims simple and true:
 
 - On-device speech recognition. No server, no account, no telemetry.
-- The app requests `RECORD_AUDIO` and nothing else. No `INTERNET` permission
-  is declared at all, which is a strong and verifiable claim - the app
-  physically cannot send anything anywhere.
+- The app requests `RECORD_AUDIO` and `INTERNET`, and nothing else. The
+  `INTERNET` permission is for the Play Store, to take the payment for Pro.
+- No advertising, analytics, or crash-reporting SDKs.
 
-That last point is worth keeping true. The `INTERNET` permission being absent
-from the manifest is what makes "nothing leaves the phone" a property of the
-build rather than a promise.
+The claim that is worth keeping true is that the microphone audio never
+leaves the phone. It is processed in memory by the bundled recogniser, and
+no code in the app reads the audio buffer and writes it to a socket. The
+`INTERNET` permission being declared does not weaken that, and the app's own
+copy says so.
 
 ## Testing tracks
 

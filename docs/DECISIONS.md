@@ -256,3 +256,231 @@ because the error looks like a Kotlin bug rather than a missing plugin.
 `androidx.compose.ui`. `Column`, `Row` and the rest of the layout primitives
 live in foundation. Without it, the same internal error appears, for the
 same reason.
+
+---
+
+## 11. The hit rates are a profile, and the profile is the Pro feature
+
+**Decision.** The probability model is built from a `PlayerProfile` rather
+than being fixed. `AIMS` is `buildAims(PlayerProfile())`, and the planner is
+built for a profile. The default profile is the population the coach was
+ported with, so nothing changes for a player who has never been measured.
+
+**Why.** The coach's advice is only as good as the numbers behind it, and the
+ported numbers are averages of every player everywhere. A player who cannot
+hit D16 is told to go for D16 because that is what works on average. The
+tables and the search were already there; only the probabilities needed to
+become the player's.
+
+**How it is kept honest.** The aim list is *ordered*, and the planner breaks
+ties on that order, so a reordering changes the advice. `ProfileTest` asserts
+that the default profile produces exactly the same aim list, in the same
+order, and that a default planner matches the shared one for every score from
+1 to 170. The parity corpus - 501 plan cases, 6,513 route cases, 502 helper
+cases - checks the rest.
+
+**Why the profile is the paid feature and not the general one.** The
+population averages are the coach working. The player's own numbers are the
+coach knowing them. That is the line the free tier draws, and it is the line
+the Pro tier is worth crossing.
+
+**What would reverse it.** Nothing found. The profile is a superset of the
+old behaviour, and the old behaviour is still reachable by using the default
+profile.
+
+---
+
+## 12. The paid tier is bought once, and the free tier still works
+
+**Decision.** Pro is a one-time in-app purchase at $2.99. The free tier is a
+working coach: scorekeeping, read-back, undo, new game, and a live suggestion
+at the population averages. Pro adds the personalisation, the out chart, the
+setup coaching, persistent preferences and the session stats.
+
+**Why one-time and not a subscription.** The value is a static algorithm and
+a static dataset. There is nothing that changes month to month, so there is
+nothing a subscription renews. A subscription over a fixed dataset churns
+into refunds and bad reviews, and the review text says "nothing new".
+
+**Why $2.99.** The install is around 325 MB, and that cost is paid *before*
+the player ever sees the paywall. By the time they reach the paywall they
+have already committed to a large download, which is the moment a small
+price converts best. The price can be changed in Play Console without a
+release, so it is not a permanent commitment either way.
+
+**Why the free tier still works.** In a Play-driven market the free tier is
+the only thing most reviewers and the ranking algorithm ever see. A free tier
+thin enough to be a demo costs rating volume, and rating volume is what makes
+the next install cheap. The gate is on *depth* - the chart, the
+personalisation, the history - not on whether the app works.
+
+The thing being sold is personalisation, and personalisation is not
+meaningful until the player trusts the coach. Someone has to use the coach
+for a few legs before "it knows my doubles" means anything, so the free tier
+has to give them the generic version to trust in the first place.
+
+**Why the free tier does not show percentages.** If free says "T20 T20 D20 -
+52%" and Pro says "T20 T20 D20 - 63% (your numbers)", the free tier is a
+working demonstration of the paid thing and there is no reason to upgrade. The
+free tier gives the plan, which is what a player needs at the oche, and does
+not promise a number it cannot personalise.
+
+**Why paid from the first release.** The personalisation cannot be taken
+back once it has been given away, and a free tier that has already got the
+feature is not a tier anyone upgrades from. The features and the paywall ship
+together.
+
+**What would reverse it.** If the paywall turns out to be wrong, the price can
+be changed in Play Console without a release. The *set of gated features*
+cannot, which is why every gate goes behind one entitlement interface rather
+than being scattered through the UI as `if (isPro)` checks. Moving one
+feature from Pro to free is then a single release, and the people who already
+paid keep what they bought - a hard gate would have no such move.
+
+---
+
+## 13. The app keeps the INTERNET permission, for the purchase
+
+**Decision.** The manifest declares `INTERNET`, and it is used for one thing:
+talking to Google Play about the Pro purchase.
+
+**Why the permission was there before.** The app used to declare no
+`INTERNET` permission at all, and that was deliberately a *verifiable*
+property of the build rather than a promise in the README: the coach could
+not talk to a server because it had no way to. `docs/PUBLISHING.md` said
+plainly that this was "worth keeping true".
+
+**Why it is declared now.** Taking a payment needs the network. There is no
+way to sell something without talking to someone, and pretending otherwise
+would only mean the purchase does not work.
+
+**What has been kept.** The claim has been narrowed rather than withdrawn.
+The coach still works with the phone in aeroplane mode. The microphone audio
+is still processed in memory and never sent, and no code in the app reads the
+audio buffer and writes it to a socket. There is still no analytics, no
+advertising, and no crash reporting.
+
+**What has been said honestly.** The store listing, the privacy policy, the
+in-app text and the README now all say that the one network connection is to
+Google Play. The manifest says the same thing in a comment, so a reviewer
+reading the source sees the reason rather than having to infer it.
+
+**Why the Data safety answer changed from "No data is collected".** Google's
+definition of collection is data retrieved from the device and sent off it.
+The purchase data *is* sent, to Play, by the Play Billing Library, so it is
+disclosed as purchase history. The microphone audio is not sent, so it is not
+disclosed. The answer is now "yes, purchases only" rather than "no", and it
+is exactly true.
+
+**What would reverse it.** Nothing found. A direct web checkout would need
+the network too, and would need an account and a server to hold the
+entitlement, which is a bigger change than the permission was.
+
+---
+
+## 14. The echo tail is measured per phone, not assumed
+
+**Decision.** The wait after the coach speaks - before it listens again - is
+measured on the player's phone, from the **Settings** screen. The value
+measured on a Pixel 7 is the default, for a phone that has not been
+measured.
+
+**Why it was a fixed number.** The tail is how long the coach's voice is
+still audible at the microphone after the audio has stopped. On a laptop it
+was room reverb and 0.35 s was right. On a phone the speaker is 10 cm from
+the microphone, so it is the speaker's mechanical ringing, and it measured
+447 - 835 ms at the oche.
+
+That number is a property of *that phone, in that room*. A different
+speaker rings differently, and a different room has a different noise
+floor, so the same 0.35 s is wrong somewhere. It was tuned on one device
+and the app was never tested on another.
+
+**Why measuring is the right answer and not a setting.** A setting means
+every player has to know what an echo tail is and work out what to put in
+it. A measurement means the phone works it out, and the player just has to
+press the button.
+
+**Why the errors are not symmetric.** A tail that is too short makes the
+coach hear its own reply and cut itself off, which looks broken. A tail that
+is too long costs a moment of dead time before the coach answers. So the
+measurement takes the *longest* of the three samples rather than the mean,
+and adds a quarter to it for margin. The floor is 50 ms, because a
+measurement of a millisecond is a very short tail rather than no tail.
+
+**Why headphones get nothing.** The voice is not in the room, so it cannot
+come back through the microphone. The wait is zero whatever the
+measurement says, and that has been true since the route detection was
+added.
+
+**What would reverse it.** Nothing found. The measurement needs a working
+microphone and a working voice, and it needs the room to be quiet enough
+that the room floor is meaningful - which is why it can be run again from
+the settings when the phone is moved somewhere noisier.
+
+
+## 15. A missed-target correction replaces the last dart in the current turn
+
+**Decision.** A Pro player can report what actually landed after missing the
+intended dart. The coach replaces the last dart in the current turn and
+re-plans only the darts remaining, naming the result a **Checkout** or a
+**Setup**.
+
+**Why the last dart.** The player's immediate problem is usually the next
+dart: they meant T20, hit single 8, and now need to know what to throw with
+the darts that are left. Correcting the last dart is enough to answer that
+and has one unambiguous voice form. Letting the player choose any dart in the
+turn, or correct a turn that has already been confirmed, adds state and
+confirmation rules for cases that are less common.
+
+**Why the leg score does not move.** The correction changes the current turn,
+not the leg. The corrected total still waits for the normal score read-back
+and confirmation, so nothing counts on the first pass. A correction during
+the read-back replaces the dart and asks for confirmation of the new total.
+
+**Why Pro.** This changes what the coach does with the next darts, rather
+than adding another reference screen. It is coaching depth, and it is gated
+by `MISSED_TARGET_CORRECTION` in the same entitlement list as the other Pro
+features.
+
+**Why an unrecognised landing is not guessed.** Physical-device testing found
+that Whisper sometimes heard the spoken digit "8" as "eat". Treating that as
+a dart would silently change the player's score. The turn is left alone when
+the landing cannot be identified; improving the spoken form is safer than
+guessing.
+
+**But the coach says so.** A correction-shaped phrase with no readable
+landing used to produce silence, which is the same failure as a refused
+score with no read-back: the player is left at the oche believing the coach
+understood. The coach now asks for the landing, and the turn is untouched
+while it waits. The rule the coach has always followed - a refusal is
+spoken, not silent - applies to the correction too.
+
+**Why the target and the landing are told apart by the verb.** "I missed
+double 16 and hit single 8" names two darts and "I hit single 8 instead"
+names one, and the parser has to know which is which. The rule is the verb
+in front of the dart, not the dart itself: after "missed" is the target,
+after "hit" is the landing. Where two darts follow one verb, the one
+nearest the verb is the one it belongs to.
+
+The alternative - reading a single named dart as the landing, and the target
+as whatever the coach was aiming at - was the first implementation, and it
+was wrong. "I missed double 16" would be read as "you hit double sixteen":
+the coach would tell the player they had hit the very double they said they
+had missed, and correct the turn to a dart that never landed. The board
+tests found it; the device test never reached the case.
+
+**Why the bull has to be named.** The bull is the only part of the board
+with a name rather than a number, so it cannot be read by the number
+rules. "I hit the bull instead" used to be ignored altogether, and the
+coach said nothing. A player who missed T20 and hit the bull got no
+correction and no reply at all.
+
+**Why the debug Pro switch is in the debug source set.** A switch that
+turns Pro on without a purchase is test instrumentation, and test
+instrumentation should not be in the code that Play serves. The switch
+lives in `src/debug`; the release build has a version that returns false
+unconditionally and does not contain the debug one at all.
+
+The implementation, Pixel 7 findings, and remaining work are in
+`docs/MISSED-TARGET.md`.

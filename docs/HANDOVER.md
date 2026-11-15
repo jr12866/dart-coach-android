@@ -1,6 +1,7 @@
 # Where this is, and what is left
 
-Written 13 November 2026, at a natural stopping point.
+Written 13 November 2026, at a natural stopping point. Extended 14 November
+2026, after the missed-target correction was proved over the whole board.
 
 ## What works
 
@@ -182,6 +183,47 @@ the recording accurately.
 The models ship as an install-time Play Asset Delivery pack, so the app
 installs at about 190 MB. The limits are in `docs/PUBLISHING.md`.
 
+### 4. Missed-target corrections - device tested, hardening remains
+
+The Pro missed-target correction is implemented and tested on a Pixel 7. The
+player reports what landed instead of the intended dart, and the coach replaces
+the last dart and re-plans only the darts remaining, labelled as a Checkout or
+a Setup.
+
+Device testing found and fixed two state-machine problems:
+
+- a correction spoken while the score read-back was pending was discarded;
+- a correction before the third dart created a false score read-back.
+
+Whisper also wrote "treble" as "trouble" on the device, so the parser now
+accepts that transcription variant.
+
+**Extended 14 November 2026.** The whole board and the checkout branch are
+now proved in core tests, in `MissedTargetBoardTest`. That work found two
+more bugs, both of which the device test could not have reached:
+
+- **the bull could not be named.** "I hit the bull instead" was not
+  recognised as a correction, and the coach said nothing at all. The bull
+  is the one part of the board with a name rather than a number.
+- **a missed target was read as the landing.** "I missed double 16" told
+  the player they had hit the very double they said they had missed. The
+  landing and the target are now told apart by the verb in front of them.
+
+Two more changes came out of the same work:
+
+- **a correction-shaped phrase with no landing is now asked for**, rather
+  than ignored. "I hit single eat instead" used to produce silence; the
+  coach now says "I didn't catch which dart you hit. Please repeat."
+  The turn is left alone, so a refused correction cannot change a score.
+- **the debug test-Pro switch is out of the production source.** It is in
+  `src/debug` now, and the release build's version returns false
+  unconditionally. This was checked in the compiled class, not assumed.
+
+The remaining work is the real Play purchase test, the noisy-room test of
+the spoken forms, and the product decisions - whether a confirmed turn can be
+corrected, and which dart in the turn was missed. See `docs/MISSED-TARGET.md`
+for the full findings and acceptance checklist.
+
 ## The repositories
 
 | | |
@@ -258,6 +300,7 @@ adb shell am start -S -n com.jr12866.dartcoach/.MainActivity --ez route true
 | `docs/BUILDING.md` | Building sherpa-onnx. |
 | `docs/PUBLISHING.md` | The Play Store. |
 | `docs/STORE-LISTING.md` | The store copy, graphics, and Play Console answers. |
+| `docs/MISSED-TARGET.md` | The Pro missed-target correction: implementation, Pixel 7 findings, and what is still to do. |
 | `docs/PRIVACY-POLICY.md` | The privacy policy. |
 | `docs/DECISIONS.md` | The decisions, and what would reverse each. |
 | `docs/MEASURING-TAIL.md` | How to run the tail measurement. |

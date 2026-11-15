@@ -2,6 +2,19 @@
 
 Measured on a Pixel 7, 13 November 2026.
 
+> **The tail is now measured per phone.**
+>
+> The number below was measured on one phone, and the tail depends on the
+> phone's speaker and on the room the phone is in. The player can measure
+> their own from **Settings**, and the app uses that instead. The value
+> measured here is now only the *default*, for a phone that has not been
+> measured.
+>
+> The measurement is the same one this file describes: play three phrases
+> through the speaker, listen the whole time, and see how long the voice is
+> still there afterwards. It is `TailSetting.fromMeasurement` that turns the
+> samples into the number the app waits for.
+
 ## The result
 
 **The coach's voice is gone within about 50 to 100 milliseconds of the audio
@@ -110,7 +123,7 @@ were across the room.
 
 | Route | Tail |
 |---|---|
-| The phone's own speaker | **0.35 s** |
+| The phone's own speaker | **0.35 s** - the default, until the player measures their own |
 | Bluetooth headphones | **0 s** - the voice never reaches the microphone |
 
 The phone's own speaker used a tenth of a second, on the strength of the
@@ -125,3 +138,23 @@ says otherwise.
 
 With headphones there is no tail at all, and the gate can open the instant
 the audio stops.
+
+## Measuring it yourself
+
+The player can do this from **Settings**. It plays the same three phrases,
+listens the whole time, and works out the tail from the samples.
+
+The number it uses is the **longest** of the three samples, plus a quarter
+of it. The longest, because a tail that is too short makes the coach cut
+itself off, and a tail that is too long only costs a moment of dead time.
+The margin, because a measurement taken in one room is not the measurement
+in the next one.
+
+The result is held to a floor of 50 ms and a ceiling of 1 s. The floor is
+there because a measurement of a millisecond is not zero - it is a very
+short tail, and the coach still has to wait for it. The ceiling is there
+because a phone that reports a tail of several seconds is measuring
+something other than the tail.
+
+With headphones the wait is nothing whatever the measurement says, because
+the voice is not in the room to come back through the microphone.
