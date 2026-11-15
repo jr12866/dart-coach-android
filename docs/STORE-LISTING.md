@@ -139,6 +139,11 @@ The app contains no ads.
 | Price | $2.99 (or the local equivalent, set in Play Console) |
 | What it unlocks | Personalised hit rates, the routes onto each of your doubles, the full out chart, the setup coaching, persistent preferences, and the analysis of where your misses go |
 
+The product is a **one-time product** in the Play Console, with a purchase
+option inside it that carries the price. The product id is `dartcoach_pro`
+and it cannot be changed once the product is created. `docs/CONSOLE-SETUP.md`
+has the exact steps.
+
 The free tier is a working coach. The live suggestion, the scorekeeping, the
 read-back and the undo all work without paying, and the player can set any
 hit rate by hand, which makes the coach better for them.
@@ -194,6 +199,12 @@ or transmit data.
 | `RECORD_AUDIO` | Hear the player's spoken score and transcribe it on the device |
 | Microphone | Required for the app's core function |
 | `INTERNET` | Talk to Google Play to take the payment for Darts Coach Pro. Nothing else uses it. |
+| `com.android.vending.BILLING` | Added by the Play Billing Library, for the Pro purchase |
+| `ACCESS_NETWORK_STATE` | Added by the Play Billing Library, to check whether Play is reachable |
+
+The last two are ordinary permissions that arrive with the billing library.
+Neither of them sends anything anywhere on its own, and neither is a
+"collected data type" on the Data safety form.
 
 ### Privacy policy
 

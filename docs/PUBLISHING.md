@@ -61,6 +61,23 @@ instead of app bundles. An app bundle gets 500 MB for the base module alone.
 
    `local.properties` is already ignored by git.
 
+   **On Windows, write the path with forward slashes.** The build reads it
+   with `rootProject.file()`, and a path with backslashes is not recognised
+   as absolute - the build fails with a mangled path such as
+   `C:gitdart-coach-androidC:Users...`. Forward slashes work on both
+   platforms.
+
+   The keystore that is now in place:
+
+   ```
+   dartcoach.keystore=C:/Users/jr128/dart-coach-keys/dart-coach-release.jks
+   dartcoach.key.alias=dart-coach
+   ```
+
+   The passwords are in `local.properties` and nowhere else. **Copy them into
+   a password manager**, along with the keystore file. They are the only
+   copy.
+
 4. **Signing configuration.** `app/build.gradle.kts` reads those properties
    and creates the `release` signing configuration. If all four properties
    are present, the release build type is signed with it. If they are absent,
@@ -189,7 +206,38 @@ products**:
 | Description | The personalised coach: your own hit rates, the full out chart, the setup coaching and your statistics. |
 
 The product id has to match `BillingRepository.PRODUCT_ID` exactly, or the
-app will not find the product.
+app will not find the product. **It cannot be changed once the product has
+been created**, so it has to be right the first time.
+
+This used to be called an "in-app product". It is now a **one-time product**,
+and the old "In-app products" page still exists for apps created before the
+change.
+
+### The purchase option
+
+The product needs at least one **purchase option**, and that is what carries
+the price:
+
+| | |
+|---|---|
+| Purchase option id | `buy` |
+| Purchase type | Buy |
+| Digital content or service | **Digital content** |
+| Price | **$2.99** |
+
+The app reads `oneTimePurchaseOfferDetailsList` from the product details,
+which is the purchase option's price and offer token, so it works against
+the current model rather than the old one.
+
+The product has to be **activated** after it is saved. A product that is not
+active does not appear in the purchase flow at all.
+
+### The order matters
+
+**A bundle has to be in a track before the product can be created.** Play
+will not let you configure monetisation for an app that has no release
+uploaded. So the upload to internal testing comes before the product, not
+after it.
 
 ### The price
 
@@ -259,6 +307,30 @@ Ship to **internal testing** first. It is available within minutes, needs no
 review, and is where the install of a 130 MB app over mobile data should be
 tested first.
 
+### The closed test, if the account is a new personal one
+
+If the developer account is a **personal account created after 13 November
+2023**, internal testing is not enough to reach production. Google requires:
+
+- a **closed** test with at least **12 testers** opted in **continuously for
+  at least 14 days**;
+- then **Apply for production** on the Dashboard, answering questions about
+  the closed test, the app, and production readiness;
+- then a production release.
+
+Three things catch people out:
+
+- **Internal testing days do not count.** The 14 days have to be on a closed
+  test.
+- The counter tracks the **testers' opt-in**, not the builds. Shipping a new
+  release to the closed track during the 14 days resets nothing.
+- A tester who opts out and back in starts their 14 days again. Recruit more
+  than 12, because a dropout on day 13 costs another fortnight.
+
+Budget **four to six weeks** for this on top of everything else. It is the
+longest pole in the release, and the closed test can start as soon as the
+internal test is stable - it does not have to wait for the rest.
+
 An install-time asset pack only arrives through Play, so the release bundle
 cannot be tested with `adb install`. The local `-PwithLocalModels` build is
 for development only; the Play install is the test that counts.
@@ -286,7 +358,12 @@ Console account and a real device:
 - fill in the content rating questionnaire;
 - complete the Data safety form using `docs/STORE-LISTING.md`;
 - enable Play App Signing and accept the upload-key reset;
+- create the `dartcoach_pro` one-time product and its purchase option;
 - run the pre-launch report and test the install over mobile data.
+
+**`docs/CONSOLE-SETUP.md` is the runbook for all of that.** It has every
+field, in the order it has to be filled in, with the exact value for each
+one.
 
 ## If the paywall turns out to be wrong
 

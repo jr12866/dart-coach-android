@@ -376,6 +376,26 @@ There is no navigation library today — `MainActivity.kt:97-116` renders one
 > in Pro. `EntitlementTest` reads the app's own source and fails if a flag
 > is ever declared and not used again, so this cannot drift apart the way it
 > had. See `docs/ROLLBACK.md`, "What the gate controls".
+>
+> **The console work is ready to be done.** The release keystore is
+> generated, the four signing properties are in `local.properties`, the
+> signed bundle is built and its signature verified, and
+> `docs/CONSOLE-SETUP.md` is the runbook for every field, in the order it
+> has to be filled in. What is left of 6.2 is the typing.
+>
+> **Two things about the console that are not obvious.** The product is a
+> **one-time product** now, with the price on a purchase option inside it,
+> and it has to be activated before it can be bought. And a bundle has to
+> be in a track **before** the product can be created, so the upload comes
+> before the product rather than after it.
+>
+> **And the one that is not obvious at all.** If the developer account is a
+> personal account created after 13 November 2023, the app cannot go to
+> production from internal testing. Play requires a closed test with at
+> least 12 testers opted in continuously for 14 days, and then an
+> application for production access. That is four to six weeks of calendar
+> time, and it is the longest pole in the release. It can start as soon as
+> the internal test is stable.
 
 ---
 
