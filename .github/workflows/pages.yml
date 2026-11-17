@@ -1,0 +1,52 @@
+name: Publish the privacy policy
+
+# The privacy policy has to be an active, public web page, and Google Play
+# wants a URL that stays the same. GitHub Pages is the host, and the page is
+# served from `site/`, which `tools/generate-privacy-policy.py` writes from
+# `docs/PRIVACY-POLICY.md`.
+#
+# The workflow deploys that folder whenever it changes, so the published page
+# and the copy inside the app cannot drift apart.
+on:
+  push:
+    branches: [master]
+    paths:
+      - "site/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time. A new one waits for the old one rather than
+# cancelling it halfway.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Pages
+        uses: actions/configure-pages@v5
+
+      # `site/` holds the policy page and nothing else, so the whole folder
+      # is the site.
+      - name: Upload the policy page
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
