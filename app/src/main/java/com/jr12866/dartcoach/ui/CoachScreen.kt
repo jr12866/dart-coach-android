@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -67,6 +68,7 @@ fun CoachScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(ScreenBackground)
+            .statusBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -99,21 +101,30 @@ fun CoachScreen(
             }
             Spacer(modifier = Modifier.height(10.dp))
             Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = if (listening) "listening" else "paused",
-                    fontSize = 13.sp,
-                    color = if (listening) AccentGreen else QuietText,
-                    letterSpacing = 1.sp,
-                )
-                Text(
-                    text = "Turn $turns",
-                    fontSize = 13.sp,
-                    color = QuietText,
-                    letterSpacing = 1.sp,
-                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = if (listening) "listening" else "paused",
+                        fontSize = 13.sp,
+                        color = if (listening) AccentGreen else QuietText,
+                        letterSpacing = 1.sp,
+                    )
+                    Text(
+                        text = "Turn $turns",
+                        fontSize = 13.sp,
+                        color = QuietText,
+                        letterSpacing = 1.sp,
+                    )
+                }
+                // The question mark, because the one thing a player cannot
+                // work out from looking at this screen is what to say to it.
+                HelpButton(HelpTopic.COACH)
             }
         }
 

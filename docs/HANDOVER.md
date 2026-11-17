@@ -2,6 +2,7 @@
 
 Written 13 November 2026, at a natural stopping point. Extended 14 November
 2026, after the missed-target correction was proved over the whole board.
+Extended 17 November 2026, when the screens were given a help panel.
 
 ## What works
 
@@ -512,6 +513,48 @@ the singles, because it is a bull and not a bed.
 **Nothing is left in the plain numbers.** The bull, the outer bull and the
 singles all say "not set" now, all three are learned and all three can be
 set by hand, and all three are saved and read back.
+
+### 10. Nothing explained the screens - the "?" panel
+
+The coach explains a score, but nothing explained the app. A new player lands
+on the coach screen and has to work out for themselves what Out chart, Setup,
+Your profile and Your statistics are for, and what the coach expects it to
+hear. There was no help anywhere in the app, and no first-run tutorial either.
+
+The fix is a **?** button next to each screen's title, and a short panel
+behind it. Six topics, one per screen: the coach, the out chart, the setup
+chart, the profile, the statistics and the settings. Each one is four or five
+points, a heading and two or three lines of plain text, in the app's own
+voice.
+
+Why a "?" and not a Help label: the player is at the oche with a score to
+shoot, and the button has to be as quiet as possible. Why a dialog and not a
+screen or a carousel: the same reason - the guide has to be one tap away and
+one tap back. The button owns its own open state, so no screen had to carry a
+"help is open" flag through navigation.
+
+| | |
+|---|---|
+| Where | `app/.../ui/HelpPanel.kt` |
+| Topics | Six, one per main screen |
+| Test | `app/.../ui/HelpPanelTest.kt` |
+| Checks | Every topic has a title and at least three points; every point has a heading and a body; bodies under 220 characters, headings under 40 |
+| Also checked | A source scan asserts that each of the six screens really carries its button, so a screen cannot quietly lose its help |
+
+**One defect was found while putting the button in.** The app targets SDK 35,
+and Android 15 enforces edge-to-edge, so every screen's header was running
+under the status bar - the out-chart title sat under the clock. It was
+invisible on the coach screen, where the header is the score, and obvious on
+the nav screens. The root column of all seven screens now carries a status
+bar padding. The app is pre-release, so this was cheap to correct now.
+
+Verified on the Pixel 7: the button and the panel were opened on all six
+screens.
+
+Not built, deliberately: a first-run tutorial carousel, and a coached practice
+turn. The read-back wording - "You said one hundred and forty" could become
+"That makes you three hundred and seventy-six" - was recommended as the
+highest-value onboarding change and has **not** been done.
 
 ## The repositories
 

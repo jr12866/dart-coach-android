@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -81,6 +82,7 @@ fun ProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(ScreenBackground)
+            .statusBarsPadding()
             .padding(horizontal = 16.dp),
     ) {
         Row(
@@ -90,12 +92,18 @@ fun ProfileScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = "Your profile",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = PrimaryText,
-            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Your profile",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = PrimaryText,
+                )
+                HelpButton(HelpTopic.PROFILE)
+            }
             OutlinedButton(onClick = onBack) {
                 Text("Back", color = PrimaryText)
             }
