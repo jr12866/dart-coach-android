@@ -12,11 +12,17 @@ public privacy-policy page.
 
 The copy and the exact Data safety answers are in `docs/STORE-LISTING.md`.
 
+The privacy policy is published at
+**`https://jr12866.github.io/dart-coach-android/`**, served by GitHub Pages
+from `site/index.html`. All four copies of the policy - the markdown source,
+this page, the copy bundled in the app and the published page - are generated
+from `docs/PRIVACY-POLICY.md` by `tools/generate-privacy-policy.py`, so they
+cannot drift apart. The published page updates itself when the policy changes,
+because the GitHub Actions workflow in `.github/workflows/pages.yml` deploys
+`site/` on every push.
+
 Before publishing:
 
-1. Replace the example privacy email in `privacy-policy.html` and
-   `docs/PRIVACY-POLICY.md` with a monitored address.
-2. Replace the developer name if the Play listing uses a different name.
-3. Publish `privacy-policy.html` at a stable public HTTPS URL and put that URL
-   in both Play Console and the app.
-4. Upload the icon, feature graphic, and at least two phone screenshots.
+1. Upload the icon, feature graphic, and at least two phone screenshots.
+2. Put the published policy URL in Play Console, under **Policy → App content
+   → Privacy policy**.

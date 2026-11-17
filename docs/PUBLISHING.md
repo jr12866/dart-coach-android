@@ -168,27 +168,32 @@ The exact wording for each question is in `docs/STORE-LISTING.md`.
 The privacy policy text is in:
 
 - `docs/PRIVACY-POLICY.md` - the source copy;
-- `docs/store/privacy-policy.html` - the public page to upload;
+- `docs/store/privacy-policy.html` - the public page;
 - `app/src/main/res/raw/privacy_policy.html` - the copy bundled in the app,
-  linked from the **Privacy policy** button.
+  linked from the **Privacy policy** button;
+- `site/index.html` - the copy GitHub Pages publishes.
 
-The last two are **generated from the first**, so they cannot drift apart:
+The last three are **generated from the first**, so they cannot drift apart:
 
 ```
 python tools\generate-privacy-policy.py
 ```
 
-Edit the markdown, run the script, and all three copies agree. Run it before
+Edit the markdown, run the script, and all four copies agree. Run it before
 every release.
 
-The in-app link is required by Google as well as the Play Console URL. The
-**Privacy policy** button opens the public URL once
-`privacy_policy_url` in `app/src/main/res/values/strings.xml` is filled in.
-Until then it shows the bundled copy in a dialog, so the link works offline
-and on a fresh install.
+The policy is published at **`https://jr12866.github.io/dart-coach-android/`**.
+That is the URL to put in Play Console, under **Policy → App content →
+Privacy policy**, and it is already in `privacy_policy_url` in
+`app/src/main/res/values/strings.xml`, so the **Privacy policy** button opens
+the public page in the browser. The bundled copy is still what the app shows
+if the phone is offline or the page cannot be reached, so the link works on a
+fresh install with no network at all.
 
-Before submission, replace the example email address with a monitored address
-and make sure the developer name matches the Play listing exactly.
+The published page updates itself. A push to `master` that touches `site/`
+triggers `.github/workflows/pages.yml`, which deploys the folder to GitHub
+Pages. The developer name in the listing must match the one in the policy:
+`Joe Rutsky`.
 
 ## Selling Pro
 
@@ -352,8 +357,8 @@ Console account and a real device:
 
 - the developer account and the app's Play Console entry;
 - upload the first `app-release.aab` to **internal testing**;
-- publish `docs/store/privacy-policy.html` and enter its public URL;
-- replace the example privacy email in both privacy-policy copies;
+- enter the published policy URL, `https://jr12866.github.io/dart-coach-android/`,
+  in **Policy → App content → Privacy policy**;
 - upload the icon, feature graphic, and real screenshots;
 - fill in the content rating questionnaire;
 - complete the Data safety form using `docs/STORE-LISTING.md`;

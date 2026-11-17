@@ -40,15 +40,18 @@ because both modules then claim the same asset.
 ## Before you start: three things that are not in the console
 
 1. **The support email and the privacy email.** Two real, monitored addresses.
-   `docs/STORE-LISTING.md` has placeholders for them. The developer name in
-   the listing must match the developer name in the privacy policy.
+   `docs/STORE-LISTING.md` has the values for them: `jr12866@outlook.com` for
+   both. The developer name in the listing must match the developer name in
+   the privacy policy, which is **`Joe Rutsky`**.
 
 2. **The privacy policy, at a public URL.** It has to be an active, public,
-   non-geofenced web page - not a PDF, not an editable document. The file is
-   `docs/store/privacy-policy.html`; publish it on any static host. The same
-   text is in `docs/PRIVACY-POLICY.md` and in the app itself, and all three
-   are generated from one source by `tools/generate-privacy-policy.py`, so
-   they cannot drift apart.
+   non-geofenced web page - not a PDF, not an editable document. **This is
+   done**: the policy is published at
+   **`https://jr12866.github.io/dart-coach-android/`**, served by GitHub
+   Pages from `site/index.html`. The same text is in
+   `docs/PRIVACY-POLICY.md` and in the app itself, and all four copies are
+   generated from one source by `tools/generate-privacy-policy.py`, so they
+   cannot drift apart. Put that URL in the console and in the app.
 
 3. **The app name.** "Darts Coach" may already be taken on Play. If it is,
    pick a different one and change `app_name` in
@@ -105,9 +108,9 @@ All of these are under **Policy → App content**.
 Policy → App content → Privacy policy
 ```
 
-Paste in the published URL from the list above. The in-app copy is bundled
-with the app already, and the app has a **Privacy policy** button, so this
-is the same document in three places.
+Paste in `https://jr12866.github.io/dart-coach-android/`. The in-app copy is
+bundled with the app already, and the app has a **Privacy policy** button, so
+this is the same document in four places.
 
 ### Ads
 
