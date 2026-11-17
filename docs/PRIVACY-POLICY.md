@@ -1,10 +1,9 @@
 # Darts Coach Privacy Policy
 
-**Last updated: 13 November 2026**
+**Last updated: 17 November 2026**
 
 Darts Coach is an independent Android application. It is developed by
-**Darts Coach** (replace this developer name with the exact name shown in the
-Google Play listing before publication).
+**Joe Rutsky**.
 
 ## The short version
 
@@ -115,5 +114,6 @@ safety form will be updated before the changed version is published.
 
 For privacy questions, contact:
 
-**Email:** [put the monitored privacy address here before publication]
-**Developer:** Darts Coach
+**Email:** jr12866@outlook.com
+
+**Developer:** Joe Rutsky

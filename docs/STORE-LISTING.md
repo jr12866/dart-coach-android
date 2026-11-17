@@ -66,11 +66,14 @@ privacy text, and the Play Console Data safety answers in agreement.
 | App type | Application |
 | Category | Sports |
 | Tags | Darts, coach, scorekeeping, 501, training |
-| Contact email | Put the public support address here before submitting |
-| Privacy contact | Put the public privacy address here before submitting |
+| Developer name | `Joe Rutsky` - the same string as in the privacy policy |
+| Contact email | `jr12866@outlook.com` |
+| Privacy contact | `jr12866@outlook.com` |
+| Privacy policy URL | `https://jr12866.github.io/dart-coach-android/` |
 
 The developer name shown in the Play listing must match the developer name in
-the privacy policy.
+the privacy policy. Set the Play Console developer name to `Joe Rutsky`, so the
+two agree.
 
 ## Feature graphic
 
@@ -211,5 +214,11 @@ Neither of them sends anything anywhere on its own, and neither is a
 The public policy must be an active, public, non-geofenced web page, not a PDF
 and not an editable document. The same policy text is included in the app via
 `app/src/main/res/raw/privacy_policy.html`.
+
+The published page is **`https://jr12866.github.io/dart-coach-android/`**. It
+is served by GitHub Pages from `site/index.html` in this repository, and that
+file is generated from `docs/PRIVACY-POLICY.md` by
+`tools/generate-privacy-policy.py`, so the page, the store copy and the copy
+inside the app cannot drift apart.
 
 The privacy contact address must be real and monitored before submission.

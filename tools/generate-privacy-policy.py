@@ -1,14 +1,16 @@
 """
 Generates the public privacy policy page from the markdown source.
 
-There are two copies of the policy: `docs/PRIVACY-POLICY.md` is the source,
-and `docs/store/privacy-policy.html` is the page that gets uploaded to the
-web and linked from the Play listing. They have to agree, and the way to make
-sure they do is to build one from the other rather than edit both.
+There are several copies of the policy and they all have to agree, so they are
+built from one source rather than edited one by one:
 
-The app carries a third copy in `app/src/main/res/raw/privacy_policy.html`,
-so the policy can be read offline on a fresh install, before the Play
-listing's URL has been filled in. That one is copied from here too.
+`docs/PRIVACY-POLICY.md` is the source. `docs/store/privacy-policy.html` is the
+page that gets uploaded to the web and linked from the Play listing.
+`app/src/main/res/raw/privacy_policy.html` is the copy bundled in the app, so
+the policy can be read offline on a fresh install, before the Play listing's
+URL has been filled in. `site/index.html` is the copy GitHub Pages serves at
+`https://jr12866.github.io/dart-coach-android/`, which is the URL that goes
+into the Play Console and into the app.
 
 Run it:
 
@@ -26,6 +28,15 @@ TARGET = ROOT / "docs" / "store" / "privacy-policy.html"
 APP_COPY = (
     ROOT / "app" / "src" / "main" / "res" / "raw" / "privacy_policy.html"
 )
+# The GitHub Pages copy. `site` is the Pages source directory, and
+# `index.html` is the page the URL serves, so the policy is what a visitor
+# lands on rather than a link to it.
+PAGES_DIR = ROOT / "site"
+PAGES_COPY = PAGES_DIR / "index.html"
+# GitHub Pages runs Jekyll over the source by default, which rewrites files
+# it thinks are templates. The policy is a static page and must be copied
+# exactly, so the build is turned off.
+PAGES_NOJEKYLL = PAGES_DIR / ".nojekyll"
 
 STYLE = """    body { font-family: system-ui, sans-serif; line-height: 1.55; margin: 0 auto; max-width: 760px; padding: 2rem 1.25rem; color: #20262d; }
     h1 { line-height: 1.2; }
@@ -158,8 +169,13 @@ def main() -> int:
     APP_COPY.parent.mkdir(parents=True, exist_ok=True)
     APP_COPY.write_text(result, encoding="utf-8")
 
+    PAGES_DIR.mkdir(parents=True, exist_ok=True)
+    PAGES_COPY.write_text(result, encoding="utf-8")
+    PAGES_NOJEKYLL.write_text("", encoding="utf-8")
+
     print(f"Wrote {TARGET.relative_to(ROOT)}")
     print(f"Wrote {APP_COPY.relative_to(ROOT)}")
+    print(f"Wrote {PAGES_COPY.relative_to(ROOT)}")
     return 0
 
 
