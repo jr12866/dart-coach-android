@@ -257,6 +257,262 @@ the spoken forms, and the product decisions - whether a confirmed turn can be
 corrected, and which dart in the turn was missed. See `docs/MISSED-TARGET.md`
 for the full findings and acceptance checklist.
 
+### 5. Clearing what the coach has learned - done
+
+The coach learns how well the player throws from the darts they report, and
+that memory is only as good as what went into it. A misheard game, or a test
+rather than a leg, leaves the coach believing something untrue - and it
+believes it firmly, because six misses at the treble twenty is enough to
+move the coach off the treble twenty at 361 and onto the treble nineteen.
+
+The settings screen now has a **Forget what I've learned** button, under
+"What the coach has learned". It says how many darts the coach has learned
+from, asks before doing it, and then:
+
+- clears the learned counts from the store;
+- builds the coach again with a fresh learner, so the advice is planned from
+  the population averages rather than the old counts;
+- plans again for the score standing, so the suggestion on the screen is
+  advice the coach still believes.
+
+Three things are deliberately left alone: the player's own rates, their leg
+history, and the leg in play - the score stands where it is.
+
+The core has one new method for this, `CoachEngine.replan()`, and one new
+test file, `ReplanTest`. The reset was proved on a Pixel 7: eight learned
+misses were cleared with the button, the store came back with no counts in
+it, and the coach went back to "361. Treble twenty, treble twenty and treble
+twenty."
+
+**The same session found why the counts went wrong in the first place.** When
+Whisper writes the target in a form the parser cannot read - it wrote "missed
+treble 20" as "mist-traveled 20" - the coach fell back on the segment the
+player had reported for that dart, which by then was the dart that had
+*landed*. So the coach learned "the player aims at the single eight and hits
+it" out of a correction that was entirely about the treble twenty. Eight
+learned darts later, the coach was aiming at the treble nineteen at 361
+instead of the treble twenty. The fix is in `docs/MISSED-TARGET.md`, problem
+10, and the test is `a correction with an unreadable target is learned
+against the aim`.
+
+### 6. The contingency - the coach says what happens if it comes off as a single
+
+The planner has always worked out what happens if the first dart of a plan
+drops into its single bed. It is why a leave of 40 is better than a leave of
+38: a missed double twenty still leaves 20 for double ten, while a missed
+double nineteen leaves 19, which no double can take. But it kept it to
+itself, so the coach recommended a treble without saying what happens when
+it comes off as a single.
+
+At 388 with two darts left the plan is two treble twenties. If the first
+comes off as a single twenty the player is on 368, where a hundred and
+eighty leaves 188 - no out - while the score the coach planned for leaves
+268. The planner knew; it did not say.
+
+**The coach now says it.** The plan carries a `Contingency`: the score
+standing if the first dart drops, and the darts to throw for the rest of the
+turn instead. The screen shows it under the plan ("If it drops to the single:
+333, then T20"), and the coach says it when it re-plans the darts left in a
+turn - which is the missed-target correction, the one moment the question is
+live.
+
+Two things were needed:
+
+- `Planner.planFor` only worked out the fallback when there was more than one
+  dart left. A turn with one dart left has no darts to fall back on, but it
+  has a score to fall back on, and that is the case the player needs: the
+  dart either leaves the score the coach planned for or it does not.
+- The advice itself did not change. The parity corpus is green as it was,
+  because the corpus pins what the coach tells the player to throw, not what
+  it says about it.
+
+**The Python build was changed to match**, in `src/game/darts.py` and
+`src/llm/reasoner.py`: the same `Contingency`, and the same line on the
+screen. The Windows coach has no partial-turn planning, so the mid-turn
+voice is Android-only - it belongs to the Pro missed-target correction, which
+is Android-only too. The two coaches still give the same advice.
+
+**The sideways miss is told as well.** There is a second way for a treble to
+miss: instead of falling straight out of the treble bed into its own single,
+the dart can cross a wire and land in the single bed of a neighbouring
+sector. Which sector depends on where the sector sits on the board, and
+`core/.../Board.kt` holds that geometry - the sectors of a standard board,
+clockwise from twenty, and the two either side of any bed. T20's neighbours
+are 5 and 1, T19's are 3 and 7, D16's are 7 and 8.
+
+The screen says it under the drop into the bed ("If it slides into 1 or 5:
+352 or 348"). The advice did not move: the wire is not in the planner's
+search. Adding it would move the advice at 51 to 108 of the 500 plans,
+depending on the share of misses that slide sideways - fifteen percent of
+misses into each neighbour gives 51 plans changed, thirty percent gives 93,
+forty-five percent gives 108 - so the advice would be riding on a constant
+nobody has measured. The wire is on the screen and not in the spoken line,
+because the spoken correction line is already 10.7 s and a sideways miss is
+the less likely of the two.
+
+**Measured on the Pixel 7.** The correction line with the contingency is
+10.7 s of speech and the gate is closed for 14.2 s. That is long, and it is
+the one number to watch: the line before the contingency was 5.5 s. The
+suggestion at the start of a turn is unchanged at 3.5 s, because the plan for
+a whole turn is robust - if the first dart drops, the second and third are
+still worth throwing.
+
+### 7. The coach learns where the misses go - done
+
+The wire miss is the one thing the board can say and the player's own play
+can confirm. The coach now keeps the two together: when the player corrects
+a dart, the coach remembers **where the dart actually landed**, not just that
+it missed.
+
+A dart aimed at the treble twenty that lands in the single five has gone
+sideways; one that lands in the single twenty has dropped short. Those are
+different problems and they need different answers, so the counts are kept
+per aimed segment:
+
+- `HitStats` gained `landingCounts`: the segment that was aimed at, then the
+  segment the dart landed on, then how many times.
+- `HitLearner.wireMisses(segment)` reads back the two beds either side of
+  the target - the sideways misses - which is the number the planner would
+  need.
+- The counts are saved with the other learned counts, as
+  "aimBed,aimMultiplier,landBed,landMultiplier,count". The field is
+  optional, so a phone that saved its settings before this existed still
+  loads them.
+- **Forget what I've learned** clears them with everything else, and the
+  profile screen shows them under **Where your misses go**.
+
+**The advice did not change.** The wire is still not in the planner's search,
+because the share of misses that slide sideways is still a guess. What the
+learning buys is the fact that replaces the guess, once there is enough of
+the player's own play to replace it with.
+
+**This is Android-only.** The Windows coach does not learn anything at all -
+it has no hit learner - so there is nothing to mirror there. The board's
+geometry is mirrored, because the Windows build shares the darts model.
+
+### 8. The bull rate - the default was twice the professional rate
+
+The coach had always believed it could hit the double bull half the time.
+That number was a guess with nothing behind it, and it was a guess that was
+too generous: published professional figures put the inner bull at 20-25% for
+a professional and around 30% for the very best, so 0.50 was above any player
+who has ever lived. It is now **0.225**, the middle of the published band.
+
+The number mattered more than it looked, because the bull is one of the few
+targets the coach can plan a leg around - 170 is finished with T20 T20 Bull
+and nothing else. An optimistic bull rate made the coach steer players into
+bull finishes they would then miss.
+
+**What changed, measured over the 501-plan parity corpus:**
+
+| | |
+|---|---|
+| Plans that changed | 138 of 501 |
+| The setup left at 321 | was T20 T17 D20 leaving 170 (a bull finish), now **T20 T20 T16 leaving 153**, finished T20 T19 D18 |
+| The setup left at 350 | was the classic 170 out, now T20 T20 T19 leaving 173 |
+| Scores that leave 170 | none - the coach no longer sets anyone up to finish on the bull |
+| Checkouts in the 100-135 range | moved off the bull onto ordinary doubles - 135 is now T18 T17 D15 rather than T20 25 Bull |
+
+**The order of work was the usual one:** the Python coach first
+(`darts.py`, `DB_HIT`), then the parity corpus regenerated, then the Kotlin
+port (`PlayerProfile.DEFAULT_DB_HIT`), and the corpus test proved the three
+coaches still agree. The five tests that pinned the old advice were updated
+to the new one, and the generated `scoring.md` and `skill.md` were brought
+round in both repositories.
+
+**The treble curve was left alone on purpose.** Only the treble twenty and
+the double bull have published figures, and the model's treble curve descends
+with the bed number, which is how often a bed is thrown at rather than how
+often it is hit - all the treble beds are the same size, so a real hit rate
+should be much flatter. Fixing that needs per-bed data, so it is separate
+work rather than a number to guess at.
+
+**The player can now set the bull rate by hand.** The profile screen takes the
+bull to 40% and the coach plans around it: at 350 the setup chart leaves the
+classic 170 out - T20 T20 T20, finished T20 T20 Bull. The setting is stored, and
+it survives a reinstall. Proved on a Pixel 7 on a debug build with the built-in
+test-Pro switch (`am start -n com.jr12866.dartcoach/.MainActivity --ez testpro
+true`), which is also the build AVG AntiVirus flags as suspicious.
+
+**The profile dialog had a broken string.** `"How often do you hit $segment.label?"`
+parses as `$segment` followed by the literal text `.label`, so the dialog printed
+the whole `SegmentView(...)` to the screen. It now reads `${segment.label}` and
+asks "How often do you hit Bull?".
+
+### 9. The learner was dividing one count by another
+
+The hit learner keeps two counts for every segment: how many darts were
+**aimed** at it, and how many darts **landed** on it. They are different
+populations. A dart aimed at T16 that slides into T20 is a hit on T20 and a
+miss on T16.
+
+The rate the coach learned was
+
+```
+(prior * 15 + darts that landed on the segment) / (15 + darts aimed at it)
+```
+
+which is a ratio of two unrelated numbers. The effect is small but always in
+the same direction: a segment that other targets happen to land on looks
+better than the player is, and a segment the player misses looks worse.
+
+It was found by building the web coach, where the page has to *show* what the
+coach has learned. The panel said "T20 2/2, 63%" and the two numbers did not
+agree: the player aimed at T20 twice and hit it twice, and the coach had
+worked out 63% rather than the 62% the prior and the two hits make. The
+extra came from the third dart, which was aimed at T16 and landed on T20.
+
+**The fix** is the numerator: the rate now counts the darts that went where
+they were aimed, which is what the planner's `pHit` means. It is one line in
+`HitStats.rate()`, it is the shared `onTarget` count that was already being
+kept for exactly this purpose, and the statistics screen was already using
+it. Two tests were added to pin it.
+
+| | |
+|---|---|
+| Where | `core/.../DartThrow.kt`, `HitStats.rate()` |
+| Effect | Treble, double and bull rates are now the share of darts aimed at a segment that landed on it |
+| Effect on the advice | None for an unmeasured player: the defaults are unchanged and the corpus still passes |
+| Effect on a measured player | Rates move by a few points, in the direction of the truth |
+| Python | No change. The learner has never existed in the Windows coach, so there is no parity corpus entry for it |
+
+**One wart was still there, and it is not in the learner.** `PlayerProfile.merge`
+takes the player's own settings over the learned ones, which is right for the
+trebles and the doubles - they are maps, and the player's number wins for the
+beds they have set. The bull and the singles are plain numbers rather than
+maps, so there is no way to say "not set", and the merge always takes the
+player's side of them. **A learned bull rate therefore never reached the
+planner**, on the phone or in the browser, which made the last paragraph of
+decision 16 untrue as it stood.
+
+**The plain numbers are fixed now.** The bull, the outer bull and the singles
+are plain numbers rather than maps, so they can now say "not set": the merge
+takes the player's own number if there is one and the learned number if there
+is not, and the planner falls back to the population average when there is
+neither. The profile screen writes each of them into the field the planner
+reads, and the settings store saves them and reads them back, so a player
+who says they hit the bull get the classic 170 advice back: at a bull rate of
+about 27% and above the coach leaves 170 at 350, 347 and 344, and below that
+it sets up instead.
+
+**What that bought.** A learned single rate now reaches the planner, which it
+never did: the coach used the population average for every single dart
+whatever the player's own play said. The singles are pooled - one number for
+all twenty beds - so the screen shows the same rate on every single row, and
+setting any one of them sets the pooled rate.
+
+**One thing was still not learned, and now is.** The outer bull was not in
+the learner, though the double bull was and the counts were kept for it, so
+its rate sat at the population average unless the player set it by hand. The
+learner now reads the outer bull's rate out of those counts, the same way it
+reads the double bull's, so a player who finds the outer bull gets it priced
+in and a player who never finds it gets it priced out. It is not pooled with
+the singles, because it is a bull and not a bed.
+
+**Nothing is left in the plain numbers.** The bull, the outer bull and the
+singles all say "not set" now, all three are learned and all three can be
+set by hand, and all three are saved and read back.
+
 ## The repositories
 
 | | |

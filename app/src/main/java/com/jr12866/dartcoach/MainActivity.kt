@@ -146,9 +146,19 @@ class MainActivity : ComponentActivity() {
     /** What the last measurement found, for the screen. */
     private var tailMessage by mutableStateOf("")
 
+    /**
+     * What the last clearing of the learned counts did, for the screen.
+     *
+     * The reset is not something the coach says - it is something the player
+     * did on the settings screen - so it gets its own line rather than
+     * replacing the coach's message.
+     */
+    private var learnedMessage by mutableStateOf("")
+
     private var remaining by mutableStateOf(501)
     private var turns by mutableStateOf(0)
     private var suggestion by mutableStateOf("")
+    private var contingency by mutableStateOf("")
     private var message by mutableStateOf("")
     private var listening by mutableStateOf(false)
     private var double by mutableStateOf("")
@@ -234,6 +244,7 @@ class MainActivity : ComponentActivity() {
                         remaining = remaining,
                         turns = turns,
                         suggestion = suggestion,
+                        contingency = contingency,
                         message = message,
                         double = double,
                         listening = listening,
@@ -250,6 +261,8 @@ class MainActivity : ComponentActivity() {
                         measuredTail = measuredTail,
                         measuringTail = measuringTail,
                         tailMessage = tailMessage,
+                        learnedAttempts = profileView.totalAttempts,
+                        learnedMessage = learnedMessage,
                         onNewGame = { onNewGame() },
                         onUndo = { onUndo() },
                         onPrivacyPolicy = { openPrivacyPolicy() },
@@ -260,6 +273,7 @@ class MainActivity : ComponentActivity() {
                         onOpenSettings = { openSettings() },
                         onMeasureTail = { measureTailForThePlayer() },
                         onResetTail = { resetTail() },
+                        onResetLearned = { resetLearned() },
                     )
                 }
             }
@@ -624,10 +638,17 @@ class MainActivity : ComponentActivity() {
      *
      * The planner is built from the profile, so this is what makes a
      * changed hit rate take effect.
+     *
+     * The learner can be handed in, which is how the counts are cleared: the
+     * coach holds its learner, so the counts cannot be emptied inside it -
+     * a new learner has to take its place.
+     *
+     * The leg is carried across, so a rebuild in the middle of a visit does
+     * not throw the visit away: the score stands, the darts of the turn in
+     * play are kept, and the advice is planned again with the new numbers.
      */
-    private suspend fun rebuildCoach() {
+    private suspend fun rebuildCoach(learner: HitLearner = coach.learner) {
         val manual = store.readManual()
-        val learner = coach.learner
         val profile = PlayerProfile.merge(learner.profile(), manual)
         val rebuilt = CoachEngine(
             planner = Planner.build(profile),
@@ -637,8 +658,15 @@ class MainActivity : ComponentActivity() {
         rebuilt.state.preferredDouble = coach.state.preferredDouble
         rebuilt.state.remainingScore = coach.state.remainingScore
         rebuilt.state.turnsPlayed = coach.state.turnsPlayed
+        rebuilt.state.turnHistory.addAll(coach.state.turnHistory)
+        rebuilt.state.currentDarts.addAll(coach.state.currentDarts)
+        rebuilt.state.currentSegments.addAll(coach.state.currentSegments)
         rebuilt.legs.addAll(coach.legs)
         coach = rebuilt
+        // The advice the coach gave was planned with the old numbers, so it
+        // is planned again. Without this the screen would sit empty until
+        // the next turn.
+        rebuilt.replan()
         refresh()
     }
 
@@ -852,6 +880,7 @@ class MainActivity : ComponentActivity() {
      */
     private fun openSettings() {
         tailMessage = ""
+        learnedMessage = ""
     }
 
     /**
@@ -868,10 +897,46 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * The player wants the coach to forget what it has learned.
+     *
+     * The counts are the coach's memory of how the player throws. Clearing
+     * them puts the coach back on the population averages, which is what a
+     * player wants when the memory is of a game they did not play - or of a
+     * test rather than a leg.
+     *
+     * Two things are deliberately left alone: the player's own rates, which
+     * they set themselves, and the legs they have played, which are their
+     * history rather than the coach's memory.
+     *
+     * The leg in play is not thrown away. The score stands where it is and
+     * the advice is planned again from the numbers the coach has left.
+     */
+    private fun resetLearned() {
+        scope.launch {
+            store.clearStats()
+
+            // The coach holds its learner, so the counts cannot be emptied
+            // where they stand. A new learner takes its place and the coach
+            // is built round it.
+            val learner = HitLearner()
+            rebuildCoach(learner)
+
+            // The counts have moved, so the profile and the statistics have
+            // new numbers.
+            profileView = ProfileView.of(learner, profileView.manual)
+            statsView = StatsView(Stats(coach.legs), learner)
+
+            learnedMessage = "The coach has forgotten what it had learned. " +
+                "It is back on the average player."
+        }
+    }
+
     private fun refresh() {
         remaining = coach.state.remainingScore
         turns = coach.state.turnsPlayed
         suggestion = coach.suggestion
+        contingency = coach.contingency
         message = coach.message
         double = coach.state.preferredDouble?.let { "Playing for D$it" } ?: ""
         turnDarts = coach.state.currentDarts.size

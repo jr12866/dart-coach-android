@@ -1207,22 +1207,20 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "Bull"
+        "10",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
-      "fallback_labels": [
-        "1",
-        "D12"
-      ],
-      "fallback_leaves": 0,
+      "fallback_labels": [],
+      "fallback_leaves": 50,
       "doubles": [
-        "Bull",
-        "D12"
+        "D10",
+        "D20"
       ],
-      "speak": "double bull",
+      "speak": "single ten and double twenty",
       "display_lines": [
-        "Bull",
+        "10 D20",
         "to win"
       ]
     }
@@ -1497,19 +1495,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "12",
-        "Bull"
+        "D11",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
-      "fallback_labels": [],
-      "fallback_leaves": 62,
-      "doubles": [
-        "Bull"
+      "fallback_labels": [
+        "11",
+        "D20"
       ],
-      "speak": "single twelve and double bull",
+      "fallback_leaves": 0,
+      "doubles": [
+        "D10",
+        "D11",
+        "D20"
+      ],
+      "speak": "double eleven and double twenty",
       "display_lines": [
-        "12 Bull",
+        "D11 D20",
         "to win"
       ]
     }
@@ -1520,19 +1523,19 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "13",
-        "Bull"
+        "25",
+        "D19"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [],
       "fallback_leaves": 63,
       "doubles": [
-        "Bull"
+        "D19"
       ],
-      "speak": "single thirteen and double bull",
+      "speak": "outer bull and double nineteen",
       "display_lines": [
-        "13 Bull",
+        "25 D19",
         "to win"
       ]
     }
@@ -1543,19 +1546,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "14",
-        "Bull"
+        "D14",
+        "D18"
       ],
       "leaves": 0,
       "finishes": true,
-      "fallback_labels": [],
-      "fallback_leaves": 64,
-      "doubles": [
-        "Bull"
+      "fallback_labels": [
+        "10",
+        "D20"
       ],
-      "speak": "single fourteen and double bull",
+      "fallback_leaves": 0,
+      "doubles": [
+        "D9",
+        "D14",
+        "D18",
+        "D20"
+      ],
+      "speak": "double fourteen and double eighteen",
       "display_lines": [
-        "14 Bull",
+        "D14 D18",
         "to win"
       ]
     }
@@ -1590,19 +1599,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "16",
-        "Bull"
+        "D13",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
-      "fallback_labels": [],
-      "fallback_leaves": 66,
-      "doubles": [
-        "Bull"
+      "fallback_labels": [
+        "13",
+        "D20"
       ],
-      "speak": "single sixteen and double bull",
+      "fallback_leaves": 0,
+      "doubles": [
+        "D10",
+        "D13",
+        "D20"
+      ],
+      "speak": "double thirteen and double twenty",
       "display_lines": [
-        "16 Bull",
+        "D13 D20",
         "to win"
       ]
     }
@@ -1613,19 +1627,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "17",
-        "Bull"
+        "T17",
+        "D8"
       ],
       "leaves": 0,
       "finishes": true,
-      "fallback_labels": [],
-      "fallback_leaves": 67,
-      "doubles": [
-        "Bull"
+      "fallback_labels": [
+        "10",
+        "D20"
       ],
-      "speak": "single seventeen and double bull",
+      "fallback_leaves": 0,
+      "doubles": [
+        "D4",
+        "D8",
+        "D20"
+      ],
+      "speak": "treble seventeen and double eight",
       "display_lines": [
-        "17 Bull",
+        "T17 D8",
         "to win"
       ]
     }
@@ -1636,19 +1655,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "18",
-        "Bull"
+        "D18",
+        "D16"
       ],
       "leaves": 0,
       "finishes": true,
-      "fallback_labels": [],
-      "fallback_leaves": 68,
-      "doubles": [
-        "Bull"
+      "fallback_labels": [
+        "10",
+        "D20"
       ],
-      "speak": "single eighteen and double bull",
+      "fallback_leaves": 0,
+      "doubles": [
+        "D8",
+        "D16",
+        "D18",
+        "D20"
+      ],
+      "speak": "double eighteen and double sixteen",
       "display_lines": [
-        "18 Bull",
+        "D18 D16",
         "to win"
       ]
     }
@@ -1659,19 +1684,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "19",
-        "Bull"
+        "T15",
+        "D12"
       ],
       "leaves": 0,
       "finishes": true,
-      "fallback_labels": [],
-      "fallback_leaves": 69,
-      "doubles": [
-        "Bull"
+      "fallback_labels": [
+        "14",
+        "D20"
       ],
-      "speak": "single nineteen and double bull",
+      "fallback_leaves": 0,
+      "doubles": [
+        "D6",
+        "D12",
+        "D20"
+      ],
+      "speak": "treble fifteen and double twelve",
       "display_lines": [
-        "19 Bull",
+        "T15 D12",
         "to win"
       ]
     }
@@ -1682,19 +1712,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "20",
-        "Bull"
+        "D15",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
-      "fallback_labels": [],
-      "fallback_leaves": 70,
-      "doubles": [
-        "Bull"
+      "fallback_labels": [
+        "15",
+        "D20"
       ],
-      "speak": "single twenty and double bull",
+      "fallback_leaves": 0,
+      "doubles": [
+        "D10",
+        "D15",
+        "D20"
+      ],
+      "speak": "double fifteen and double twenty",
       "display_lines": [
-        "20 Bull",
+        "D15 D20",
         "to win"
       ]
     }
@@ -1711,14 +1746,14 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "4",
-        "Bull"
+        "14",
+        "D20"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
         "D5",
-        "D10"
+        "D10",
+        "D20"
       ],
       "speak": "treble seventeen and double ten",
       "display_lines": [
@@ -1739,12 +1774,11 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "6",
-        "Bull"
+        "16",
+        "D20"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
         "D10",
         "D16",
         "D20"
@@ -1768,14 +1802,14 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "8",
-        "Bull"
+        "18",
+        "D20"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
         "D7",
-        "D14"
+        "D14",
+        "D20"
       ],
       "speak": "treble fifteen and double fourteen",
       "display_lines": [
@@ -1796,12 +1830,11 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "7",
-        "Bull"
+        "17",
+        "D20"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
         "D10",
         "D17",
         "D20"
@@ -1819,19 +1852,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "25",
-        "Bull"
+        "T17",
+        "D12"
       ],
       "leaves": 0,
       "finishes": true,
-      "fallback_labels": [],
-      "fallback_leaves": 75,
-      "doubles": [
-        "Bull"
+      "fallback_labels": [
+        "18",
+        "D20"
       ],
-      "speak": "outer bull and double bull",
+      "fallback_leaves": 0,
+      "doubles": [
+        "D6",
+        "D12",
+        "D20"
+      ],
+      "speak": "treble seventeen and double twelve",
       "display_lines": [
-        "25 Bull",
+        "T17 D12",
         "to win"
       ]
     }
@@ -1848,12 +1886,11 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "8",
-        "Bull"
+        "18",
+        "D20"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
         "D10",
         "D18",
         "D20"
@@ -1871,24 +1908,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T15",
-        "D16"
+        "T19",
+        "D10"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "12",
-        "Bull"
+        "18",
+        "D20"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D8",
-        "D16"
+        "D5",
+        "D10",
+        "D20"
       ],
-      "speak": "treble fifteen and double sixteen",
+      "speak": "treble nineteen and double ten",
       "display_lines": [
-        "T15 D16",
+        "T19 D10",
         "to win"
       ]
     }
@@ -1905,12 +1942,11 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "9",
-        "Bull"
+        "19",
+        "D20"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
         "D10",
         "D19",
         "D20"
@@ -1934,14 +1970,16 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "12",
-        "Bull"
+        "D12",
+        "D19"
       ],
       "fallback_leaves": 0,
       "doubles": [
         "Bull",
         "D7",
-        "D14"
+        "D12",
+        "D14",
+        "D19"
       ],
       "speak": "treble seventeen and double fourteen",
       "display_lines": [
@@ -1962,12 +2000,11 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "10",
-        "Bull"
+        "20",
+        "D20"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
         "D10",
         "D20"
       ],
@@ -1984,24 +2021,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T15",
-        "D18"
+        "T19",
+        "D12"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "16",
-        "Bull"
+        "D12",
+        "D19"
       ],
       "fallback_leaves": 0,
       "doubles": [
         "Bull",
-        "D9",
-        "D18"
+        "D6",
+        "D12",
+        "D19"
       ],
-      "speak": "treble fifteen and double eighteen",
+      "speak": "treble nineteen and double twelve",
       "display_lines": [
-        "T15 D18",
+        "T19 D12",
         "to win"
       ]
     }
@@ -2018,14 +2056,15 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "14",
-        "Bull"
+        "D14",
+        "D18"
       ],
       "fallback_leaves": 0,
       "doubles": [
         "Bull",
         "D7",
-        "D14"
+        "D14",
+        "D18"
       ],
       "speak": "treble eighteen and double fourteen",
       "display_lines": [
@@ -2046,14 +2085,15 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "16",
-        "Bull"
+        "D16",
+        "D17"
       ],
       "fallback_leaves": 0,
       "doubles": [
         "Bull",
         "D8",
-        "D16"
+        "D16",
+        "D17"
       ],
       "speak": "treble seventeen and double sixteen",
       "display_lines": [
@@ -2074,13 +2114,14 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "18",
-        "Bull"
+        "D18",
+        "D16"
       ],
       "fallback_leaves": 0,
       "doubles": [
         "Bull",
         "D9",
+        "D16",
         "D18"
       ],
       "speak": "treble sixteen and double eighteen",
@@ -2096,24 +2137,26 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T15",
-        "D20"
+        "T19",
+        "D14"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "20",
-        "Bull"
+        "D16",
+        "D17"
       ],
       "fallback_leaves": 0,
       "doubles": [
         "Bull",
-        "D10",
-        "D20"
+        "D7",
+        "D14",
+        "D16",
+        "D17"
       ],
-      "speak": "treble fifteen and double twenty",
+      "speak": "treble nineteen and double fourteen",
       "display_lines": [
-        "T15 D20",
+        "T19 D14",
         "to win"
       ]
     }
@@ -2130,14 +2173,15 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "18",
-        "Bull"
+        "D18",
+        "D16"
       ],
       "fallback_leaves": 0,
       "doubles": [
         "Bull",
         "D8",
-        "D16"
+        "D16",
+        "D18"
       ],
       "speak": "treble eighteen and double sixteen",
       "display_lines": [
@@ -2158,14 +2202,16 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "20",
-        "Bull"
+        "D20",
+        "D15"
       ],
       "fallback_leaves": 0,
       "doubles": [
         "Bull",
         "D9",
-        "D18"
+        "D15",
+        "D18",
+        "D20"
       ],
       "speak": "treble seventeen and double eighteen",
       "display_lines": [
@@ -2186,14 +2232,16 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "18",
-        "Bull"
+        "D18",
+        "D16"
       ],
       "fallback_leaves": 0,
       "doubles": [
         "Bull",
         "D7",
-        "D14"
+        "D14",
+        "D16",
+        "D18"
       ],
       "speak": "treble twenty and double fourteen",
       "display_lines": [
@@ -2214,14 +2262,16 @@
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "20",
-        "Bull"
+        "D20",
+        "D15"
       ],
       "fallback_leaves": 0,
       "doubles": [
         "Bull",
         "D8",
-        "D16"
+        "D15",
+        "D16",
+        "D20"
       ],
       "speak": "treble nineteen and double sixteen",
       "display_lines": [
@@ -2236,24 +2286,23 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "Bull",
-        "D20"
+        "T18",
+        "D18"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "15",
-        "Bull"
+        "T18",
+        "D9"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D10",
-        "D20"
+        "D9",
+        "D18"
       ],
-      "speak": "double bull and double twenty",
+      "speak": "treble eighteen and double eighteen",
       "display_lines": [
-        "Bull D20",
+        "T18 D18",
         "to win"
       ]
     }
@@ -2542,7 +2591,8 @@
     "expect": {
       "labels": [
         "T17",
-        "Bull"
+        "10",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -2552,12 +2602,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D15"
+        "D15",
+        "D20"
       ],
-      "speak": "treble seventeen and double bull",
+      "speak": "treble seventeen, single ten and double twenty",
       "display_lines": [
-        "T17 Bull",
+        "T17 10 D20",
         "to win"
       ]
     }
@@ -2568,24 +2618,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T17",
-        "1",
-        "Bull"
+        "T20",
+        "2",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "T17",
-        "D17"
+        "T18",
+        "D14"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D17"
+        "D14",
+        "D20"
       ],
-      "speak": "treble seventeen, single one and double bull",
+      "speak": "treble twenty, single two and double twenty",
       "display_lines": [
-        "T17 1 Bull",
+        "T20 2 D20",
         "to win"
       ]
     }
@@ -2596,24 +2646,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T17",
-        "2",
-        "Bull"
+        "T20",
+        "3",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "T18",
+        "T17",
         "D16"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D16"
+        "D16",
+        "D20"
       ],
-      "speak": "treble seventeen, single two and double bull",
+      "speak": "treble twenty, single three and double twenty",
       "display_lines": [
-        "T17 2 Bull",
+        "T20 3 D20",
         "to win"
       ]
     }
@@ -2625,7 +2675,8 @@
     "expect": {
       "labels": [
         "T18",
-        "Bull"
+        "10",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -2635,12 +2686,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D16"
+        "D16",
+        "D20"
       ],
-      "speak": "treble eighteen and double bull",
+      "speak": "treble eighteen, single ten and double twenty",
       "display_lines": [
-        "T18 Bull",
+        "T18 10 D20",
         "to win"
       ]
     }
@@ -2651,24 +2702,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T18",
-        "1",
-        "Bull"
+        "T20",
+        "5",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
         "T17",
-        "D18"
+        "D17"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D18"
+        "D17",
+        "D20"
       ],
-      "speak": "treble eighteen, single one and double bull",
+      "speak": "treble twenty, single five and double twenty",
       "display_lines": [
-        "T18 1 Bull",
+        "T20 5 D20",
         "to win"
       ]
     }
@@ -2679,24 +2730,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T18",
-        "2",
-        "Bull"
+        "T20",
+        "6",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
         "T18",
-        "D17"
+        "D16"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D17"
+        "D16",
+        "D20"
       ],
-      "speak": "treble eighteen, single two and double bull",
+      "speak": "treble twenty, single six and double twenty",
       "display_lines": [
-        "T18 2 Bull",
+        "T20 6 D20",
         "to win"
       ]
     }
@@ -2708,7 +2759,8 @@
     "expect": {
       "labels": [
         "T19",
-        "Bull"
+        "10",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -2718,12 +2770,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D17"
+        "D17",
+        "D20"
       ],
-      "speak": "treble nineteen and double bull",
+      "speak": "treble nineteen, single ten and double twenty",
       "display_lines": [
-        "T19 Bull",
+        "T19 10 D20",
         "to win"
       ]
     }
@@ -2734,24 +2786,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
-        "1",
-        "Bull"
+        "T20",
+        "8",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "T17",
-        "D19"
+        "T18",
+        "D17"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D19"
+        "D17",
+        "D20"
       ],
-      "speak": "treble nineteen, single one and double bull",
+      "speak": "treble twenty, single eight and double twenty",
       "display_lines": [
-        "T19 1 Bull",
+        "T20 8 D20",
         "to win"
       ]
     }
@@ -2762,24 +2814,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
-        "2",
-        "Bull"
+        "T20",
+        "9",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "T18",
-        "D18"
+        "T17",
+        "D19"
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D18"
+        "D19",
+        "D20"
       ],
-      "speak": "treble nineteen, single two and double bull",
+      "speak": "treble twenty, single nine and double twenty",
       "display_lines": [
-        "T19 2 Bull",
+        "T20 9 D20",
         "to win"
       ]
     }
@@ -2791,7 +2843,8 @@
     "expect": {
       "labels": [
         "T20",
-        "Bull"
+        "10",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -2801,12 +2854,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D18"
+        "D18",
+        "D20"
       ],
-      "speak": "treble twenty and double bull",
+      "speak": "treble twenty, single ten and double twenty",
       "display_lines": [
-        "T20 Bull",
+        "T20 10 D20",
         "to win"
       ]
     }
@@ -2818,8 +2871,8 @@
     "expect": {
       "labels": [
         "T20",
-        "1",
-        "Bull"
+        "11",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -2829,12 +2882,11 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
         "D20"
       ],
-      "speak": "treble twenty, single one and double bull",
+      "speak": "treble twenty, single eleven and double twenty",
       "display_lines": [
-        "T20 1 Bull",
+        "T20 11 D20",
         "to win"
       ]
     }
@@ -2846,8 +2898,8 @@
     "expect": {
       "labels": [
         "T20",
-        "2",
-        "Bull"
+        "12",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -2857,12 +2909,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D19"
+        "D19",
+        "D20"
       ],
-      "speak": "treble twenty, single two and double bull",
+      "speak": "treble twenty, single twelve and double twenty",
       "display_lines": [
-        "T20 2 Bull",
+        "T20 12 D20",
         "to win"
       ]
     }
@@ -2874,8 +2926,8 @@
     "expect": {
       "labels": [
         "T20",
-        "3",
-        "Bull"
+        "13",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -2885,12 +2937,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D18"
+        "D18",
+        "D20"
       ],
-      "speak": "treble twenty, single three and double bull",
+      "speak": "treble twenty, single thirteen and double twenty",
       "display_lines": [
-        "T20 3 Bull",
+        "T20 13 D20",
         "to win"
       ]
     }
@@ -2902,8 +2954,8 @@
     "expect": {
       "labels": [
         "T20",
-        "4",
-        "Bull"
+        "14",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -2913,12 +2965,11 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
         "D20"
       ],
-      "speak": "treble twenty, single four and double bull",
+      "speak": "treble twenty, single fourteen and double twenty",
       "display_lines": [
-        "T20 4 Bull",
+        "T20 14 D20",
         "to win"
       ]
     }
@@ -2930,8 +2981,8 @@
     "expect": {
       "labels": [
         "T20",
-        "5",
-        "Bull"
+        "15",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -2941,12 +2992,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D19"
+        "D19",
+        "D20"
       ],
-      "speak": "treble twenty, single five and double bull",
+      "speak": "treble twenty, single fifteen and double twenty",
       "display_lines": [
-        "T20 5 Bull",
+        "T20 15 D20",
         "to win"
       ]
     }
@@ -2958,8 +3009,8 @@
     "expect": {
       "labels": [
         "T20",
-        "6",
-        "Bull"
+        "16",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -2969,12 +3020,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D18"
+        "D18",
+        "D20"
       ],
-      "speak": "treble twenty, single six and double bull",
+      "speak": "treble twenty, single sixteen and double twenty",
       "display_lines": [
-        "T20 6 Bull",
+        "T20 16 D20",
         "to win"
       ]
     }
@@ -2986,8 +3037,8 @@
     "expect": {
       "labels": [
         "T20",
-        "7",
-        "Bull"
+        "17",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -2997,12 +3048,11 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
         "D20"
       ],
-      "speak": "treble twenty, single seven and double bull",
+      "speak": "treble twenty, single seventeen and double twenty",
       "display_lines": [
-        "T20 7 Bull",
+        "T20 17 D20",
         "to win"
       ]
     }
@@ -3014,8 +3064,8 @@
     "expect": {
       "labels": [
         "T20",
-        "8",
-        "Bull"
+        "18",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -3025,12 +3075,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
-        "D19"
+        "D19",
+        "D20"
       ],
-      "speak": "treble twenty, single eight and double bull",
+      "speak": "treble twenty, single eighteen and double twenty",
       "display_lines": [
-        "T20 8 Bull",
+        "T20 18 D20",
         "to win"
       ]
     }
@@ -3041,24 +3091,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
-        "12",
-        "Bull"
+        "T18",
+        "25",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "T20",
-        "D20"
+        "T17",
+        "Bull"
       ],
       "fallback_leaves": 0,
       "doubles": [
         "Bull",
         "D20"
       ],
-      "speak": "treble nineteen, single twelve and double bull",
+      "speak": "treble eighteen, outer bull and double twenty",
       "display_lines": [
-        "T19 12 Bull",
+        "T18 25 D20",
         "to win"
       ]
     }
@@ -3070,8 +3120,8 @@
     "expect": {
       "labels": [
         "T20",
-        "10",
-        "Bull"
+        "20",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
@@ -3081,12 +3131,11 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull",
         "D20"
       ],
-      "speak": "treble twenty, single ten and double bull",
+      "speak": "treble twenty, single twenty and double twenty",
       "display_lines": [
-        "T20 10 Bull",
+        "T20 20 D20",
         "to win"
       ]
     }
@@ -3098,8 +3147,8 @@
     "expect": {
       "labels": [
         "T20",
-        "11",
-        "Bull"
+        "25",
+        "D18"
       ],
       "leaves": 0,
       "finishes": true,
@@ -3109,11 +3158,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull"
+        "Bull",
+        "D18"
       ],
-      "speak": "treble twenty, single eleven and double bull",
+      "speak": "treble twenty, outer bull and double eighteen",
       "display_lines": [
-        "T20 11 Bull",
+        "T20 25 D18",
         "to win"
       ]
     }
@@ -3124,23 +3174,23 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T18",
-        "18",
-        "Bull"
+        "T19",
+        "25",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
-        "T18",
-        "Bull"
+        "T20",
+        "T20"
       ],
-      "fallback_leaves": 0,
+      "fallback_leaves": -17,
       "doubles": [
-        "Bull"
+        "D20"
       ],
-      "speak": "treble eighteen, single eighteen and double bull",
+      "speak": "treble nineteen, outer bull and double twenty",
       "display_lines": [
-        "T18 18 Bull",
+        "T19 25 D20",
         "to win"
       ]
     }
@@ -3151,23 +3201,20 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
-        "16",
-        "Bull"
+        "25",
+        "T20",
+        "D19"
       ],
       "leaves": 0,
       "finishes": true,
-      "fallback_labels": [
-        "T18",
-        "Bull"
-      ],
-      "fallback_leaves": 0,
+      "fallback_labels": [],
+      "fallback_leaves": 123,
       "doubles": [
-        "Bull"
+        "D19"
       ],
-      "speak": "treble nineteen, single sixteen and double bull",
+      "speak": "outer bull, treble twenty and double nineteen",
       "display_lines": [
-        "T19 16 Bull",
+        "25 T20 D19",
         "to win"
       ]
     }
@@ -3179,8 +3226,8 @@
     "expect": {
       "labels": [
         "T20",
-        "14",
-        "Bull"
+        "D14",
+        "D18"
       ],
       "leaves": 0,
       "finishes": true,
@@ -3190,11 +3237,13 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull"
+        "Bull",
+        "D14",
+        "D18"
       ],
-      "speak": "treble twenty, single fourteen and double bull",
+      "speak": "treble twenty, double fourteen and double eighteen",
       "display_lines": [
-        "T20 14 Bull",
+        "T20 D14 D18",
         "to win"
       ]
     }
@@ -3205,24 +3254,23 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "Bull",
+        "T20",
         "25",
-        "Bull"
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
         "T20",
-        "D20"
+        "T20"
       ],
-      "fallback_leaves": 0,
+      "fallback_leaves": -15,
       "doubles": [
-        "Bull",
         "D20"
       ],
-      "speak": "double bull, outer bull and double bull",
+      "speak": "treble twenty, outer bull and double twenty",
       "display_lines": [
-        "Bull 25 Bull",
+        "T20 25 D20",
         "to win"
       ]
     }
@@ -3234,8 +3282,8 @@
     "expect": {
       "labels": [
         "T19",
-        "19",
-        "Bull"
+        "T19",
+        "D6"
       ],
       "leaves": 0,
       "finishes": true,
@@ -3245,11 +3293,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull"
+        "Bull",
+        "D6"
       ],
-      "speak": "treble nineteen, single nineteen and double bull",
+      "speak": "treble nineteen, treble nineteen and double six",
       "display_lines": [
-        "T19 19 Bull",
+        "T19 T19 D6",
         "to win"
       ]
     }
@@ -3261,8 +3310,8 @@
     "expect": {
       "labels": [
         "T20",
-        "17",
-        "Bull"
+        "T17",
+        "D8"
       ],
       "leaves": 0,
       "finishes": true,
@@ -3272,11 +3321,12 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull"
+        "Bull",
+        "D8"
       ],
-      "speak": "treble twenty, single seventeen and double bull",
+      "speak": "treble twenty, treble seventeen and double eight",
       "display_lines": [
-        "T20 17 Bull",
+        "T20 T17 D8",
         "to win"
       ]
     }
@@ -3287,23 +3337,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T20",
-        "18",
-        "Bull"
+        "D18",
+        "T18",
+        "D19"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
         "T20",
-        "T20"
-      ],
-      "fallback_leaves": -12,
-      "doubles": [
         "Bull"
       ],
-      "speak": "treble twenty, single eighteen and double bull",
+      "fallback_leaves": 0,
+      "doubles": [
+        "Bull",
+        "D18",
+        "D19"
+      ],
+      "speak": "double eighteen, treble eighteen and double nineteen",
       "display_lines": [
-        "T20 18 Bull",
+        "D18 T18 D19",
         "to win"
       ]
     }
@@ -3314,23 +3366,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T20",
-        "19",
-        "Bull"
+        "D19",
+        "T17",
+        "D20"
       ],
       "leaves": 0,
       "finishes": true,
       "fallback_labels": [
         "T20",
-        "T20"
-      ],
-      "fallback_leaves": -11,
-      "doubles": [
         "Bull"
       ],
-      "speak": "treble twenty, single nineteen and double bull",
+      "fallback_leaves": 0,
+      "doubles": [
+        "Bull",
+        "D19",
+        "D20"
+      ],
+      "speak": "double nineteen, treble seventeen and double twenty",
       "display_lines": [
-        "T20 19 Bull",
+        "D19 T17 D20",
         "to win"
       ]
     }
@@ -3342,8 +3396,8 @@
     "expect": {
       "labels": [
         "T20",
-        "20",
-        "Bull"
+        "D20",
+        "D15"
       ],
       "leaves": 0,
       "finishes": true,
@@ -3353,11 +3407,13 @@
       ],
       "fallback_leaves": 0,
       "doubles": [
-        "Bull"
+        "Bull",
+        "D15",
+        "D20"
       ],
-      "speak": "treble twenty, single twenty and double bull",
+      "speak": "treble twenty, double twenty and double fifteen",
       "display_lines": [
-        "T20 20 Bull",
+        "T20 D20 D15",
         "to win"
       ]
     }
@@ -3395,9 +3451,9 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
-        "25",
-        "Bull"
+        "T18",
+        "T18",
+        "D12"
       ],
       "leaves": 0,
       "finishes": true,
@@ -3405,13 +3461,13 @@
         "T20",
         "T20"
       ],
-      "fallback_leaves": -7,
+      "fallback_leaves": -6,
       "doubles": [
-        "Bull"
+        "D12"
       ],
-      "speak": "treble nineteen, outer bull and double bull",
+      "speak": "treble eighteen, treble eighteen and double twelve",
       "display_lines": [
-        "T19 25 Bull",
+        "T18 T18 D12",
         "to win"
       ]
     }
@@ -3476,9 +3532,9 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T20",
-        "25",
-        "Bull"
+        "T18",
+        "T17",
+        "D15"
       ],
       "leaves": 0,
       "finishes": true,
@@ -3486,13 +3542,13 @@
         "T20",
         "T20"
       ],
-      "fallback_leaves": -5,
+      "fallback_leaves": -3,
       "doubles": [
-        "Bull"
+        "D15"
       ],
-      "speak": "treble twenty, outer bull and double bull",
+      "speak": "treble eighteen, treble seventeen and double fifteen",
       "display_lines": [
-        "T20 25 Bull",
+        "T18 T17 D15",
         "to win"
       ]
     }
@@ -4132,9 +4188,9 @@
       "finishes": false,
       "fallback_labels": [
         "T19",
-        "Bull"
+        "25"
       ],
-      "fallback_leaves": 32,
+      "fallback_leaves": 57,
       "doubles": [
         "D5",
         "D10",
@@ -4180,8 +4236,8 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
         "T18",
+        "T19",
         "Bull"
       ],
       "leaves": 0,
@@ -4190,13 +4246,13 @@
         "T20",
         "T20"
       ],
-      "fallback_leaves": 22,
+      "fallback_leaves": 23,
       "doubles": [
         "Bull"
       ],
-      "speak": "treble nineteen, treble eighteen and double bull",
+      "speak": "treble eighteen, treble nineteen and double bull",
       "display_lines": [
-        "T19 T18 Bull",
+        "T18 T19 Bull",
         "to win"
       ]
     }
@@ -4215,9 +4271,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "Bull"
+        "25"
       ],
-      "fallback_leaves": 32,
+      "fallback_leaves": 57,
       "doubles": [
         "D5",
         "D10",
@@ -4243,8 +4299,8 @@
       "leaves": 40,
       "finishes": false,
       "fallback_labels": [
-        "T19",
-        "T18"
+        "T18",
+        "T19"
       ],
       "fallback_leaves": 32,
       "doubles": [
@@ -4300,9 +4356,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T15"
+        "25"
       ],
-      "fallback_leaves": 40,
+      "fallback_leaves": 60,
       "doubles": [
         "D5",
         "D10",
@@ -4378,8 +4434,8 @@
     "expect": {
       "labels": [
         "T20",
-        "T18",
-        "14"
+        "T20",
+        "8"
       ],
       "leaves": 40,
       "finishes": false,
@@ -4393,9 +4449,9 @@
         "D10",
         "D20"
       ],
-      "speak": "treble twenty, treble eighteen and single fourteen",
+      "speak": "treble twenty, treble twenty and single eight",
       "display_lines": [
-        "T20 T18 14",
+        "T20 T20 8",
         "leaves 40"
       ]
     }
@@ -4407,8 +4463,8 @@
     "expect": {
       "labels": [
         "T20",
-        "T19",
-        "12"
+        "T20",
+        "9"
       ],
       "leaves": 40,
       "finishes": false,
@@ -4422,9 +4478,9 @@
         "D10",
         "D20"
       ],
-      "speak": "treble twenty, treble nineteen and single twelve",
+      "speak": "treble twenty, treble twenty and single nine",
       "display_lines": [
-        "T20 T19 12",
+        "T20 T20 9",
         "leaves 40"
       ]
     }
@@ -4520,25 +4576,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
+        "T20",
         "T19",
-        "T19",
-        "19"
+        "16"
       ],
       "leaves": 40,
       "finishes": false,
       "fallback_labels": [
         "T19",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 40,
+      "fallback_leaves": 36,
       "doubles": [
         "D5",
         "D10",
         "D20"
       ],
-      "speak": "treble nineteen, treble nineteen and single nineteen",
+      "speak": "treble twenty, treble nineteen and single sixteen",
       "display_lines": [
-        "T19 T19 19",
+        "T20 T19 16",
         "leaves 40"
       ]
     }
@@ -4556,8 +4612,8 @@
       "leaves": 40,
       "finishes": false,
       "fallback_labels": [
-        "T19",
-        "T19"
+        "T20",
+        "T18"
       ],
       "fallback_leaves": 40,
       "doubles": [
@@ -4579,24 +4635,24 @@
     "expect": {
       "labels": [
         "T20",
-        "Bull",
-        "25"
+        "T19",
+        "18"
       ],
       "leaves": 40,
       "finishes": false,
       "fallback_labels": [
-        "T20",
-        "T15"
+        "T19",
+        "T20"
       ],
-      "fallback_leaves": 50,
+      "fallback_leaves": 38,
       "doubles": [
         "D5",
         "D10",
         "D20"
       ],
-      "speak": "treble twenty, double bull and outer bull",
+      "speak": "treble twenty, treble nineteen and single eighteen",
       "display_lines": [
-        "T20 Bull 25",
+        "T20 T19 18",
         "leaves 40"
       ]
     }
@@ -4672,10 +4728,10 @@
       "leaves": 40,
       "finishes": false,
       "fallback_labels": [
-        "T18",
-        "T18"
+        "T20",
+        "T20"
       ],
-      "fallback_leaves": 50,
+      "fallback_leaves": 38,
       "doubles": [
         "D5",
         "D10",
@@ -4760,9 +4816,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T17"
+        "T20"
       ],
-      "fallback_leaves": 50,
+      "fallback_leaves": 41,
       "doubles": [
         "D9",
         "D18"
@@ -4809,25 +4865,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
-        "T19",
-        "19"
+        "T20",
+        "T20",
+        "25"
       ],
-      "leaves": 50,
+      "leaves": 38,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T18"
+        "T20"
       ],
-      "fallback_leaves": 50,
+      "fallback_leaves": 43,
       "doubles": [
-        "Bull",
-        "D12"
+        "D9",
+        "D19"
       ],
-      "speak": "treble nineteen, treble nineteen and single nineteen",
+      "speak": "treble twenty, treble twenty and outer bull",
       "display_lines": [
-        "T19 T19 19",
-        "leaves 50"
+        "T20 T20 25",
+        "leaves 38"
       ]
     }
   },
@@ -4839,23 +4895,24 @@
       "labels": [
         "T20",
         "T20",
-        "14"
+        "D12"
       ],
-      "leaves": 50,
+      "leaves": 40,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T18"
+        "T20"
       ],
-      "fallback_leaves": 50,
+      "fallback_leaves": 44,
       "doubles": [
-        "Bull",
-        "D12"
+        "D5",
+        "D10",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and single fourteen",
+      "speak": "treble twenty, treble twenty and double twelve",
       "display_lines": [
-        "T20 T20 14",
-        "leaves 50"
+        "T20 T20 D12",
+        "leaves 40"
       ]
     }
   },
@@ -4895,10 +4952,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T19",
-        "19"
+        "T20",
+        "D13"
       ],
-      "leaves": 50,
+      "leaves": 40,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -4906,13 +4963,14 @@
       ],
       "fallback_leaves": 46,
       "doubles": [
-        "Bull",
-        "D12"
+        "D5",
+        "D10",
+        "D20"
       ],
-      "speak": "treble twenty, treble nineteen and single nineteen",
+      "speak": "treble twenty, treble twenty and double thirteen",
       "display_lines": [
-        "T20 T19 19",
-        "leaves 50"
+        "T20 T20 D13",
+        "leaves 40"
       ]
     }
   },
@@ -4923,24 +4981,25 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
-        "17"
+        "T19",
+        "D15"
       ],
-      "leaves": 50,
+      "leaves": 40,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 50,
+      "fallback_leaves": 47,
       "doubles": [
-        "Bull",
-        "D12"
+        "D5",
+        "D10",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and single seventeen",
+      "speak": "treble twenty, treble nineteen and double fifteen",
       "display_lines": [
-        "T20 T20 17",
-        "leaves 50"
+        "T20 T19 D15",
+        "leaves 40"
       ]
     }
   },
@@ -4952,9 +5011,9 @@
       "labels": [
         "T20",
         "T20",
-        "18"
+        "D14"
       ],
-      "leaves": 50,
+      "leaves": 40,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -4962,13 +5021,14 @@
       ],
       "fallback_leaves": 48,
       "doubles": [
-        "Bull",
-        "D12"
+        "D5",
+        "D10",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and single eighteen",
+      "speak": "treble twenty, treble twenty and double fourteen",
       "display_lines": [
-        "T20 T20 18",
-        "leaves 50"
+        "T20 T20 D14",
+        "leaves 40"
       ]
     }
   },
@@ -4978,25 +5038,26 @@
     "preferred_double": null,
     "expect": {
       "labels": [
+        "T20",
         "T19",
-        "T19",
-        "25"
+        "D16"
       ],
-      "leaves": 50,
+      "leaves": 40,
       "finishes": false,
       "fallback_labels": [
         "T20",
         "T20"
       ],
-      "fallback_leaves": 50,
+      "fallback_leaves": 49,
       "doubles": [
-        "Bull",
-        "D12"
+        "D5",
+        "D10",
+        "D20"
       ],
-      "speak": "treble nineteen, treble nineteen and outer bull",
+      "speak": "treble twenty, treble nineteen and double sixteen",
       "display_lines": [
-        "T19 T19 25",
-        "leaves 50"
+        "T20 T19 D16",
+        "leaves 40"
       ]
     }
   },
@@ -5008,9 +5069,9 @@
       "labels": [
         "T20",
         "T20",
-        "20"
+        "D15"
       ],
-      "leaves": 50,
+      "leaves": 40,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -5018,13 +5079,14 @@
       ],
       "fallback_leaves": 50,
       "doubles": [
-        "Bull",
-        "D12"
+        "D5",
+        "D10",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and single twenty",
+      "speak": "treble twenty, treble twenty and double fifteen",
       "display_lines": [
-        "T20 T20 20",
-        "leaves 50"
+        "T20 T20 D15",
+        "leaves 40"
       ]
     }
   },
@@ -5064,10 +5126,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T19",
-        "25"
+        "T20",
+        "D16"
       ],
-      "leaves": 50,
+      "leaves": 40,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -5075,13 +5137,14 @@
       ],
       "fallback_leaves": 52,
       "doubles": [
-        "Bull",
-        "D12"
+        "D5",
+        "D10",
+        "D20"
       ],
-      "speak": "treble twenty, treble nineteen and outer bull",
+      "speak": "treble twenty, treble twenty and double sixteen",
       "display_lines": [
-        "T20 T19 25",
-        "leaves 50"
+        "T20 T20 D16",
+        "leaves 40"
       ]
     }
   },
@@ -5091,8 +5154,8 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
         "T20",
+        "T19",
         "D18"
       ],
       "leaves": 40,
@@ -5101,15 +5164,15 @@
         "T20",
         "T20"
       ],
-      "fallback_leaves": 54,
+      "fallback_leaves": 53,
       "doubles": [
         "D5",
         "D10",
         "D20"
       ],
-      "speak": "treble nineteen, treble twenty and double eighteen",
+      "speak": "treble twenty, treble nineteen and double eighteen",
       "display_lines": [
-        "T19 T20 D18",
+        "T20 T19 D18",
         "leaves 40"
       ]
     }
@@ -5150,10 +5213,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
-        "25"
+        "T19",
+        "D19"
       ],
-      "leaves": 50,
+      "leaves": 40,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -5161,13 +5224,14 @@
       ],
       "fallback_leaves": 58,
       "doubles": [
-        "Bull",
-        "D12"
+        "D5",
+        "D10",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and outer bull",
+      "speak": "treble twenty, treble nineteen and double nineteen",
       "display_lines": [
-        "T20 T20 25",
-        "leaves 50"
+        "T20 T19 D19",
+        "leaves 40"
       ]
     }
   },
@@ -5266,9 +5330,9 @@
       "labels": [
         "T19",
         "T20",
-        "Bull"
+        "25"
       ],
-      "leaves": 32,
+      "leaves": 57,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -5276,14 +5340,13 @@
       ],
       "fallback_leaves": 60,
       "doubles": [
-        "D4",
-        "D8",
-        "D16"
+        "D10",
+        "D20"
       ],
-      "speak": "treble nineteen, treble twenty and double bull",
+      "speak": "treble nineteen, treble twenty and outer bull",
       "display_lines": [
-        "T19 T20 Bull",
-        "leaves 32"
+        "T19 T20 25",
+        "leaves 57"
       ]
     }
   },
@@ -5323,10 +5386,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T17",
-        "Bull"
+        "T20",
+        "25"
       ],
-      "leaves": 40,
+      "leaves": 56,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -5334,14 +5397,13 @@
       ],
       "fallback_leaves": 61,
       "doubles": [
-        "D5",
         "D10",
         "D20"
       ],
-      "speak": "treble twenty, treble seventeen and double bull",
+      "speak": "treble twenty, treble twenty and outer bull",
       "display_lines": [
-        "T20 T17 Bull",
-        "leaves 40"
+        "T20 T20 25",
+        "leaves 56"
       ]
     }
   },
@@ -5351,26 +5413,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
         "T20",
-        "T15"
+        "T20",
+        "25"
       ],
-      "leaves": 40,
+      "leaves": 57,
       "finishes": false,
       "fallback_labels": [
-        "T19",
+        "T20",
         "T19"
       ],
-      "fallback_leaves": 69,
+      "fallback_leaves": 65,
       "doubles": [
-        "D5",
         "D10",
         "D20"
       ],
-      "speak": "treble nineteen, treble twenty and treble fifteen",
+      "speak": "treble twenty, treble twenty and outer bull",
       "display_lines": [
-        "T19 T20 T15",
-        "leaves 40"
+        "T20 T20 25",
+        "leaves 57"
       ]
     }
   },
@@ -5380,9 +5441,9 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
         "T20",
-        "T18"
+        "T18",
+        "T19"
       ],
       "leaves": 32,
       "finishes": false,
@@ -5390,15 +5451,15 @@
         "T20",
         "T20"
       ],
-      "fallback_leaves": 64,
+      "fallback_leaves": 63,
       "doubles": [
         "D4",
         "D8",
         "D16"
       ],
-      "speak": "treble nineteen, treble twenty and treble eighteen",
+      "speak": "treble twenty, treble eighteen and treble nineteen",
       "display_lines": [
-        "T19 T20 T18",
+        "T20 T18 T19",
         "leaves 32"
       ]
     }
@@ -5410,10 +5471,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T18",
-        "Bull"
+        "T19",
+        "T17"
       ],
-      "leaves": 40,
+      "leaves": 36,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -5421,14 +5482,13 @@
       ],
       "fallback_leaves": 64,
       "doubles": [
-        "D5",
-        "D10",
-        "D20"
+        "D9",
+        "D18"
       ],
-      "speak": "treble twenty, treble eighteen and double bull",
+      "speak": "treble twenty, treble nineteen and treble seventeen",
       "display_lines": [
-        "T20 T18 Bull",
-        "leaves 40"
+        "T20 T19 T17",
+        "leaves 36"
       ]
     }
   },
@@ -5440,9 +5500,9 @@
       "labels": [
         "T20",
         "T20",
-        "T15"
+        "25"
       ],
-      "leaves": 40,
+      "leaves": 60,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -5450,14 +5510,13 @@
       ],
       "fallback_leaves": 65,
       "doubles": [
-        "D5",
         "D10",
         "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble fifteen",
+      "speak": "treble twenty, treble twenty and outer bull",
       "display_lines": [
-        "T20 T20 T15",
-        "leaves 40"
+        "T20 T20 25",
+        "leaves 60"
       ]
     }
   },
@@ -5474,10 +5533,10 @@
       "leaves": 32,
       "finishes": false,
       "fallback_labels": [
-        "T20",
+        "T19",
         "T19"
       ],
-      "fallback_leaves": 69,
+      "fallback_leaves": 72,
       "doubles": [
         "D4",
         "D8",
@@ -5498,9 +5557,9 @@
       "labels": [
         "T20",
         "T19",
-        "Bull"
+        "25"
       ],
-      "leaves": 40,
+      "leaves": 65,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -5508,14 +5567,13 @@
       ],
       "fallback_leaves": 67,
       "doubles": [
-        "D5",
         "D10",
         "D20"
       ],
-      "speak": "treble twenty, treble nineteen and double bull",
+      "speak": "treble twenty, treble nineteen and outer bull",
       "display_lines": [
-        "T20 T19 Bull",
-        "leaves 40"
+        "T20 T19 25",
+        "leaves 65"
       ]
     }
   },
@@ -5525,9 +5583,9 @@
     "preferred_double": null,
     "expect": {
       "labels": [
+        "T20",
         "T18",
-        "T19",
-        "T19"
+        "T18"
       ],
       "leaves": 40,
       "finishes": false,
@@ -5535,15 +5593,15 @@
         "T20",
         "T20"
       ],
-      "fallback_leaves": 70,
+      "fallback_leaves": 68,
       "doubles": [
         "D5",
         "D10",
         "D20"
       ],
-      "speak": "treble eighteen, treble nineteen and treble nineteen",
+      "speak": "treble twenty, treble eighteen and treble eighteen",
       "display_lines": [
-        "T18 T19 T19",
+        "T20 T18 T18",
         "leaves 40"
       ]
     }
@@ -5561,10 +5619,10 @@
       "leaves": 32,
       "finishes": false,
       "fallback_labels": [
-        "T19",
+        "T20",
         "T19"
       ],
-      "fallback_leaves": 75,
+      "fallback_leaves": 72,
       "doubles": [
         "D4",
         "D8",
@@ -5585,9 +5643,9 @@
       "labels": [
         "T20",
         "T20",
-        "Bull"
+        "25"
       ],
-      "leaves": 40,
+      "leaves": 65,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -5595,14 +5653,13 @@
       ],
       "fallback_leaves": 70,
       "doubles": [
-        "D5",
         "D10",
         "D20"
       ],
-      "speak": "treble twenty, treble twenty and double bull",
+      "speak": "treble twenty, treble twenty and outer bull",
       "display_lines": [
-        "T20 T20 Bull",
-        "leaves 40"
+        "T20 T20 25",
+        "leaves 65"
       ]
     }
   },
@@ -5613,24 +5670,24 @@
     "expect": {
       "labels": [
         "T19",
-        "T19",
-        "T19"
+        "T20",
+        "T18"
       ],
       "leaves": 40,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 75,
+      "fallback_leaves": 72,
       "doubles": [
         "D5",
         "D10",
         "D20"
       ],
-      "speak": "treble nineteen, treble nineteen and treble nineteen",
+      "speak": "treble nineteen, treble twenty and treble eighteen",
       "display_lines": [
-        "T19 T19 T19",
+        "T19 T20 T18",
         "leaves 40"
       ]
     }
@@ -5649,9 +5706,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 75,
+      "fallback_leaves": 72,
       "doubles": [
         "D4",
         "D8",
@@ -5698,9 +5755,9 @@
     "preferred_double": null,
     "expect": {
       "labels": [
+        "T18",
         "T20",
-        "T19",
-        "T19"
+        "T20"
       ],
       "leaves": 40,
       "finishes": false,
@@ -5708,15 +5765,15 @@
         "T20",
         "T20"
       ],
-      "fallback_leaves": 74,
+      "fallback_leaves": 76,
       "doubles": [
         "D5",
         "D10",
         "D20"
       ],
-      "speak": "treble twenty, treble nineteen and treble nineteen",
+      "speak": "treble eighteen, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T19 T19",
+        "T18 T20 T20",
         "leaves 40"
       ]
     }
@@ -5727,25 +5784,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
+        "T19",
         "T20",
-        "T20",
-        "T15"
+        "T20"
       ],
-      "leaves": 50,
+      "leaves": 38,
       "finishes": false,
       "fallback_labels": [
         "T20",
         "T20"
       ],
-      "fallback_leaves": 75,
+      "fallback_leaves": 76,
       "doubles": [
-        "Bull",
-        "D12"
+        "D9",
+        "D19"
       ],
-      "speak": "treble twenty, treble twenty and treble fifteen",
+      "speak": "treble nineteen, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T15",
-        "leaves 50"
+        "T19 T20 T20",
+        "leaves 38"
       ]
     }
   },
@@ -5812,25 +5869,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T18",
         "T20",
-        "T18"
+        "T20",
+        "T20"
       ],
-      "leaves": 50,
+      "leaves": 38,
       "finishes": false,
       "fallback_labels": [
         "T20",
         "T20"
       ],
-      "fallback_leaves": 80,
+      "fallback_leaves": 78,
       "doubles": [
-        "Bull",
-        "D12"
+        "D9",
+        "D19"
       ],
-      "speak": "treble eighteen, treble twenty and treble eighteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T18 T20 T18",
-        "leaves 50"
+        "T20 T20 T20",
+        "leaves 38"
       ]
     }
   },
@@ -5899,9 +5956,9 @@
       "labels": [
         "T20",
         "T20",
-        "T17"
+        "T20"
       ],
-      "leaves": 50,
+      "leaves": 41,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -5909,13 +5966,13 @@
       ],
       "fallback_leaves": 81,
       "doubles": [
-        "Bull",
-        "D12"
+        "D10",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble seventeen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T17",
-        "leaves 50"
+        "T20 T20 T20",
+        "leaves 41"
       ]
     }
   },
@@ -5932,10 +5989,10 @@
       "leaves": 42,
       "finishes": false,
       "fallback_labels": [
-        "T19",
-        "T19"
+        "T20",
+        "T20"
       ],
-      "fallback_leaves": 88,
+      "fallback_leaves": 82,
       "doubles": [
         "D10",
         "D20"
@@ -5960,10 +6017,10 @@
       "leaves": 43,
       "finishes": false,
       "fallback_labels": [
-        "T19",
-        "T20"
+        "T20",
+        "T18"
       ],
-      "fallback_leaves": 86,
+      "fallback_leaves": 89,
       "doubles": [
         "D10",
         "D20"
@@ -5983,23 +6040,23 @@
       "labels": [
         "T20",
         "T20",
-        "T18"
+        "T20"
       ],
-      "leaves": 50,
+      "leaves": 44,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T20"
+        "T19"
       ],
-      "fallback_leaves": 84,
+      "fallback_leaves": 87,
       "doubles": [
-        "Bull",
-        "D12"
+        "D10",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble eighteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T18",
-        "leaves 50"
+        "T20 T20 T20",
+        "leaves 44"
       ]
     }
   },
@@ -6017,9 +6074,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 88,
+      "fallback_leaves": 85,
       "doubles": [
         "D10",
         "D20"
@@ -6067,9 +6124,9 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "T20"
       ],
-      "leaves": 50,
+      "leaves": 47,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -6077,13 +6134,13 @@
       ],
       "fallback_leaves": 87,
       "doubles": [
-        "Bull",
-        "D12"
+        "D10",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 50"
+        "T20 T20 T20",
+        "leaves 47"
       ]
     }
   },
@@ -6101,9 +6158,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T20"
+        "T18"
       ],
-      "fallback_leaves": 88,
+      "fallback_leaves": 94,
       "doubles": [
         "D10",
         "D20"
@@ -6161,8 +6218,8 @@
       ],
       "fallback_leaves": 90,
       "doubles": [
-        "Bull",
-        "D12"
+        "D10",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -6184,10 +6241,10 @@
       "leaves": 51,
       "finishes": false,
       "fallback_labels": [
-        "T19",
-        "T19"
+        "T17",
+        "T20"
       ],
-      "fallback_leaves": 97,
+      "fallback_leaves": 100,
       "doubles": [
         "D10",
         "D20"
@@ -6234,10 +6291,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T19",
+        "T20",
         "T20"
       ],
-      "leaves": 56,
+      "leaves": 53,
       "finishes": false,
       "fallback_labels": [
         "T19",
@@ -6248,10 +6305,10 @@
         "D10",
         "D20"
       ],
-      "speak": "treble twenty, treble nineteen and treble twenty",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T19 T20",
-        "leaves 56"
+        "T20 T20 T20",
+        "leaves 53"
       ]
     }
   },
@@ -6268,10 +6325,10 @@
       "leaves": 54,
       "finishes": false,
       "fallback_labels": [
-        "T20",
-        "T19"
+        "T18",
+        "T20"
       ],
-      "fallback_leaves": 97,
+      "fallback_leaves": 100,
       "doubles": [
         "D10",
         "D20"
@@ -6296,10 +6353,10 @@
       "leaves": 58,
       "finishes": false,
       "fallback_labels": [
-        "T20",
+        "T19",
         "T20"
       ],
-      "fallback_leaves": 95,
+      "fallback_leaves": 98,
       "doubles": [
         "D10",
         "D20"
@@ -6380,10 +6437,10 @@
       "leaves": 58,
       "finishes": false,
       "fallback_labels": [
-        "T18",
-        "T18"
+        "T20",
+        "T20"
       ],
-      "fallback_leaves": 110,
+      "fallback_leaves": 98,
       "doubles": [
         "D10",
         "D20"
@@ -6514,10 +6571,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T19",
-        "T19"
+        "T20",
+        "T20"
       ],
-      "leaves": 69,
+      "leaves": 63,
       "finishes": false,
       "fallback_labels": [
         "T17",
@@ -6525,12 +6582,12 @@
       ],
       "fallback_leaves": 112,
       "doubles": [
-        "Bull"
+        "D19"
       ],
-      "speak": "treble twenty, treble nineteen and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T19 T19",
-        "leaves 69"
+        "T20 T20 T20",
+        "leaves 63"
       ]
     }
   },
@@ -6552,7 +6609,10 @@
       ],
       "fallback_leaves": 110,
       "doubles": [
-        "Bull"
+        "D9",
+        "D14",
+        "D18",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -6595,24 +6655,26 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
+        "T20",
         "T19",
         "T19"
       ],
-      "leaves": 75,
+      "leaves": 72,
       "finishes": false,
       "fallback_labels": [
-        "T19",
+        "T18",
         "T20"
       ],
-      "fallback_leaves": 110,
+      "fallback_leaves": 112,
       "doubles": [
-        "Bull"
+        "D10",
+        "D16",
+        "D20"
       ],
-      "speak": "treble nineteen, treble nineteen and treble nineteen",
+      "speak": "treble twenty, treble nineteen and treble nineteen",
       "display_lines": [
-        "T19 T19 T19",
-        "leaves 75"
+        "T20 T19 T19",
+        "leaves 72"
       ]
     }
   },
@@ -6622,24 +6684,26 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T20",
+        "T19",
         "T20",
         "T20"
       ],
-      "leaves": 67,
+      "leaves": 70,
       "finishes": false,
       "fallback_labels": [
-        "T19",
+        "T18",
         "T20"
       ],
-      "fallback_leaves": 110,
+      "fallback_leaves": 114,
       "doubles": [
-        "Bull"
+        "D10",
+        "D15",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble twenty",
+      "speak": "treble nineteen, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T20",
-        "leaves 67"
+        "T19 T20 T20",
+        "leaves 70"
       ]
     }
   },
@@ -6661,7 +6725,10 @@
       ],
       "fallback_leaves": 114,
       "doubles": [
-        "Bull"
+        "D8",
+        "D16",
+        "D18",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -6676,24 +6743,26 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
+        "T20",
         "T20",
         "T19"
       ],
-      "leaves": 75,
+      "leaves": 72,
       "finishes": false,
       "fallback_labels": [
-        "T20",
+        "T19",
         "T20"
       ],
-      "fallback_leaves": 110,
+      "fallback_leaves": 112,
       "doubles": [
-        "Bull"
+        "D10",
+        "D16",
+        "D20"
       ],
-      "speak": "treble nineteen, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble nineteen",
       "display_lines": [
-        "T19 T20 T19",
-        "leaves 75"
+        "T20 T20 T19",
+        "leaves 72"
       ]
     }
   },
@@ -6715,7 +6784,9 @@
       ],
       "fallback_leaves": 110,
       "doubles": [
-        "Bull"
+        "D10",
+        "D15",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -6742,7 +6813,6 @@
       ],
       "fallback_leaves": 111,
       "doubles": [
-        "Bull",
         "D10",
         "D17",
         "D20"
@@ -6762,9 +6832,9 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "T20"
       ],
-      "leaves": 75,
+      "leaves": 72,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -6772,12 +6842,14 @@
       ],
       "fallback_leaves": 112,
       "doubles": [
-        "Bull"
+        "D10",
+        "D16",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 75"
+        "T20 T20 T20",
+        "leaves 72"
       ]
     }
   },
@@ -6787,8 +6859,8 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T20",
         "T19",
+        "T20",
         "T20"
       ],
       "leaves": 76,
@@ -6797,16 +6869,15 @@
         "T20",
         "T20"
       ],
-      "fallback_leaves": 113,
+      "fallback_leaves": 114,
       "doubles": [
-        "Bull",
         "D10",
         "D18",
         "D20"
       ],
-      "speak": "treble twenty, treble nineteen and treble twenty",
+      "speak": "treble nineteen, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T19 T20",
+        "T19 T20 T20",
         "leaves 76"
       ]
     }
@@ -6829,7 +6900,6 @@
       ],
       "fallback_leaves": 114,
       "doubles": [
-        "Bull",
         "D10",
         "D17",
         "D20"
@@ -6848,10 +6918,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
+        "T19",
         "T20"
       ],
-      "leaves": 75,
+      "leaves": 78,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -6859,12 +6929,14 @@
       ],
       "fallback_leaves": 115,
       "doubles": [
-        "Bull"
+        "D10",
+        "D19",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble twenty",
+      "speak": "treble twenty, treble nineteen and treble twenty",
       "display_lines": [
-        "T20 T20 T20",
-        "leaves 75"
+        "T20 T19 T20",
+        "leaves 78"
       ]
     }
   },
@@ -6886,7 +6958,6 @@
       ],
       "fallback_leaves": 116,
       "doubles": [
-        "Bull",
         "D10",
         "D18",
         "D20"
@@ -6916,7 +6987,6 @@
       ],
       "fallback_leaves": 117,
       "doubles": [
-        "Bull",
         "D10",
         "D20"
       ],
@@ -6945,7 +7015,6 @@
       ],
       "fallback_leaves": 118,
       "doubles": [
-        "Bull",
         "D10",
         "D19",
         "D20"
@@ -6963,26 +7032,27 @@
     "preferred_double": null,
     "expect": {
       "labels": [
+        "T20",
         "T19",
-        "T19",
-        "T19"
+        "T20"
       ],
-      "leaves": 88,
+      "leaves": 82,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T20"
+        "T19"
       ],
-      "fallback_leaves": 120,
+      "fallback_leaves": 122,
       "doubles": [
         "Bull",
         "D7",
-        "D14"
+        "D14",
+        "D18"
       ],
-      "speak": "treble nineteen, treble nineteen and treble nineteen",
+      "speak": "treble twenty, treble nineteen and treble twenty",
       "display_lines": [
-        "T19 T19 T19",
-        "leaves 88"
+        "T20 T19 T20",
+        "leaves 82"
       ]
     }
   },
@@ -7004,7 +7074,6 @@
       ],
       "fallback_leaves": 120,
       "doubles": [
-        "Bull",
         "D10",
         "D20"
       ],
@@ -7034,8 +7103,9 @@
       "fallback_leaves": 121,
       "doubles": [
         "Bull",
-        "D9",
-        "D18"
+        "D6",
+        "D12",
+        "D19"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -7051,25 +7121,26 @@
     "expect": {
       "labels": [
         "T20",
-        "T19",
-        "T19"
+        "T20",
+        "T20"
       ],
-      "leaves": 88,
+      "leaves": 82,
       "finishes": false,
       "fallback_labels": [
-        "T20",
-        "T18"
+        "T19",
+        "T20"
       ],
-      "fallback_leaves": 128,
+      "fallback_leaves": 125,
       "doubles": [
         "Bull",
         "D7",
-        "D14"
+        "D14",
+        "D18"
       ],
-      "speak": "treble twenty, treble nineteen and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T19 T19",
-        "leaves 88"
+        "T20 T20 T20",
+        "leaves 82"
       ]
     }
   },
@@ -7080,25 +7151,27 @@
     "expect": {
       "labels": [
         "T20",
-        "T19",
-        "T20"
+        "T20",
+        "T18"
       ],
-      "leaves": 86,
+      "leaves": 89,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 126,
+      "fallback_leaves": 123,
       "doubles": [
         "Bull",
         "D8",
-        "D16"
+        "D15",
+        "D16",
+        "D20"
       ],
-      "speak": "treble twenty, treble nineteen and treble twenty",
+      "speak": "treble twenty, treble twenty and treble eighteen",
       "display_lines": [
-        "T20 T19 T20",
-        "leaves 86"
+        "T20 T20 T18",
+        "leaves 89"
       ]
     }
   },
@@ -7110,24 +7183,26 @@
       "labels": [
         "T20",
         "T20",
-        "T20"
+        "T19"
       ],
-      "leaves": 84,
+      "leaves": 87,
       "finishes": false,
       "fallback_labels": [
-        "T20",
+        "T18",
         "T20"
       ],
-      "fallback_leaves": 124,
+      "fallback_leaves": 130,
       "doubles": [
         "Bull",
         "D9",
-        "D18"
+        "D15",
+        "D18",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble twenty",
+      "speak": "treble twenty, treble twenty and treble nineteen",
       "display_lines": [
-        "T20 T20 T20",
-        "leaves 84"
+        "T20 T20 T19",
+        "leaves 87"
       ]
     }
   },
@@ -7139,24 +7214,26 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "T20"
       ],
-      "leaves": 88,
+      "leaves": 85,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "Bull"
+        "T20"
       ],
-      "fallback_leaves": 135,
+      "fallback_leaves": 125,
       "doubles": [
         "Bull",
         "D7",
-        "D14"
+        "D14",
+        "D16",
+        "D17"
       ],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 88"
+        "T20 T20 T20",
+        "leaves 85"
       ]
     }
   },
@@ -7173,14 +7250,15 @@
       "leaves": 86,
       "finishes": false,
       "fallback_labels": [
-        "T19",
+        "T20",
         "T19"
       ],
-      "fallback_leaves": 132,
+      "fallback_leaves": 129,
       "doubles": [
         "Bull",
         "D8",
-        "D16"
+        "D16",
+        "D18"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -7202,14 +7280,16 @@
       "leaves": 87,
       "finishes": false,
       "fallback_labels": [
-        "T20",
+        "T19",
         "T20"
       ],
-      "fallback_leaves": 127,
+      "fallback_leaves": 130,
       "doubles": [
         "Bull",
         "D9",
-        "D18"
+        "D15",
+        "D18",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -7226,24 +7306,24 @@
       "labels": [
         "T20",
         "T20",
-        "T20"
+        "T18"
       ],
-      "leaves": 88,
+      "leaves": 94,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T20"
-      ],
-      "fallback_leaves": 128,
-      "doubles": [
-        "Bull",
-        "D7",
         "D14"
       ],
-      "speak": "treble twenty, treble twenty and treble twenty",
+      "fallback_leaves": 160,
+      "doubles": [
+        "D10",
+        "D11",
+        "D20"
+      ],
+      "speak": "treble twenty, treble twenty and treble eighteen",
       "display_lines": [
-        "T20 T20 T20",
-        "leaves 88"
+        "T20 T20 T18",
+        "leaves 94"
       ]
     }
   },
@@ -7261,13 +7341,15 @@
       "finishes": false,
       "fallback_labels": [
         "T19",
-        "T19"
+        "D16"
       ],
-      "fallback_leaves": 135,
+      "fallback_leaves": 160,
       "doubles": [
         "Bull",
         "D8",
-        "D16"
+        "D15",
+        "D16",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -7294,9 +7376,8 @@
       ],
       "fallback_leaves": 130,
       "doubles": [
-        "Bull",
-        "D10",
-        "D20"
+        "D9",
+        "D18"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -7312,25 +7393,25 @@
     "expect": {
       "labels": [
         "T19",
-        "T20",
-        "T19"
+        "T18",
+        "T20"
       ],
-      "leaves": 97,
+      "leaves": 100,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "D16"
       ],
-      "fallback_leaves": 135,
+      "fallback_leaves": 160,
       "doubles": [
         "D10",
-        "D12",
+        "D13",
         "D20"
       ],
-      "speak": "treble nineteen, treble twenty and treble nineteen",
+      "speak": "treble nineteen, treble eighteen and treble twenty",
       "display_lines": [
-        "T19 T20 T19",
-        "leaves 97"
+        "T19 T18 T20",
+        "leaves 100"
       ]
     }
   },
@@ -7348,9 +7429,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "D16"
       ],
-      "fallback_leaves": 135,
+      "fallback_leaves": 160,
       "doubles": [
         "D8",
         "D9",
@@ -7376,10 +7457,10 @@
       "leaves": 96,
       "finishes": false,
       "fallback_labels": [
-        "T20",
-        "D13"
+        "T19",
+        "D19"
       ],
-      "fallback_leaves": 167,
+      "fallback_leaves": 158,
       "doubles": [
         "D9",
         "D11",
@@ -7399,10 +7480,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
-        "T19"
+        "T18",
+        "T20"
       ],
-      "leaves": 97,
+      "leaves": 100,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -7411,13 +7492,13 @@
       "fallback_leaves": 160,
       "doubles": [
         "D10",
-        "D12",
+        "D13",
         "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble eighteen and treble twenty",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 97"
+        "T20 T18 T20",
+        "leaves 100"
       ]
     }
   },
@@ -7428,24 +7509,24 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
+        "T19",
         "T20"
       ],
-      "leaves": 95,
+      "leaves": 98,
       "finishes": false,
       "fallback_labels": [
-        "T20",
-        "T20"
+        "T19",
+        "D20"
       ],
-      "fallback_leaves": 135,
+      "fallback_leaves": 158,
       "doubles": [
-        "D11",
+        "D12",
         "D19"
       ],
-      "speak": "treble twenty, treble twenty and treble twenty",
+      "speak": "treble twenty, treble nineteen and treble twenty",
       "display_lines": [
-        "T20 T20 T20",
-        "leaves 95"
+        "T20 T19 T20",
+        "leaves 98"
       ]
     }
   },
@@ -7463,9 +7544,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "D16"
+        "D19"
       ],
-      "fallback_leaves": 164,
+      "fallback_leaves": 158,
       "doubles": [
         "D9",
         "D11",
@@ -7484,25 +7565,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
         "T20",
+        "T19",
         "T20"
       ],
       "leaves": 100,
       "finishes": false,
       "fallback_labels": [
-        "T18",
-        "D17"
+        "T19",
+        "D20"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 160,
       "doubles": [
         "D10",
         "D13",
         "D20"
       ],
-      "speak": "treble nineteen, treble twenty and treble twenty",
+      "speak": "treble twenty, treble nineteen and treble twenty",
       "display_lines": [
-        "T19 T20 T20",
+        "T20 T19 T20",
         "leaves 100"
       ]
     }
@@ -7513,25 +7594,25 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T18",
-        "T18",
+        "T20",
+        "T20",
         "T20"
       ],
-      "leaves": 110,
+      "leaves": 98,
       "finishes": false,
       "fallback_labels": [
         "T20",
         "D20"
       ],
-      "fallback_leaves": 160,
+      "fallback_leaves": 158,
       "doubles": [
-        "Bull",
-        "D18"
+        "D12",
+        "D19"
       ],
-      "speak": "treble eighteen, treble eighteen and treble twenty",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T18 T18 T20",
-        "leaves 110"
+        "T20 T20 T20",
+        "leaves 98"
       ]
     }
   },
@@ -7541,24 +7622,23 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T18",
-        "T18",
+        "T19",
+        "T17",
         "T20"
       ],
       "leaves": 111,
       "finishes": false,
       "fallback_labels": [
-        "T17",
+        "T20",
         "D20"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 160,
       "doubles": [
-        "Bull",
         "D20"
       ],
-      "speak": "treble eighteen, treble eighteen and treble twenty",
+      "speak": "treble nineteen, treble seventeen and treble twenty",
       "display_lines": [
-        "T18 T18 T20",
+        "T19 T17 T20",
         "leaves 111"
       ]
     }
@@ -7605,13 +7685,13 @@
       "leaves": 110,
       "finishes": false,
       "fallback_labels": [
-        "T17",
-        "D20"
+        "T20",
+        "T16"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 153,
       "doubles": [
-        "Bull",
-        "D18"
+        "D18",
+        "D20"
       ],
       "speak": "treble twenty, treble seventeen and treble twenty",
       "display_lines": [
@@ -7626,25 +7706,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T18",
-        "T18",
+        "T20",
+        "T17",
         "T20"
       ],
-      "leaves": 114,
+      "leaves": 111,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "D17"
+        "T17"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 151,
       "doubles": [
-        "Bull",
         "D20"
       ],
-      "speak": "treble eighteen, treble eighteen and treble twenty",
+      "speak": "treble twenty, treble seventeen and treble twenty",
       "display_lines": [
-        "T18 T18 T20",
-        "leaves 114"
+        "T20 T17 T20",
+        "leaves 111"
       ]
     }
   },
@@ -7654,24 +7733,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
         "T18",
+        "T19",
         "T20"
       ],
       "leaves": 112,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "D17"
+        "T15"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 160,
       "doubles": [
-        "Bull",
-        "D19"
+        "D19",
+        "D20"
       ],
-      "speak": "treble nineteen, treble eighteen and treble twenty",
+      "speak": "treble eighteen, treble nineteen and treble twenty",
       "display_lines": [
-        "T19 T18 T20",
+        "T18 T19 T20",
         "leaves 112"
       ]
     }
@@ -7689,13 +7768,13 @@
       "leaves": 110,
       "finishes": false,
       "fallback_labels": [
-        "T20",
-        "D17"
+        "T19",
+        "T17"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 156,
       "doubles": [
-        "Bull",
-        "D18"
+        "D18",
+        "D20"
       ],
       "speak": "treble twenty, treble eighteen and treble twenty",
       "display_lines": [
@@ -7722,7 +7801,6 @@
       ],
       "fallback_leaves": 160,
       "doubles": [
-        "Bull",
         "D20"
       ],
       "speak": "treble twenty, treble eighteen and treble twenty",
@@ -7738,24 +7816,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T20",
         "T18",
+        "T20",
         "T20"
       ],
       "leaves": 112,
       "finishes": false,
       "fallback_labels": [
-        "T20",
-        "T16"
+        "T18",
+        "T18"
       ],
-      "fallback_leaves": 158,
+      "fallback_leaves": 160,
       "doubles": [
-        "Bull",
-        "D19"
+        "D19",
+        "D20"
       ],
-      "speak": "treble twenty, treble eighteen and treble twenty",
+      "speak": "treble eighteen, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T18 T20",
+        "T18 T20 T20",
         "leaves 112"
       ]
     }
@@ -7774,12 +7852,12 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "D20"
+        "T17"
       ],
-      "fallback_leaves": 167,
+      "fallback_leaves": 156,
       "doubles": [
-        "Bull",
-        "D18"
+        "D18",
+        "D20"
       ],
       "speak": "treble twenty, treble nineteen and treble twenty",
       "display_lines": [
@@ -7806,7 +7884,6 @@
       ],
       "fallback_leaves": 160,
       "doubles": [
-        "Bull",
         "D20"
       ],
       "speak": "treble twenty, treble eighteen and treble twenty",
@@ -7834,8 +7911,8 @@
       ],
       "fallback_leaves": 158,
       "doubles": [
-        "Bull",
-        "D19"
+        "D19",
+        "D20"
       ],
       "speak": "treble twenty, treble nineteen and treble twenty",
       "display_lines": [
@@ -7858,12 +7935,12 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "D20"
+        "T18"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 156,
       "doubles": [
-        "Bull",
-        "D18"
+        "D18",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -7890,7 +7967,6 @@
       ],
       "fallback_leaves": 160,
       "doubles": [
-        "Bull",
         "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
@@ -7918,8 +7994,8 @@
       ],
       "fallback_leaves": 158,
       "doubles": [
-        "Bull",
-        "D19"
+        "D19",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -7946,8 +8022,8 @@
       ],
       "fallback_leaves": 156,
       "doubles": [
-        "Bull",
-        "D18"
+        "D18",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -7969,12 +8045,11 @@
       "leaves": 114,
       "finishes": false,
       "fallback_labels": [
-        "T19",
-        "T19"
+        "T20",
+        "T18"
       ],
       "fallback_leaves": 160,
       "doubles": [
-        "Bull",
         "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
@@ -7998,12 +8073,12 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T15"
+        "T19"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 158,
       "doubles": [
-        "Bull",
-        "D19"
+        "D19",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -8030,8 +8105,8 @@
       ],
       "fallback_leaves": 156,
       "doubles": [
-        "Bull",
-        "D18"
+        "D18",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -8058,7 +8133,6 @@
       ],
       "fallback_leaves": 160,
       "doubles": [
-        "Bull",
         "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
@@ -8081,13 +8155,13 @@
       "leaves": 118,
       "finishes": false,
       "fallback_labels": [
-        "T18",
-        "T18"
+        "T20",
+        "T20"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 158,
       "doubles": [
-        "Bull",
-        "D19"
+        "D19",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -8114,7 +8188,7 @@
       ],
       "fallback_leaves": 171,
       "doubles": [
-        "Bull"
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble nineteen",
       "display_lines": [
@@ -8141,7 +8215,6 @@
       ],
       "fallback_leaves": 160,
       "doubles": [
-        "Bull",
         "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
@@ -8165,11 +8238,12 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T17"
+        "T16"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 173,
       "doubles": [
-        "Bull"
+        "Bull",
+        "D18"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -8185,23 +8259,23 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
-        "T18"
+        "T19",
+        "T20"
       ],
-      "leaves": 128,
+      "leaves": 125,
       "finishes": false,
       "fallback_labels": [
-        "T18",
-        "T18"
+        "T20",
+        "T17"
       ],
-      "fallback_leaves": 174,
+      "fallback_leaves": 171,
       "doubles": [
-        "Bull"
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble eighteen",
+      "speak": "treble twenty, treble nineteen and treble twenty",
       "display_lines": [
-        "T20 T20 T18",
-        "leaves 128"
+        "T20 T19 T20",
+        "leaves 125"
       ]
     }
   },
@@ -8213,22 +8287,22 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "T20"
       ],
-      "leaves": 126,
+      "leaves": 123,
       "finishes": false,
       "fallback_labels": [
-        "T20",
-        "T17"
+        "T18",
+        "T19"
       ],
       "fallback_leaves": 172,
       "doubles": [
-        "Bull"
+        "D19"
       ],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 126"
+        "T20 T20 T20",
+        "leaves 123"
       ]
     }
   },
@@ -8239,23 +8313,25 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
+        "T18",
         "T20"
       ],
-      "leaves": 124,
+      "leaves": 130,
       "finishes": false,
       "fallback_labels": [
-        "T20",
+        "T19",
         "T18"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 173,
       "doubles": [
-        "Bull"
+        "Bull",
+        "D15",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble twenty",
+      "speak": "treble twenty, treble eighteen and treble twenty",
       "display_lines": [
-        "T20 T20 T20",
-        "leaves 124"
+        "T20 T18 T20",
+        "leaves 130"
       ]
     }
   },
@@ -8267,9 +8343,9 @@
       "labels": [
         "T20",
         "T20",
-        "Bull"
+        "T20"
       ],
-      "leaves": 135,
+      "leaves": 125,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8277,12 +8353,12 @@
       ],
       "fallback_leaves": 171,
       "doubles": [
-        "Bull"
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and double bull",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 Bull",
-        "leaves 135"
+        "T20 T20 T20",
+        "leaves 125"
       ]
     }
   },
@@ -8292,24 +8368,26 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
-        "T19",
-        "T19"
-      ],
-      "leaves": 135,
-      "finishes": false,
-      "fallback_labels": [
+        "T20",
         "T20",
         "T19"
       ],
-      "fallback_leaves": 170,
-      "doubles": [
-        "Bull"
+      "leaves": 129,
+      "finishes": false,
+      "fallback_labels": [
+        "T20",
+        "T18"
       ],
-      "speak": "treble nineteen, treble nineteen and treble nineteen",
+      "fallback_leaves": 172,
+      "doubles": [
+        "Bull",
+        "D19",
+        "D20"
+      ],
+      "speak": "treble twenty, treble twenty and treble nineteen",
       "display_lines": [
-        "T19 T19 T19",
-        "leaves 135"
+        "T20 T20 T19",
+        "leaves 129"
       ]
     }
   },
@@ -8320,23 +8398,25 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
+        "T19",
         "T20"
       ],
-      "leaves": 127,
+      "leaves": 130,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T18"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 173,
       "doubles": [
-        "Bull"
+        "Bull",
+        "D15",
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble twenty",
+      "speak": "treble twenty, treble nineteen and treble twenty",
       "display_lines": [
-        "T20 T20 T20",
-        "leaves 127"
+        "T20 T19 T20",
+        "leaves 130"
       ]
     }
   },
@@ -8348,9 +8428,9 @@
       "labels": [
         "T20",
         "T20",
-        "T20"
+        "D14"
       ],
-      "leaves": 128,
+      "leaves": 160,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8358,12 +8438,12 @@
       ],
       "fallback_leaves": 174,
       "doubles": [
-        "Bull"
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble twenty",
+      "speak": "treble twenty, treble twenty and double fourteen",
       "display_lines": [
-        "T20 T20 T20",
-        "leaves 128"
+        "T20 T20 D14",
+        "leaves 160"
       ]
     }
   },
@@ -8375,9 +8455,9 @@
       "labels": [
         "T20",
         "T19",
-        "T19"
+        "D16"
       ],
-      "leaves": 135,
+      "leaves": 160,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8385,12 +8465,12 @@
       ],
       "fallback_leaves": 172,
       "doubles": [
-        "Bull"
+        "D20"
       ],
-      "speak": "treble twenty, treble nineteen and treble nineteen",
+      "speak": "treble twenty, treble nineteen and double sixteen",
       "display_lines": [
-        "T20 T19 T19",
-        "leaves 135"
+        "T20 T19 D16",
+        "leaves 160"
       ]
     }
   },
@@ -8408,11 +8488,13 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T20"
+        "T19"
       ],
-      "fallback_leaves": 170,
+      "fallback_leaves": 173,
       "doubles": [
-        "Bull"
+        "Bull",
+        "D15",
+        "D20"
       ],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -8456,9 +8538,9 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "D16"
       ],
-      "leaves": 135,
+      "leaves": 160,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8466,12 +8548,12 @@
       ],
       "fallback_leaves": 172,
       "doubles": [
-        "Bull"
+        "D20"
       ],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and double sixteen",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 135"
+        "T20 T20 D16",
+        "leaves 160"
       ]
     }
   },
@@ -8482,10 +8564,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
-        "D13"
+        "T19",
+        "D19"
       ],
-      "leaves": 167,
+      "leaves": 158,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8493,12 +8575,12 @@
       ],
       "fallback_leaves": 173,
       "doubles": [
-        "Bull"
+        "D19"
       ],
-      "speak": "treble twenty, treble twenty and double thirteen",
+      "speak": "treble twenty, treble nineteen and double nineteen",
       "display_lines": [
-        "T20 T20 D13",
-        "leaves 167"
+        "T20 T19 D19",
+        "leaves 158"
       ]
     }
   },
@@ -8536,10 +8618,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
-        "T20"
+        "T19",
+        "D20"
       ],
-      "leaves": 135,
+      "leaves": 158,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8547,12 +8629,12 @@
       ],
       "fallback_leaves": 175,
       "doubles": [
-        "Bull"
+        "D19"
       ],
-      "speak": "treble twenty, treble twenty and treble twenty",
+      "speak": "treble twenty, treble nineteen and double twenty",
       "display_lines": [
-        "T20 T20 T20",
-        "leaves 135"
+        "T20 T19 D20",
+        "leaves 158"
       ]
     }
   },
@@ -8564,9 +8646,9 @@
       "labels": [
         "T20",
         "T20",
-        "D16"
+        "D19"
       ],
-      "leaves": 164,
+      "leaves": 158,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8574,12 +8656,12 @@
       ],
       "fallback_leaves": 176,
       "doubles": [
-        "Bull"
+        "D19"
       ],
-      "speak": "treble twenty, treble twenty and double sixteen",
+      "speak": "treble twenty, treble twenty and double nineteen",
       "display_lines": [
-        "T20 T20 D16",
-        "leaves 164"
+        "T20 T20 D19",
+        "leaves 158"
       ]
     }
   },
@@ -8617,10 +8699,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T18",
-        "D17"
+        "T20",
+        "D20"
       ],
-      "leaves": 170,
+      "leaves": 158,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8628,12 +8710,12 @@
       ],
       "fallback_leaves": 178,
       "doubles": [
-        "Bull"
+        "D19"
       ],
-      "speak": "treble twenty, treble eighteen and double seventeen",
+      "speak": "treble twenty, treble twenty and double twenty",
       "display_lines": [
-        "T20 T18 D17",
-        "leaves 170"
+        "T20 T20 D20",
+        "leaves 158"
       ]
     }
   },
@@ -8643,24 +8725,24 @@
     "preferred_double": null,
     "expect": {
       "labels": [
+        "T20",
         "T19",
-        "T18",
-        "D19"
+        "T17"
       ],
-      "leaves": 170,
+      "leaves": 151,
       "finishes": false,
       "fallback_labels": [
         "T20",
         "T20"
       ],
-      "fallback_leaves": 180,
+      "fallback_leaves": 179,
       "doubles": [
-        "Bull"
+        "D20"
       ],
-      "speak": "treble nineteen, treble eighteen and double nineteen",
+      "speak": "treble twenty, treble nineteen and treble seventeen",
       "display_lines": [
-        "T19 T18 D19",
-        "leaves 170"
+        "T20 T19 T17",
+        "leaves 151"
       ]
     }
   },
@@ -8698,10 +8780,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T17",
-        "D20"
+        "T20",
+        "T16"
       ],
-      "leaves": 170,
+      "leaves": 153,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8709,12 +8791,12 @@
       ],
       "fallback_leaves": 181,
       "doubles": [
-        "Bull"
+        "D18"
       ],
-      "speak": "treble twenty, treble seventeen and double twenty",
+      "speak": "treble twenty, treble twenty and treble sixteen",
       "display_lines": [
-        "T20 T17 D20",
-        "leaves 170"
+        "T20 T20 T16",
+        "leaves 153"
       ]
     }
   },
@@ -8725,10 +8807,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T18",
-        "D19"
+        "T20",
+        "T17"
       ],
-      "leaves": 170,
+      "leaves": 151,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8736,12 +8818,12 @@
       ],
       "fallback_leaves": 182,
       "doubles": [
-        "Bull"
+        "D20"
       ],
-      "speak": "treble twenty, treble eighteen and double nineteen",
+      "speak": "treble twenty, treble twenty and treble seventeen",
       "display_lines": [
-        "T20 T18 D19",
-        "leaves 170"
+        "T20 T20 T17",
+        "leaves 151"
       ]
     }
   },
@@ -8752,22 +8834,22 @@
     "expect": {
       "labels": [
         "T20",
-        "T19",
-        "T16"
+        "T18",
+        "T17"
       ],
       "leaves": 158,
       "finishes": false,
       "fallback_labels": [
-        "T19",
-        "T19"
+        "T20",
+        "T20"
       ],
-      "fallback_leaves": 189,
+      "fallback_leaves": 183,
       "doubles": [
         "D19"
       ],
-      "speak": "treble twenty, treble nineteen and treble sixteen",
+      "speak": "treble twenty, treble eighteen and treble seventeen",
       "display_lines": [
-        "T20 T19 T16",
+        "T20 T18 T17",
         "leaves 158"
       ]
     }
@@ -8779,10 +8861,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
-        "D17"
+        "T19",
+        "T17"
       ],
-      "leaves": 170,
+      "leaves": 156,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8790,12 +8872,12 @@
       ],
       "fallback_leaves": 184,
       "doubles": [
-        "Bull"
+        "D18"
       ],
-      "speak": "treble twenty, treble twenty and double seventeen",
+      "speak": "treble twenty, treble nineteen and treble seventeen",
       "display_lines": [
-        "T20 T20 D17",
-        "leaves 170"
+        "T20 T19 T17",
+        "leaves 156"
       ]
     }
   },
@@ -8840,9 +8922,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 189,
+      "fallback_leaves": 186,
       "doubles": [
         "D19"
       ],
@@ -8861,9 +8943,9 @@
       "labels": [
         "T20",
         "T20",
-        "D20"
+        "T17"
       ],
-      "leaves": 167,
+      "leaves": 156,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8871,12 +8953,12 @@
       ],
       "fallback_leaves": 187,
       "doubles": [
-        "Bull"
+        "D18"
       ],
-      "speak": "treble twenty, treble twenty and double twenty",
+      "speak": "treble twenty, treble twenty and treble seventeen",
       "display_lines": [
-        "T20 T20 D20",
-        "leaves 167"
+        "T20 T20 T17",
+        "leaves 156"
       ]
     }
   },
@@ -8942,9 +9024,9 @@
       "labels": [
         "T20",
         "T20",
-        "D20"
+        "T18"
       ],
-      "leaves": 170,
+      "leaves": 156,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -8952,12 +9034,12 @@
       ],
       "fallback_leaves": 190,
       "doubles": [
-        "Bull"
+        "D18"
       ],
-      "speak": "treble twenty, treble twenty and double twenty",
+      "speak": "treble twenty, treble twenty and treble eighteen",
       "display_lines": [
-        "T20 T20 D20",
-        "leaves 170"
+        "T20 T20 T18",
+        "leaves 156"
       ]
     }
   },
@@ -9049,8 +9131,8 @@
     "expect": {
       "labels": [
         "T20",
-        "T19",
-        "T19"
+        "T20",
+        "T18"
       ],
       "leaves": 160,
       "finishes": false,
@@ -9062,9 +9144,9 @@
       "doubles": [
         "D20"
       ],
-      "speak": "treble twenty, treble nineteen and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble eighteen",
       "display_lines": [
-        "T20 T19 T19",
+        "T20 T20 T18",
         "leaves 160"
       ]
     }
@@ -9077,9 +9159,9 @@
       "labels": [
         "T20",
         "T20",
-        "T15"
+        "T19"
       ],
-      "leaves": 170,
+      "leaves": 158,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -9087,12 +9169,12 @@
       ],
       "fallback_leaves": 195,
       "doubles": [
-        "Bull"
+        "D19"
       ],
-      "speak": "treble twenty, treble twenty and treble fifteen",
+      "speak": "treble twenty, treble twenty and treble nineteen",
       "display_lines": [
-        "T20 T20 T15",
-        "leaves 170"
+        "T20 T20 T19",
+        "leaves 158"
       ]
     }
   },
@@ -9157,10 +9239,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T18",
-        "T18"
+        "T20",
+        "T20"
       ],
-      "leaves": 170,
+      "leaves": 158,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -9168,12 +9250,12 @@
       ],
       "fallback_leaves": 198,
       "doubles": [
-        "Bull"
+        "D19"
       ],
-      "speak": "treble twenty, treble eighteen and treble eighteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T18 T18",
-        "leaves 170"
+        "T20 T20 T20",
+        "leaves 158"
       ]
     }
   },
@@ -9183,22 +9265,22 @@
     "preferred_double": null,
     "expect": {
       "labels": [
+        "T20",
         "T19",
-        "T18",
-        "T18"
+        "T17"
       ],
-      "leaves": 174,
+      "leaves": 171,
       "finishes": false,
       "fallback_labels": [
         "T20",
         "T20"
       ],
-      "fallback_leaves": 200,
+      "fallback_leaves": 199,
       "doubles": [],
-      "speak": "treble nineteen, treble eighteen and treble eighteen",
+      "speak": "treble twenty, treble nineteen and treble seventeen",
       "display_lines": [
-        "T19 T18 T18",
-        "leaves 174"
+        "T20 T19 T17",
+        "leaves 171"
       ]
     }
   },
@@ -9237,22 +9319,20 @@
       "labels": [
         "T20",
         "T20",
-        "T17"
+        "T16"
       ],
-      "leaves": 170,
+      "leaves": 173,
       "finishes": false,
       "fallback_labels": [
         "T20",
         "T20"
       ],
       "fallback_leaves": 201,
-      "doubles": [
-        "Bull"
-      ],
-      "speak": "treble twenty, treble twenty and treble seventeen",
+      "doubles": [],
+      "speak": "treble twenty, treble twenty and treble sixteen",
       "display_lines": [
-        "T20 T20 T17",
-        "leaves 170"
+        "T20 T20 T16",
+        "leaves 173"
       ]
     }
   },
@@ -9263,10 +9343,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T18",
-        "T18"
+        "T20",
+        "T17"
       ],
-      "leaves": 174,
+      "leaves": 171,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -9274,10 +9354,10 @@
       ],
       "fallback_leaves": 202,
       "doubles": [],
-      "speak": "treble twenty, treble eighteen and treble eighteen",
+      "speak": "treble twenty, treble twenty and treble seventeen",
       "display_lines": [
-        "T20 T18 T18",
-        "leaves 174"
+        "T20 T20 T17",
+        "leaves 171"
       ]
     }
   },
@@ -9287,8 +9367,8 @@
     "preferred_double": null,
     "expect": {
       "labels": [
-        "T19",
-        "T19",
+        "T20",
+        "T18",
         "T19"
       ],
       "leaves": 172,
@@ -9297,11 +9377,11 @@
         "T20",
         "T20"
       ],
-      "fallback_leaves": 204,
+      "fallback_leaves": 203,
       "doubles": [],
-      "speak": "treble nineteen, treble nineteen and treble nineteen",
+      "speak": "treble twenty, treble eighteen and treble nineteen",
       "display_lines": [
-        "T19 T19 T19",
+        "T20 T18 T19",
         "leaves 172"
       ]
     }
@@ -9313,23 +9393,21 @@
     "expect": {
       "labels": [
         "T20",
-        "T20",
+        "T19",
         "T18"
       ],
-      "leaves": 170,
+      "leaves": 173,
       "finishes": false,
       "fallback_labels": [
         "T20",
         "T20"
       ],
       "fallback_leaves": 204,
-      "doubles": [
-        "Bull"
-      ],
-      "speak": "treble twenty, treble twenty and treble eighteen",
+      "doubles": [],
+      "speak": "treble twenty, treble nineteen and treble eighteen",
       "display_lines": [
-        "T20 T20 T18",
-        "leaves 170"
+        "T20 T19 T18",
+        "leaves 173"
       ]
     }
   },
@@ -9365,8 +9443,8 @@
     "expect": {
       "labels": [
         "T20",
-        "T19",
-        "T19"
+        "T20",
+        "T18"
       ],
       "leaves": 172,
       "finishes": false,
@@ -9376,9 +9454,9 @@
       ],
       "fallback_leaves": 206,
       "doubles": [],
-      "speak": "treble twenty, treble nineteen and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble eighteen",
       "display_lines": [
-        "T20 T19 T19",
+        "T20 T20 T18",
         "leaves 172"
       ]
     }
@@ -9391,22 +9469,20 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "T18"
       ],
-      "leaves": 170,
+      "leaves": 173,
       "finishes": false,
       "fallback_labels": [
         "T20",
         "T20"
       ],
       "fallback_leaves": 207,
-      "doubles": [
-        "Bull"
-      ],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "doubles": [],
+      "speak": "treble twenty, treble twenty and treble eighteen",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 170"
+        "T20 T20 T18",
+        "leaves 173"
       ]
     }
   },
@@ -9468,22 +9544,20 @@
       "labels": [
         "T20",
         "T20",
-        "T20"
+        "T19"
       ],
-      "leaves": 170,
+      "leaves": 173,
       "finishes": false,
       "fallback_labels": [
         "T20",
         "T20"
       ],
       "fallback_leaves": 210,
-      "doubles": [
-        "Bull"
-      ],
-      "speak": "treble twenty, treble twenty and treble twenty",
+      "doubles": [],
+      "speak": "treble twenty, treble twenty and treble nineteen",
       "display_lines": [
-        "T20 T20 T20",
-        "leaves 170"
+        "T20 T20 T19",
+        "leaves 173"
       ]
     }
   },
@@ -9701,9 +9775,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 222,
+      "fallback_leaves": 219,
       "doubles": [],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -9794,10 +9868,10 @@
     "expect": {
       "labels": [
         "T20",
-        "T19",
-        "T19"
+        "T20",
+        "T20"
       ],
-      "leaves": 189,
+      "leaves": 183,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -9805,10 +9879,10 @@
       ],
       "fallback_leaves": 223,
       "doubles": [],
-      "speak": "treble twenty, treble nineteen and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T19 T19",
-        "leaves 189"
+        "T20 T20 T20",
+        "leaves 183"
       ]
     }
   },
@@ -9870,9 +9944,9 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "T20"
       ],
-      "leaves": 189,
+      "leaves": 186,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -9880,10 +9954,10 @@
       ],
       "fallback_leaves": 226,
       "doubles": [],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 189"
+        "T20 T20 T20",
+        "leaves 186"
       ]
     }
   },
@@ -10301,9 +10375,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 246,
+      "fallback_leaves": 243,
       "doubles": [],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -10376,9 +10450,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 249,
+      "fallback_leaves": 246,
       "doubles": [],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -10695,9 +10769,9 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "T20"
       ],
-      "leaves": 222,
+      "leaves": 219,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -10705,10 +10779,10 @@
       ],
       "fallback_leaves": 259,
       "doubles": [],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 222"
+        "T20 T20 T20",
+        "leaves 219"
       ]
     }
   },
@@ -11201,9 +11275,9 @@
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 282,
+      "fallback_leaves": 279,
       "doubles": [],
       "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
@@ -11295,20 +11369,20 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "T20"
       ],
-      "leaves": 246,
+      "leaves": 243,
       "finishes": false,
       "fallback_labels": [
         "T20",
-        "T19"
+        "T20"
       ],
-      "fallback_leaves": 286,
+      "fallback_leaves": 283,
       "doubles": [],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 246"
+        "T20 T20 T20",
+        "leaves 243"
       ]
     }
   },
@@ -11370,9 +11444,9 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "T20"
       ],
-      "leaves": 249,
+      "leaves": 246,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -11380,10 +11454,10 @@
       ],
       "fallback_leaves": 286,
       "doubles": [],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 249"
+        "T20 T20 T20",
+        "leaves 246"
       ]
     }
   },
@@ -12195,9 +12269,9 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "T20"
       ],
-      "leaves": 282,
+      "leaves": 279,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -12205,10 +12279,10 @@
       ],
       "fallback_leaves": 319,
       "doubles": [],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 282"
+        "T20 T20 T20",
+        "leaves 279"
       ]
     }
   },
@@ -12295,9 +12369,9 @@
       "labels": [
         "T20",
         "T20",
-        "T19"
+        "T20"
       ],
-      "leaves": 286,
+      "leaves": 283,
       "finishes": false,
       "fallback_labels": [
         "T20",
@@ -12305,10 +12379,10 @@
       ],
       "fallback_leaves": 323,
       "doubles": [],
-      "speak": "treble twenty, treble twenty and treble nineteen",
+      "speak": "treble twenty, treble twenty and treble twenty",
       "display_lines": [
-        "T20 T20 T19",
-        "leaves 286"
+        "T20 T20 T20",
+        "leaves 283"
       ]
     }
   },

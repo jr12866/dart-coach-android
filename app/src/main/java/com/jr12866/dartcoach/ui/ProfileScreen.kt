@@ -33,10 +33,20 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jr12866.dartcoach.core.MissLanding
 import com.jr12866.dartcoach.core.ProfileView
 import com.jr12866.dartcoach.core.SegmentView
 import com.jr12866.dartcoach.entitlement.Entitlement
 import kotlin.math.roundToInt
+
+/**
+ * How many segments the "where your misses go" panel shows.
+ *
+ * Eight is enough to see the pattern - a player who slides right has the
+ * same handful of segments on it - without pushing the segment list off the
+ * bottom of the screen.
+ */
+private const val MAX_MISS_LANDING_ROWS = 8
 
 /**
  * The profile: how well the player throws, and what the coach does about
@@ -92,6 +102,15 @@ fun ProfileScreen(
         }
 
         OverallCard(view = view, showAnalysis = showAnalysis, onUpgrade = onUpgrade)
+
+        // Where the misses go. This is what the coach has seen the player's
+        // darts land on when they missed the bed they were aimed at: the
+        // treble twenty that keeps coming off as the single five is a
+        // player who slides, and the coach can only say so if it has seen
+        // it.
+        if (showAnalysis && view.missLandings.isNotEmpty()) {
+            MissLandingCard(rows = view.missLandings)
+        }
 
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -215,6 +234,68 @@ private fun OverallCard(
     }
 }
 
+/**
+ * Where the player's misses land.
+ *
+ * The coach only learns this when the player tells it where a dart actually
+ * landed, so the panel is empty for a player who has never corrected a
+ * dart. What it shows is worth more than a rate: a rate says how often the
+ * player misses, and this says where the dart goes when they do.
+ */
+@Composable
+private fun MissLandingCard(rows: List<MissLanding>) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .background(PanelBackground, RoundedCornerShape(12.dp))
+            .padding(16.dp),
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(
+                text = "Where your misses go",
+                fontSize = 15.sp,
+                color = QuietText,
+            )
+            Text(
+                text = "What your darts landed on when they missed the bed " +
+                    "they were aimed at.",
+                fontSize = 13.sp,
+                color = QuietText,
+            )
+            for (row in rows.take(MAX_MISS_LANDING_ROWS)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        text = row.label,
+                        fontSize = 15.sp,
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = FontWeight.Bold,
+                        color = PrimaryText,
+                        modifier = Modifier.weight(0.22f),
+                    )
+                    Text(
+                        text = row.describe(),
+                        fontSize = 15.sp,
+                        fontFamily = FontFamily.Monospace,
+                        color = AccentAmber,
+                        modifier = Modifier.weight(0.78f),
+                    )
+                }
+            }
+            if (rows.size > MAX_MISS_LANDING_ROWS) {
+                Text(
+                    text = "and ${rows.size - MAX_MISS_LANDING_ROWS} more",
+                    fontSize = 13.sp,
+                    color = QuietText,
+                )
+            }
+        }
+    }
+}
+
 /** The heading for a group of segments. */
 @Composable
 private fun SectionHeader(text: String) {
@@ -308,7 +389,7 @@ private fun EditDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
-                    text = "How often do you hit $segment.label?",
+                    text = "How often do you hit ${segment.label}?",
                     fontSize = 15.sp,
                     color = QuietText,
                 )

@@ -4,9 +4,21 @@ package com.jr12866.dartcoach.core
  * The setup chart: what to aim at when the leg is too high to finish from.
  *
  * This is the middle of the leg, where the job is not to score as much as
- * possible but to leave a score that can be finished from. At 350 a 180
- * leaves the 170 out still available; at 349 the same 180 leaves 169, which
- * no three darts can finish.
+ * possible but to leave a score that can be finished from. At 350 the classic
+ * answer was the 170 out, and at 349 the same 180 leaves 169, which no three
+ * darts can finish.
+ *
+ * The 170 out is finished with T20 T20 and the double bull, and the bull is
+ * the smallest target on the board - published figures put it at 20-25% for a
+ * professional - so the coach does not set a player up for it unless that
+ * player can hit it. With the population averages it leaves 173 at 350
+ * instead, and 153 at 321.
+ *
+ * A player who can hit the bull gets the 170 out back: the rate they set for
+ * the bull in their profile is the one the planner works from, and at about
+ * 27% the bull is worth aiming at and the coach leaves 170 at 350, 347 and
+ * 344. Below that the setup route is the better one, because it leaves a
+ * score that can be finished from without the bull.
  *
  * The numbers come out of the same [Planner] the coach thinks with, so the
  * chart and the coach always agree. The notes are the strategy, which is
@@ -75,7 +87,8 @@ object SetupChart {
         Darts.isBogey(score) -> "cannot finish - set up instead"
 
         // The classic 170 out. A 180 from 350 leaves it, and it is the best
-        // leave on the board.
+        // leave on the board for a player who can hit the bull - which the
+        // population averages say most cannot, so the coach rarely leaves it.
         plan.leaves == Darts.MAX_CHECKOUT -> "the classic 170 out"
 
         // A leave that can be finished from in the coming visit.

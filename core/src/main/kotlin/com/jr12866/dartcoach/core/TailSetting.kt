@@ -88,6 +88,20 @@ object TailSetting {
     fun describe(seconds: Double): String = when {
         seconds <= 0.0 -> "none - headphones"
         seconds < 0.1 -> "${(seconds * 1000).toInt()}ms"
-        else -> "${"%.2f".format(seconds)}s"
+        else -> "${hundredths(seconds)}s"
+    }
+
+    /**
+     * The seconds to two decimal places, written out by hand.
+     *
+     * `String.format` is a JVM thing, and this file is compiled for the
+     * browser as well as the phone. The number is rounded half up, the same
+     * way the formatter rounded it.
+     */
+    private fun hundredths(seconds: Double): String {
+        val value = kotlin.math.round(seconds * 100).toInt()
+        val whole = value / 100
+        val fraction = value % 100
+        return "$whole.${fraction.toString().padStart(2, '0')}"
     }
 }

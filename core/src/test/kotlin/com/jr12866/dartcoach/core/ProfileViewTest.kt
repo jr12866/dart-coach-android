@@ -109,6 +109,128 @@ class ProfileViewTest {
         assertTrue(updated.manual.doubleHit.isEmpty())
     }
 
+    /**
+     * The bull has a rate of its own, and setting it by hand has to stick.
+     *
+     * The bull is not a bed, so it is not in the map of doubles: it has its
+     * own field in the profile, and that is the one the planner reads. It
+     * used to be written into the map of doubles instead, where nothing
+     * looked for it, so a player who set the bull by hand was ignored.
+     */
+    @Test
+    fun settingTheBullByHandWorks() {
+        val view = ProfileView.of(HitLearner(), PlayerProfile())
+        val updated = view.withManual(Segment(25, 2), 0.50)
+
+        assertEquals(0.50, updated.manual.doubleBullHit!!, 1e-12)
+        assertNull(
+            updated.manual.doubleHit[25],
+            "the bull is not a double bed, so it does not belong in the map",
+        )
+
+        val bull = updated.segments.first { it.segment == Segment(25, 2) }
+        assertEquals(0.50, bull.effective, 1e-12)
+        assertEquals(0.50, bull.manual!!, 1e-12)
+        assertTrue(bull.isManual)
+    }
+
+    /** Clearing the bull by hand puts it back to what was learned. */
+    @Test
+    fun clearingTheBullByHandWorks() {
+        val view = ProfileView.of(HitLearner(), PlayerProfile())
+        val updated = view.withManual(Segment(25, 2), 0.50).withManual(Segment(25, 2), null)
+
+        assertNull(updated.manual.doubleBullHit)
+
+        val bull = updated.segments.first { it.segment == Segment(25, 2) }
+        assertFalse(bull.isManual)
+        assertEquals(
+            PlayerProfile.DEFAULT_DB_HIT,
+            bull.effective,
+            1e-12,
+        )
+    }
+
+    /** The bull rate the player sets reaches the coach. */
+    @Test
+    fun theBullRateThePlayerSetsReachesTheCoach() {
+        val view = ProfileView.of(HitLearner(), PlayerProfile())
+        val updated = view.withManual(Segment(25, 2), 0.50)
+        val merged = PlayerProfile.merge(HitLearner().profile(), updated.manual)
+
+        assertEquals(0.50, merged.doubleBullHit!!, 1e-12)
+        val bull = buildAims(merged).first { it.label == "Bull" }
+        assertEquals(0.50, bull.pHit, 1e-12)
+    }
+
+    /** The outer bull is not a bed, so it has a rate of its own. */
+    @Test
+    fun settingTheOuterBullByHandWorks() {
+        val view = ProfileView.of(HitLearner(), PlayerProfile())
+        val updated = view.withManual(Segment(25, 1), 0.60)
+
+        assertEquals(0.60, updated.manual.outerBullHit!!, 1e-12)
+
+        val outer = updated.segments.first { it.segment == Segment(25, 1) }
+        assertEquals(0.60, outer.effective, 1e-12)
+        assertEquals(0.60, outer.manual!!, 1e-12)
+        assertTrue(outer.isManual)
+    }
+
+    /**
+     * The singles are pooled, so setting one sets the rate for all of them.
+     *
+     * There is one number for the singles in the profile, because there is
+     * never enough play at a single bed to say much about it. The screen
+     * shows a row for each bed, and they all show the pooled rate.
+     */
+    @Test
+    fun theSinglesArePooled() {
+        val view = ProfileView.of(HitLearner(), PlayerProfile())
+        val updated = view.withManual(Segment(7, 1), 0.70)
+
+        assertEquals(0.70, updated.manual.singleHit!!, 1e-12)
+
+        val seven = updated.segments.first { it.segment == Segment(7, 1) }
+        val nine = updated.segments.first { it.segment == Segment(9, 1) }
+        assertEquals(0.70, seven.effective, 1e-12)
+        assertEquals(0.70, nine.effective, 1e-12)
+        assertTrue(seven.isManual)
+        assertTrue(nine.isManual)
+    }
+
+    /** Clearing the singles by hand puts them back to what was learned. */
+    @Test
+    fun clearingTheSinglesByHandWorks() {
+        val view = ProfileView.of(HitLearner(), PlayerProfile())
+        val updated = view.withManual(Segment(7, 1), 0.70).withManual(Segment(7, 1), null)
+
+        assertNull(updated.manual.singleHit)
+
+        val seven = updated.segments.first { it.segment == Segment(7, 1) }
+        assertFalse(seven.isManual)
+        assertEquals(
+            PlayerProfile.DEFAULT_SINGLE_HIT,
+            seven.effective,
+            1e-12,
+        )
+    }
+
+    /** The rate the player sets for the singles reaches the coach. */
+    @Test
+    fun theSingleRateThePlayerSetsReachesTheCoach() {
+        val view = ProfileView.of(HitLearner(), PlayerProfile())
+        val updated = view.withManual(Segment(7, 1), 0.70)
+        val merged = PlayerProfile.merge(HitLearner().profile(), updated.manual)
+
+        assertEquals(0.70, merged.singleHit!!, 1e-12)
+        assertEquals(
+            0.70,
+            buildAims(merged).first { it.label == "7" }.pHit,
+            1e-12,
+        )
+    }
+
     /** The overall rate is the share of darts that landed where they were aimed. */
     @Test
     fun theOverallRateIsTheShareThatLanded() {

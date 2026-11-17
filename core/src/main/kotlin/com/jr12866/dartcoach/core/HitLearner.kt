@@ -63,6 +63,7 @@ class HitLearner(
         if (landed.isEmpty() || aimed.isEmpty()) {
             // Nothing to attribute. The turn still happened, but a bare
             // total says nothing about which segment was aimed at.
+            learnedDarts.clear()
             return
         }
 
@@ -71,6 +72,8 @@ class HitLearner(
         // about the first two.
         val count = minOf(aimed.size, landed.size)
         for (i in 0 until count) {
+            // A dart that was corrected has already been learned from.
+            if (i in learnedDarts) continue
             val target = aimed[i]
             val actual = landed[i]
             if (target == actual) {
@@ -83,17 +86,39 @@ class HitLearner(
                 stats.record(target, actual)
             }
         }
+
+        // The turn is over, so the darts that were learned from it are done
+        // with. The next turn starts from nothing.
+        learnedDarts.clear()
     }
+
+    /**
+     * The darts of the current turn that have already been learned from.
+     *
+     * A corrected dart is learned when the correction is made, because that
+     * is when the miss is known. The turn is learned again when it is
+     * confirmed, and without this the same miss would be counted twice: the
+     * player would be told they miss D16 twice for the one dart they missed
+     * it on.
+     */
+    private val learnedDarts = mutableSetOf<Int>()
 
     /**
      * Learns from one dart the player says missed its intended target.
      *
-     * This is used when the player corrects the last dart in a turn before
-     * the turn is confirmed. The target is the segment the coach aimed at,
-     * and the landing is what the player says actually landed.
+     * This is used when the player corrects a dart in a turn before the turn
+     * is confirmed. The target is the segment the coach aimed at, and the
+     * landing is what the player says actually landed.
+     *
+     * `dartIndex` is where the dart sits in the turn, counted from zero, so
+     * that the turn does not learn from it a second time. It is -1 when the
+     * place of the dart is not known, which is when the player reported the
+     * turn as a total: there are no darts on the books to match the turn
+     * against later, so there is nothing to skip.
      */
-    fun learnMiss(aimed: Segment, landed: Segment) {
+    fun learnMiss(aimed: Segment, landed: Segment, dartIndex: Int = -1) {
         stats.record(aimed, landed)
+        if (dartIndex >= 0) learnedDarts.add(dartIndex)
     }
 
     /**
@@ -105,6 +130,33 @@ class HitLearner(
      */
     fun learnNothing() {
         // Deliberately empty.
+    }
+
+    /**
+     * Where this player's misses landed, for the segment that was aimed at.
+     *
+     * The landing is the segment the dart actually hit, so a treble twenty
+     * that came off as the single five is a landing on the single five.
+     */
+    fun missLandings(segment: Segment): Map<Segment, Int> = stats.missLandingsFor(segment)
+
+    /**
+     * The sideways misses: where the darts went when they crossed a wire.
+     *
+     * Only the beds either side of the target count here. A miss that
+     * dropped into the bed below is a different kind of miss, and one that
+     * landed somewhere else on the board is a wild one.
+     *
+     * This is what turns a guess into a fact: the board says where a dart
+     * *could* land, and this says where this player's darts *do* land.
+     */
+    fun wireMisses(segment: Segment): Map<Int, Int> {
+        if (segment.bed !in 1..20) return emptyMap()
+        val landings = stats.missLandingsFor(segment)
+        return Board.neighbours(segment.bed).mapNotNull { bed ->
+            val count = landings[Segment(bed, 1)] ?: 0
+            if (count > 0) bed to count else null
+        }.toMap()
     }
 
     /**
@@ -133,6 +185,16 @@ class HitLearner(
             PlayerProfile.DEFAULT_DB_HIT,
         )
 
+        // The outer bull is the other bull, and it is learned the same way:
+        // the counts are kept for it, so the rate should come from the
+        // player's own play rather than sitting at the population average.
+        // It is not pooled with the singles, because it is a bull and not a
+        // bed.
+        val outerBull = stats.rate(
+            Segment(25, 1),
+            PlayerProfile.DEFAULT_SB_HIT,
+        )
+
         return PlayerProfile(
             trebleHit = trebles,
             doubleHit = doubles,
@@ -141,6 +203,7 @@ class HitLearner(
             } else {
                 single
             },
+            outerBullHit = outerBull,
             doubleBullHit = bull,
         )
     }

@@ -253,7 +253,10 @@ class Planner private constructor(
 
     /** Doubles reachable while playing `score` - the more the better. */
     fun doubleChances(score: Int, darts: Int = 3): List<String> {
-        val found = sortedSetOf<String>()
+        // A plain set rather than a sorted one: the list is sorted properly
+        // at the end anyway, and `sortedSetOf` is a JVM thing - this file is
+        // compiled for the browser as well as the phone.
+        val found = mutableSetOf<String>()
 
         fun walk(cur: Int, left: Int) {
             if (left == 0 || cur <= 0) return
@@ -540,7 +543,12 @@ class Planner private constructor(
         var fallbackLeaves = score
         if (aims.isNotEmpty() && aims[0].wobbleValue != 0) {
             val wobbled = score - aims[0].wobbleValue
-            if (wobbled > 0 && darts > 1) {
+            if (wobbled > 0) {
+                // A turn with one dart left has no darts to fall back on, but
+                // it still has a score to fall back on: the score standing
+                // if the dart drops into its bed. That is the case the
+                // coach has to be able to answer, because there is no
+                // second dart to save the turn.
                 val w = walk(score, wobbled, darts - 1, setup)
                 fallback = w.first
                 fallbackLeaves = w.second

@@ -48,7 +48,9 @@ private val Context.store: DataStore<Preferences> by preferencesDataStore(
  * - the **manual overrides**, the segments the player has said they cannot
  *   hit;
  * - the **hit counts**, so the learning carries on across restarts rather
- *   than starting again from the population averages;
+ *   than starting again from the population averages. These include where
+ *   the player's misses landed, which is what tells the coach which way
+ *   their darts go wrong;
  * - the **preferred double**, which the player would rather not have to say
  *   every leg;
  * - the **session history**, for the stats screen.
@@ -182,9 +184,33 @@ class SettingsStore(private val activity: Context) {
      * coach has learned.
      */
     suspend fun saveManual(manual: PlayerProfile) {
+        // Read into locals first: the property is in another module, so the
+        // compiler cannot smart cast it.
+        val bull = manual.doubleBullHit
+        val outerBull = manual.outerBullHit
+        val single = manual.singleHit
         store.edit { prefs ->
             prefs[KEY_MANUAL_TREBLE] = encodeMap(manual.trebleHit)
             prefs[KEY_MANUAL_DOUBLE] = encodeMap(manual.doubleHit)
+            // The bull, the outer bull and the singles have rates of their
+            // own rather than ones from the bed maps, so they are saved on
+            // their own. Without that the player's own numbers for them were
+            // lost every time the app was closed.
+            if (bull == null) {
+                prefs.remove(KEY_MANUAL_BULL)
+            } else {
+                prefs[KEY_MANUAL_BULL] = bull
+            }
+            if (outerBull == null) {
+                prefs.remove(KEY_MANUAL_OUTER_BULL)
+            } else {
+                prefs[KEY_MANUAL_OUTER_BULL] = outerBull
+            }
+            if (single == null) {
+                prefs.remove(KEY_MANUAL_SINGLE)
+            } else {
+                prefs[KEY_MANUAL_SINGLE] = single
+            }
         }
     }
 
@@ -212,6 +238,7 @@ class SettingsStore(private val activity: Context) {
             prefs[KEY_ATTEMPTS] = snapshot.attempts.joinToString(";")
             prefs[KEY_HITS] = snapshot.hits.joinToString(";")
             prefs[KEY_ON_TARGET] = snapshot.onTarget.joinToString(";")
+            prefs[KEY_MISS_LANDINGS] = snapshot.missLandings.joinToString(";")
             prefs[KEY_TOTAL_ATTEMPTS] = snapshot.totalAttempts
             prefs[KEY_TOTAL_HITS] = snapshot.totalHits
             prefs[KEY_TOTAL_ON_TARGET] = snapshot.totalOnTarget
@@ -226,6 +253,29 @@ class SettingsStore(private val activity: Context) {
      */
     suspend fun saveLearned(learner: HitLearner) {
         saveStats(learner.stats)
+    }
+
+    /**
+     * Throws away what the coach has learned.
+     *
+     * The counts are the coach's memory of how the player throws. Clearing
+     * them puts the coach back on the population averages, which is what a
+     * player wants when the memory is of a game they did not play - or of a
+     * test rather than a leg.
+     *
+     * The manual overrides and the legs are left alone: those are the
+     * player's own choices and their own history, not the coach's memory.
+     */
+    suspend fun clearStats() {
+        store.edit { prefs ->
+            prefs.remove(KEY_ATTEMPTS)
+            prefs.remove(KEY_HITS)
+            prefs.remove(KEY_ON_TARGET)
+            prefs.remove(KEY_MISS_LANDINGS)
+            prefs.remove(KEY_TOTAL_ATTEMPTS)
+            prefs.remove(KEY_TOTAL_HITS)
+            prefs.remove(KEY_TOTAL_ON_TARGET)
+        }
     }
 
     /**
@@ -283,6 +333,9 @@ class SettingsStore(private val activity: Context) {
     private fun Preferences.toManual(): PlayerProfile = PlayerProfile(
         trebleHit = decodeMap(this[KEY_MANUAL_TREBLE]),
         doubleHit = decodeMap(this[KEY_MANUAL_DOUBLE]),
+        singleHit = this[KEY_MANUAL_SINGLE],
+        outerBullHit = this[KEY_MANUAL_OUTER_BULL],
+        doubleBullHit = this[KEY_MANUAL_BULL],
     )
 
     /** The counts the stored settings describe. */
@@ -297,6 +350,8 @@ class SettingsStore(private val activity: Context) {
             onTarget = this[KEY_ON_TARGET]?.split(";")?.filter { it.isNotBlank() }
                 ?: emptyList(),
             totalOnTarget = this[KEY_TOTAL_ON_TARGET] ?: 0,
+            missLandings = this[KEY_MISS_LANDINGS]?.split(";")
+                ?.filter { it.isNotBlank() } ?: emptyList(),
         )
         return snapshot.toStats()
     }
@@ -313,10 +368,14 @@ class SettingsStore(private val activity: Context) {
     companion object {
         private val KEY_MANUAL_TREBLE = stringPreferencesKey("manual_treble")
         private val KEY_MANUAL_DOUBLE = stringPreferencesKey("manual_double")
+        private val KEY_MANUAL_BULL = doublePreferencesKey("manual_bull")
+        private val KEY_MANUAL_OUTER_BULL = doublePreferencesKey("manual_outer_bull")
+        private val KEY_MANUAL_SINGLE = doublePreferencesKey("manual_single")
         private val KEY_PREFERRED_DOUBLE = intPreferencesKey("preferred_double")
         private val KEY_ATTEMPTS = stringPreferencesKey("attempts")
         private val KEY_HITS = stringPreferencesKey("hits")
         private val KEY_ON_TARGET = stringPreferencesKey("on_target")
+        private val KEY_MISS_LANDINGS = stringPreferencesKey("miss_landings")
         private val KEY_TOTAL_ATTEMPTS = intPreferencesKey("total_attempts")
         private val KEY_TOTAL_HITS = intPreferencesKey("total_hits")
         private val KEY_TOTAL_ON_TARGET = intPreferencesKey("total_on_target")

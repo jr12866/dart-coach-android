@@ -49,8 +49,17 @@ class CoachEngine(
      * This is not a default parameter value because the shared planner is a
      * lazy delegate, and a default argument is evaluated when the call is
      * made rather than when the constructor runs.
+     *
+     * It can be replaced, because the planner is built from the player's
+     * profile and the profile moves when the coach learns something new.
+     * Replacing the planner in place - rather than building a whole new coach
+     * - is what keeps the leg where it is: the score, the darts already in
+     * hand and the question waiting to be answered all stay as they are. That
+     * matters because the coach learns from a turn in the middle of a turn,
+     * and a player who has been asked "you said one hundred, right?" must
+     * still be able to answer yes.
      */
-    val planner: Planner = planner ?: Planner.shared
+    var planner: Planner = planner ?: Planner.shared
 
     /**
      * The legs that have been finished.
@@ -66,6 +75,20 @@ class CoachEngine(
 
     /** The suggestion the coach last gave, for the screen. */
     var suggestion: String = ""
+        private set
+
+    /**
+     * The contingency for the standing plan: what to do if the first dart
+     * drops into its single bed.
+     *
+     * It is kept apart from the suggestion because it is shown differently:
+     * it is a quiet line under the plan rather than part of the plan, and
+     * the plan itself is what the parity corpus pins.
+     *
+     * It is empty when there is nothing to say - when the plan has no darts
+     * that can drop into a bed, or when there is no plan.
+     */
+    var contingency: String = ""
         private set
 
     /** The score waiting to be confirmed, if any. */
@@ -163,6 +186,13 @@ class CoachEngine(
                                 message = said
                             }
                             return message
+                        }
+                        if (state.currentDarts.isEmpty()) {
+                            // The player reported the turn as a number, so
+                            // the correction has already corrected that
+                            // number. It must not be overwritten with the
+                            // sum of no darts at all.
+                            return said
                         }
                         pendingScore = state.currentTurnScore()
                         if (said != null && pendingScore != null) {
@@ -336,11 +366,47 @@ class CoachEngine(
     }
 
     /**
+     * Plans again for the score standing and says it.
+     *
+     * This is used when the coach has been rebuilt - because the player has
+     * changed their own rates, or because they have cleared what the coach
+     * had learned. The advice the coach gave was planned with the old
+     * numbers, so it has to be planned again for the advice to match the
+     * coach's memory.
+     *
+     * The leg is not touched: the score stands where it is, and the turn in
+     * play keeps the darts the player has already reported.
+     */
+    fun replan(): String? {
+        // A leg that is finished has nothing to plan for. Planning for a
+        // score of zero would produce a plan for a score nobody can stand
+        // on.
+        if (state.remainingScore <= 0) return null
+
+        // The darts the player has already thrown were aimed at the plan
+        // that was given before the rebuild, so that part of the aim is
+        // kept. Mixing them up would learn the wrong thing from the rest of
+        // the visit.
+        val alreadyAimed = learner.aimed.take(state.currentDarts.size)
+
+        val said = giveSuggestion()
+
+        if (alreadyAimed.isNotEmpty()) {
+            val fresh = learner.aimed
+            learner.setAimedSegments(alreadyAimed + fresh.drop(alreadyAimed.size))
+        }
+        return said
+    }
+
+    /**
      * Corrects the last dart in the current turn.
      *
      * The intended target may be named by the player or inferred from the
      * coach's last suggestion. The actual landing replaces the last dart,
      * and the learner is told about the miss before the turn is confirmed.
+     *
+     * A turn with nothing on the books is corrected differently: see
+     * [correctUnreportedTurn].
      *
      * A correction that cannot be acted on - because the landing could not
      * be identified, or because the feature is not available - asks the
@@ -372,8 +438,9 @@ class CoachEngine(
         }
 
         if (state.currentDarts.isEmpty()) {
-            message = "Tell me the dart you missed first, then what you hit instead."
-            return message
+            // There is no dart on the books to replace, so this is not the
+            // same correction.
+            return correctUnreportedTurn(result, actual)
         }
 
         val target = result.intendedSegment ?: intendedTargetForLastDart()
@@ -389,8 +456,87 @@ class CoachEngine(
 
         correctionApplied = true
 
-        learner.learnMiss(target, actual)
+        // The miss is learned here, and the dart's place in the turn is
+        // passed with it, so that the turn does not learn from it again
+        // when the turn is confirmed.
+        learner.learnMiss(target, actual, state.currentDarts.lastIndex)
         pendingMissTarget = target
+        return replanAfterACorrection(actual)
+    }
+
+    /**
+     * A correction of a turn that has nothing on the books.
+     *
+     * There are two cases, and they are different corrections.
+     *
+     * A total is waiting to be confirmed. The player reported the turn as a
+     * number, and the correction says one of the darts in that number was
+     * different: the dart that was missed comes off the total and the dart
+     * that landed goes on. The corrected total is read back.
+     *
+     * Nothing is waiting. The dart the player is describing has not been
+     * reported at all, so it is the first dart of the turn, and it is
+     * recorded as one. The rest of the turn is planned around it.
+     *
+     * This is the case a player runs into when they report their turn as a
+     * number, which is how most people play, and then correct the dart they
+     * missed. Refusing it - which is what the coach used to do - left the
+     * player at the oche with a correction that had not been made and a
+     * message that asked for a dart they had already named.
+     */
+    private fun correctUnreportedTurn(result: ParseResult, actual: Segment): String? {
+        val pending = pendingScore
+        if (pending != null) {
+            // The turn was reported as a number, so the correction is to that
+            // number. The dart that was missed is the one the player named,
+            // or the last dart the coach aimed at.
+            val target = result.intendedSegment ?: learner.aimed.lastOrNull()
+            if (target == null) {
+                message = "I don't know which dart you missed. Please name it and " +
+                    "what you hit instead."
+                return message
+            }
+
+            val corrected = pending - target.value + actual.value
+            if (corrected < 0 || !isValidThreeDartScore(corrected)) {
+                // The correction does not add up to a turn anybody could
+                // have thrown, so the total the player gave stands.
+                message = "That doesn't add up. Please say the turn again."
+                return message
+            }
+
+            correctionApplied = true
+            learner.learnMiss(target, actual)
+            pendingMissTarget = target
+            pendingScore = corrected
+            message = "You hit ${actual.speech} instead of ${target.speech}. That " +
+                "makes the turn ${numberToWords(corrected)}. You said " +
+                "${numberToWords(corrected)}. Right?"
+            return message
+        }
+
+        // Nothing is waiting, so the landing is the first dart of the turn.
+        //
+        // The target is the one the player named, or the first thing the
+        // coach aimed at, which is what they were throwing at when they
+        // missed it.
+        val target = result.intendedSegment ?: learner.aimed.firstOrNull()
+        state.recordDarts(listOf(actual.value), listOf(actual))
+        if (target != null) {
+            correctionApplied = true
+            learner.learnMiss(target, actual, 0)
+            pendingMissTarget = target
+        }
+        return replanAfterACorrection(actual)
+    }
+
+    /**
+     * Plans the darts that are left after a correction, and says it.
+     *
+     * The turn is not confirmed here: the leg score does not move until the
+     * player has confirmed the turn.
+     */
+    private fun replanAfterACorrection(actual: Segment): String? {
         val dartsLeft = MAX_DARTS_PER_TURN - state.currentDarts.size
         val turnScore = state.currentTurnScore()
         val scoreLeft = state.remainingScore - turnScore
@@ -412,8 +558,18 @@ class CoachEngine(
             "$kind. ${sentence(plan.speak())}."
         }
         suggestion = (listOf(kind) + plan.displayLines).joinToString("\n")
+
+        // The contingency is the answer to the question the player is about
+        // to ask: what if this dart comes off as a single? After a
+        // correction the player has just missed one, so the question is
+        // live, and the plan is for the darts left in the turn - the case
+        // where a single leaves a score a hundred and eighty cannot be
+        // finished from.
+        val planContingency = plan.contingency
+        contingency = planContingency?.line ?: ""
         message = "You hit ${actual.speech} instead. That leaves " +
-            "${numberToWords(scoreLeft)} with $dartsLeft dart${if (dartsLeft == 1) "" else "s"} left. $spoken"
+            "${numberToWords(scoreLeft)} with $dartsLeft dart${if (dartsLeft == 1) "" else "s"} left. $spoken" +
+            (planContingency?.let { " ${it.speech}" } ?: "")
         return message
     }
 
@@ -424,9 +580,14 @@ class CoachEngine(
      * reported dart is matched to the last aim, so the first two darts in a
      * three-dart turn can be corrected without naming their targets.
      *
-     * A qualified dart report carries its own segment. When that segment is
-     * the target itself, that is the target the player missed; it is the
-     * coach's plan that matters when the report was a bare value.
+     * The aim comes first, because the aim is what the player was aiming at.
+     * The segment the player reported is what landed, so it is the wrong
+     * answer for a target: taking it as the target taught the coach that a
+     * segment the player had missed was a segment they hit every time, and
+     * that is how the coach's memory of a leg gets quietly wrong.
+     *
+     * The report is only used when there is no aim for that dart, which
+     * happens when the player has thrown more darts than the coach planned.
      */
     private fun intendedTargetForLastDart(): Segment? {
         val dartIndex = state.currentDarts.lastIndex
@@ -443,7 +604,7 @@ class CoachEngine(
         // The aim list is for the whole turn. When it has fewer entries than
         // the turn, the report is the only reliable source for this dart.
         val planned = aims[dartIndex]
-        return reported ?: planned
+        return planned ?: reported
     }
 
     /** The score is confirmed, so it counts. */
@@ -645,7 +806,9 @@ class CoachEngine(
             state.preferredDouble = null
             val note = "No shot at ${doubleSpeech(preferred)} from $remaining."
             preferred = null
-            suggestion = planner.planFor(remaining).displayLines.joinToString("\n")
+            val ordinary = planner.planFor(remaining)
+            suggestion = ordinary.displayLines.joinToString("\n")
+            contingency = ordinary.contingency?.line ?: ""
             message = "$note $suggestion"
             return message
         }
@@ -655,6 +818,7 @@ class CoachEngine(
         } else {
             null
         }
+        val ordinary = planner.planFor(remaining)
         val text = if (plan != null) {
             // The route onto the double the player asked for. The leave is
             // named because it is the point of the route: it is the shot at
@@ -662,8 +826,7 @@ class CoachEngine(
             "$remaining. ${sentence(plan.speak())}. Leave ${plan.leaves} for " +
                 "${doubleSpeech(preferred!!)}."
         } else {
-            val p = planner.planFor(remaining)
-            "$remaining. ${sentence(p.speak())}."
+            "$remaining. ${sentence(ordinary.speak())}."
         }
         // The suggestion is what the coach says, so it has to be the message
         // as well as the thing that is returned. In the Windows build
@@ -671,10 +834,19 @@ class CoachEngine(
         // `message`, so a suggestion that is only returned would leave the
         // coach repeating the previous line.
         message = text
-        suggestion = planner.planFor(remaining).displayLines.joinToString("\n")
+        suggestion = ordinary.displayLines.joinToString("\n")
+        // The contingency is on the screen but not in the spoken line.
+        //
+        // The spoken line is what the player waits through before the
+        // first dart, and this is the start of a turn: the plan is for
+        // three darts and it is robust - if the first dart drops, the
+        // second and third are still worth throwing. The screen carries
+        // the detail, and the coach says it when it matters, which is when
+        // it re-plans the darts left in a turn.
+        contingency = ordinary.contingency?.line ?: ""
         // Remember what was aimed at, so the darts the player reports back
         // can be matched against it. That match is the lesson.
-        learner.setAimed(planner.planFor(remaining).aims)
+        learner.setAimed(ordinary.aims)
         return text
     }
 

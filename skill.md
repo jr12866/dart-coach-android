@@ -259,7 +259,7 @@ A bogey number is a remaining score that cannot be finished in three darts or le
 
 When choosing between two valid finish paths, prefer the path that leaves the best backup score if the first dart misses. The backup score should not be a bogey number.
 
-**Key transitions**: Leaving 170, 167, 164, 161 are good because a 180 leaves a finishable score. Leaving 169, 168, 166, 165, 163, 162, 159 are bad because a 180 leaves an unfinishable bogey.
+**Key transitions**: Leaving 170, 167, 164, 161 is good arithmetic because a 180 leaves a finishable score. Leaving 169, 168, 166, 165, 163, 162, 159 is bad arithmetic because a 180 leaves an unfinishable bogey. The arithmetic is only half of it, though: 170, 167, 164 and 161 are all finished on the double bull, which is the smallest target on the board. They are good leaves for a player who hits the bull and poor ones for a player who does not, which is why the coach's own table leaves a score that finishes on an ordinary double instead.
 
 ---
 
@@ -294,10 +294,10 @@ The middle game refers to scoring decisions made when the remaining score is too
 
 **Key scores to understand**:
 
-- A score that can reach exactly 170 after a 180 is clean. Examples: 350, 330, 310, 290, 270, 250, 230, 210, 190.
+- A score that can reach exactly 170 after a 180 is clean arithmetic. Examples: 350, 330, 310, 290, 270, 250, 230, 210, 190. Whether it is a good leave depends on the bull, because 170 is finished on it.
 - A score that reaches 169, 168, 166, 165, 163, 162, or 159 after a 180 is a bogey leave. These should be avoided.
 
-When the remaining score is in the 200-350 range, prefer scoring routes that leave a clean number. When in doubt, aim for T20 to set up the 170 area.
+When the remaining score is in the 200-350 range, prefer scoring routes that leave a clean number. When in doubt, aim for T20, and aim for a leave that does not need the bull unless you hit it.
 
 **High percentage zones**: T20 is the most commonly aimed treble because it sets up the most finish combinations. When no clean finish path is available, T20 is usually the default aim.
 

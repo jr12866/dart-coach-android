@@ -187,4 +187,204 @@ class ProfileTest {
             1e-12,
         )
     }
+
+    // -- the bull ------------------------------------------------------------
+
+    /**
+     * A player who can hit the bull is set up for the 170 out.
+     *
+     * The 170 out is finished with T20 T20 and the double bull, so it is
+     * only worth aiming at when the player can hit the bull. With the
+     * population average bull rate the coach sets up instead, and that is
+     * right - but a player who says they hit the bull has to get the
+     * classic answer back.
+     */
+    @Test
+    fun aBullHittingPlayerIsSetUpForThe170Out() {
+        val planner = Planner.build(PlayerProfile(doubleBullHit = 0.45))
+
+        for (score in listOf(350, 347, 344)) {
+            val plan = planner.planFor(score)
+            assertEquals(
+                170,
+                plan.leaves,
+                "a 180 from $score should leave 170, got ${plan.labels}",
+            )
+        }
+    }
+
+    /** A player who cannot hit the bull is not set up for it. */
+    @Test
+    fun aPlayerWhoCannotHitTheBullIsNotSetUpForThe170Out() {
+        val plan = Planner.build().planFor(350)
+        assertTrue(
+            plan.leaves != 170,
+            "the bull out is not worth aiming at with the average bull rate",
+        )
+    }
+
+    /** The learned bull rate is used when the player has not set one. */
+    @Test
+    fun theLearnedBullRateIsUsedWhenThePlayerHasNotSetOne() {
+        val learned = PlayerProfile(doubleBullHit = 0.50)
+        val merged = PlayerProfile.merge(learned, PlayerProfile())
+        assertEquals(0.50, merged.doubleBullHit!!, 1e-12)
+    }
+
+    /** The player's own bull rate wins over the learned one. */
+    @Test
+    fun thePlayerOwnBullRateWins() {
+        val learned = PlayerProfile(doubleBullHit = 0.50)
+        val manual = PlayerProfile(doubleBullHit = 0.80)
+        val merged = PlayerProfile.merge(learned, manual)
+        assertEquals(0.80, merged.doubleBullHit!!, 1e-12)
+    }
+
+    /** A profile with no bull rate of its own uses the population average. */
+    @Test
+    fun anUnsetBullRateKeepsTheDefault() {
+        val bull = buildAims(PlayerProfile()).first { it.label == "Bull" }
+        assertEquals(PlayerProfile.DEFAULT_DB_HIT, bull.pHit, 1e-12)
+    }
+
+    // -- the singles and the outer bull --------------------------------------
+
+    /**
+     * The single rate the player configured is the one the coach throws with.
+     *
+     * The singles are pooled, so one number covers all twenty beds.
+     */
+    @Test
+    fun aConfiguredSingleRateIsUsed() {
+        val aims = buildAims(PlayerProfile(singleHit = 0.50))
+        for (bed in 1..20) {
+            assertEquals(
+                0.50,
+                aims.first { it.label == bed.toString() }.pHit,
+                1e-12,
+                "the single $bed should use the configured rate",
+            )
+        }
+    }
+
+    /** The outer bull rate the player configured is the one the coach uses. */
+    @Test
+    fun aConfiguredOuterBullRateIsUsed() {
+        val aims = buildAims(PlayerProfile(outerBullHit = 0.40))
+        assertEquals(0.40, aims.first { it.label == "25" }.pHit, 1e-12)
+    }
+
+    /** A learned single rate is used when the player has not set one. */
+    @Test
+    fun theLearnedSingleRateIsUsedWhenThePlayerHasNotSetOne() {
+        val learned = PlayerProfile(singleHit = 0.50)
+        val merged = PlayerProfile.merge(learned, PlayerProfile())
+        assertEquals(0.50, merged.singleHit!!, 1e-12)
+        assertEquals(
+            0.50,
+            buildAims(merged).first { it.label == "7" }.pHit,
+            1e-12,
+        )
+    }
+
+    /** The player's own single rate wins over the learned one. */
+    @Test
+    fun thePlayerOwnSingleRateWins() {
+        val learned = PlayerProfile(singleHit = 0.50)
+        val manual = PlayerProfile(singleHit = 0.80)
+        val merged = PlayerProfile.merge(learned, manual)
+        assertEquals(0.80, merged.singleHit!!, 1e-12)
+    }
+
+    /** A learned outer bull rate is used when the player has not set one. */
+    @Test
+    fun theLearnedOuterBullRateIsUsedWhenThePlayerHasNotSetOne() {
+        val learned = PlayerProfile(outerBullHit = 0.40)
+        val merged = PlayerProfile.merge(learned, PlayerProfile())
+        assertEquals(0.40, merged.outerBullHit!!, 1e-12)
+        assertEquals(
+            0.40,
+            buildAims(merged).first { it.label == "25" }.pHit,
+            1e-12,
+        )
+    }
+
+    /** The player's own outer bull rate wins over the learned one. */
+    @Test
+    fun thePlayerOwnOuterBullRateWins() {
+        val learned = PlayerProfile(outerBullHit = 0.40)
+        val manual = PlayerProfile(outerBullHit = 0.70)
+        val merged = PlayerProfile.merge(learned, manual)
+        assertEquals(0.70, merged.outerBullHit!!, 1e-12)
+    }
+
+    /**
+     * The coach learns the player's singles and uses what it learned.
+     *
+     * This is the whole point of the merge preferring the learned number
+     * when the player has not said otherwise: a player who misses a lot of
+     * singles was never priced for it before.
+     */
+    @Test
+    fun theLearnedSingleRateReachesTheCoach() {
+        val learner = HitLearner()
+        repeat(30) {
+            learner.setAimedSegments(listOf(Segment(7, 1)))
+            learner.learn(listOf(Segment(7, 2)))
+        }
+
+        val merged = PlayerProfile.merge(learner.profile(), PlayerProfile())
+        val learned = merged.singleHit!!
+        assertTrue(
+            learned < PlayerProfile.DEFAULT_SINGLE_HIT,
+            "thirty missed singles should pull the rate down, was $learned",
+        )
+        assertEquals(
+            learned,
+            buildAims(merged).first { it.label == "7" }.pHit,
+            1e-12,
+        )
+    }
+
+    /**
+     * The coach learns the player's outer bull and uses what it learned.
+     *
+     * The outer bull is the one bull the learner used to skip, so its rate
+     * sat at the population average whatever the player's own play said.
+     */
+    @Test
+    fun theLearnedOuterBullRateReachesTheCoach() {
+        val learner = HitLearner()
+        repeat(30) {
+            learner.setAimedSegments(listOf(Segment(25, 1)))
+            learner.learn(listOf(Segment(20, 1)))
+        }
+
+        val merged = PlayerProfile.merge(learner.profile(), PlayerProfile())
+        val learned = merged.outerBullHit!!
+        assertTrue(
+            learned < PlayerProfile.DEFAULT_SB_HIT,
+            "thirty missed outer bulls should pull the rate down, was $learned",
+        )
+        assertEquals(
+            learned,
+            buildAims(merged).first { it.label == "25" }.pHit,
+            1e-12,
+        )
+    }
+
+    /** A profile with no rates of its own uses the population averages. */
+    @Test
+    fun anUnsetRateKeepsTheDefault() {        val aims = buildAims(PlayerProfile())
+        assertEquals(
+            PlayerProfile.DEFAULT_SINGLE_HIT,
+            aims.first { it.label == "7" }.pHit,
+            1e-12,
+        )
+        assertEquals(
+            PlayerProfile.DEFAULT_SB_HIT,
+            aims.first { it.label == "25" }.pHit,
+            1e-12,
+        )
+    }
 }

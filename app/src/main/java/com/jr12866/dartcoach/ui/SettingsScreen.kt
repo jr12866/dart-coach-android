@@ -11,11 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
@@ -34,16 +39,28 @@ import com.jr12866.dartcoach.core.TailSetting
  *
  * A phone that is quieter, or louder, or in a different room, wants a
  * different answer, which is why the measurement can be run again.
+ *
+ * The second panel is about the coach's memory. The coach works out how
+ * well the player throws from the darts that have been reported, and that
+ * memory is only as good as what went into it - a misheard game or a test
+ * can leave it believing something untrue. So it can be cleared.
  */
 @Composable
 fun SettingsScreen(
     measuredTail: Double?,
     measuring: Boolean,
     tailMessage: String,
+    learnedAttempts: Int,
+    learnedMessage: String,
     onBack: () -> Unit,
     onMeasureTail: () -> Unit,
     onResetTail: () -> Unit,
+    onResetLearned: () -> Unit,
 ) {
+    // Whether the confirmation is on the screen. The reset is worth a
+    // question, because it throws away work the player cannot get back.
+    var confirmingReset by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -150,5 +167,120 @@ fun SettingsScreen(
                 color = QuietText,
             )
         }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(PanelBackground, RoundedCornerShape(12.dp))
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = "What the coach has learned",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+                color = PrimaryText,
+            )
+            Text(
+                text = "The coach works out how well you throw from the " +
+                    "darts you have reported. It starts from the average " +
+                    "player and gets better as it goes.",
+                fontSize = 14.sp,
+                color = QuietText,
+            )
+            Text(
+                text = "Learned from " +
+                    (if (learnedAttempts == 1) "1 dart" else "$learnedAttempts darts"),
+                fontSize = 15.sp,
+                fontFamily = FontFamily.Monospace,
+                color = AccentGreen,
+            )
+            if (learnedAttempts == 0) {
+                Text(
+                    text = "There is nothing to forget. The coach is on the " +
+                        "average player.",
+                    fontSize = 13.sp,
+                    color = QuietText,
+                )
+            } else {
+                Text(
+                    text = "If the numbers are wrong - a game was misheard, " +
+                        "or they are of a test rather than a leg - you can " +
+                        "make the coach forget them.",
+                    fontSize = 13.sp,
+                    color = QuietText,
+                )
+            }
+            if (learnedMessage.isNotEmpty()) {
+                Text(
+                    text = learnedMessage,
+                    fontSize = 14.sp,
+                    color = AccentAmber,
+                )
+            }
+
+            OutlinedButton(
+                onClick = { confirmingReset = true },
+                enabled = learnedAttempts > 0,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = "Forget what I've learned",
+                    color = if (learnedAttempts > 0) AccentAmber else QuietText,
+                )
+            }
+
+            Text(
+                text = "Your own rates and your leg history are not " +
+                    "touched. The leg in play keeps its score.",
+                fontSize = 13.sp,
+                color = QuietText,
+            )
+        }
+    }
+
+    if (confirmingReset) {
+        // The reset cannot be undone, so it is asked for first.
+        AlertDialog(
+            onDismissRequest = { confirmingReset = false },
+            containerColor = PanelBackground,
+            title = {
+                Text(
+                    text = "Forget what the coach has learned?",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = PrimaryText,
+                )
+            },
+            text = {
+                Text(
+                    text = "The coach will go back to the average player. " +
+                        "The $learnedAttempts dart(s) it learned from are " +
+                        "thrown away. Your own rates and your leg history " +
+                        "are not touched.",
+                    fontSize = 15.sp,
+                    color = QuietText,
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        confirmingReset = false
+                        onResetLearned()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AccentAmber,
+                        contentColor = ScreenBackground,
+                    ),
+                ) {
+                    Text("Forget it", fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                OutlinedButton(onClick = { confirmingReset = false }) {
+                    Text("Keep it", color = PrimaryText)
+                }
+            },
+        )
     }
 }

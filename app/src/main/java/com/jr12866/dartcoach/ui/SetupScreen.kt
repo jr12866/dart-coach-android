@@ -93,8 +93,10 @@ fun SetupScreen(
 
         Text(
             text = "Aim for a leave you can finish from. A 180 from 350 " +
-                "leaves the 170 out; from 349 it leaves 169, which nothing " +
-                "can finish.",
+                "leaves the 170 out, but that one is finished on the bull, " +
+                "so it is only worth doing if you can hit it - set your bull " +
+                "rate in your profile and the coach will aim for it. From " +
+                "349 it leaves 169, which nothing can finish.",
             fontSize = 14.sp,
             color = QuietText,
         )

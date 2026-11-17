@@ -60,9 +60,44 @@ data class SegmentView(
                 PlayerProfile.defaultDoubleHit(segment.bed)
             }
 
-            else -> PlayerProfile.DEFAULT_SINGLE_HIT
+            else -> if (segment.bed == 25) {
+                PlayerProfile.DEFAULT_SB_HIT
+            } else {
+                PlayerProfile.DEFAULT_SINGLE_HIT
+            }
         }
     }
+}
+
+/**
+ * Where one segment's misses landed.
+ *
+ * This is the picture of how a player misses: the treble twenty that keeps
+ * coming off as the single five is a player who slides right, and the one
+ * that keeps dropping into the single twenty is a player who drops short.
+ * The two need different answers, so the coach has to know which one it is.
+ */
+data class MissLanding(
+    /** The segment that was aimed at. */
+    val segment: Segment,
+    /** Where the misses landed, as landing segment to count. */
+    val landings: Map<Segment, Int>,
+) {
+    /** The label of the segment aimed at: "T20". */
+    val label: String get() = segment.label
+
+    /** How many misses there were. */
+    val total: Int get() = landings.values.sum()
+
+    /**
+     * The landings, most often first: "20 x4, 5 x2".
+     *
+     * The landing is labelled the way the board labels it, so a single is
+     * "5" and a treble is "T19".
+     */
+    fun describe(): String = landings.entries
+        .sortedWith(compareByDescending<Map.Entry<Segment, Int>> { it.value }.thenBy { it.key.bed })
+        .joinToString(", ") { "${it.key.label} x${it.value}" }
 }
 
 /**
@@ -111,6 +146,20 @@ data class ProfileView(
     val rest: List<SegmentView> get() = segments.filter { it.segment.multiplier == 1 }
 
     /**
+     * Where the player's misses land, the worst first.
+     *
+     * Only the trebles and the doubles are listed, because those are the
+     * ones the coach aims at and the ones whose misses have somewhere to go
+     * wrong to. A miss on a single is not interesting, and the bull
+     * scatters its misses across the board.
+     */
+    val missLandings: List<MissLanding>
+        get() = learner.stats.missLandingCounts()
+            .filterKeys { it.multiplier >= 2 && it.bed != 25 }
+            .map { (segment, landings) -> MissLanding(segment, landings) }
+            .sortedByDescending { it.total }
+
+    /**
      * Sets a segment by hand.
      *
      * A null rate clears the override, so the coach goes back to what it has
@@ -134,12 +183,33 @@ data class ProfileView(
             }
 
             2 -> {
-                val map = manual.doubleHit.toMutableMap()
-                if (rate == null) map.remove(segment.bed) else map[segment.bed] = rate
-                manual.copy(doubleHit = map)
+                if (segment.bed == 25) {
+                    // The bull is the double bull, and it has its own field
+                    // in the profile. Putting it in the map of doubles would
+                    // put it somewhere the planner never looks: the coach
+                    // reads the bull from its own field, and a rate set here
+                    // would be silently dropped.
+                    manual.copy(doubleBullHit = rate)
+                } else {
+                    val map = manual.doubleHit.toMutableMap()
+                    if (rate == null) map.remove(segment.bed) else map[segment.bed] = rate
+                    manual.copy(doubleHit = map)
+                }
             }
 
-            else -> manual
+            else -> {
+                if (segment.bed == 25) {
+                    // The outer bull is not a bed either, so it has a field
+                    // of its own like the double bull.
+                    manual.copy(outerBullHit = rate)
+                } else {
+                    // The singles are pooled: one number for all twenty
+                    // beds, because there is never enough play at one bed to
+                    // say much about it. Setting a single by hand sets the
+                    // pooled rate, which is the one the planner reads.
+                    manual.copy(singleHit = rate)
+                }
+            }
         }
         return of(learner, updated)
     }
@@ -192,12 +262,16 @@ data class ProfileView(
             val learnedRate = when (segment.multiplier) {
                 3 -> learned.trebleChance(segment.bed)
                 2 -> if (segment.bed == 25) {
-                    learned.doubleBullHit
+                    learned.doubleBullHit ?: PlayerProfile.DEFAULT_DB_HIT
                 } else {
                     learned.doubleChance(segment.bed)
                 }
 
-                else -> learned.singleHit
+                else -> if (segment.bed == 25) {
+                    learned.outerBullHit ?: PlayerProfile.DEFAULT_SB_HIT
+                } else {
+                    learned.singleHit ?: PlayerProfile.DEFAULT_SINGLE_HIT
+                }
             }
             val manualRate = when (segment.multiplier) {
                 3 -> manual.trebleHit[segment.bed]
@@ -207,7 +281,12 @@ data class ProfileView(
                     manual.doubleHit[segment.bed]
                 }
 
-                else -> null
+                else -> if (segment.bed == 25) {
+                    manual.outerBullHit
+                } else {
+                    // The singles are pooled, so they share one override.
+                    manual.singleHit
+                }
             }
             val effective = manualRate ?: learnedRate
 

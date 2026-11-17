@@ -147,6 +147,14 @@ data class HitStatsSnapshot(
     val onTarget: List<String> = emptyList(),
     /** How many darts have landed on the bed they were aimed at. */
     val totalOnTarget: Int = 0,
+    /**
+     * Where the misses landed, as
+     * "aimBed,aimMultiplier,landBed,landMultiplier,count".
+     *
+     * This is a newer count than the others, so a snapshot saved before it
+     * existed will not have it. It is optional for that reason.
+     */
+    val missLandings: List<String> = emptyList(),
 ) {
     /** Puts the counts back into a learner. */
     fun toStats(): HitStats = HitStats(
@@ -156,6 +164,7 @@ data class HitStatsSnapshot(
         totalHits = totalHits,
         onTargetCounts = onTarget.toMap(),
         totalOnTarget = totalOnTarget,
+        landingCounts = missLandings.toMissMap(),
     )
 
     companion object {
@@ -167,6 +176,7 @@ data class HitStatsSnapshot(
             totalHits = stats.totalHits,
             onTarget = stats.onTargetCounts().toEntries(),
             totalOnTarget = stats.totalOnTarget,
+            missLandings = stats.missLandingCounts().toMissEntries(),
         )
 
         /** Reads a "bed,multiplier,count" entry. */
@@ -186,6 +196,39 @@ data class HitStatsSnapshot(
         /** Writes a segment count as "bed,multiplier,count". */
         private fun Map<Segment, Int>.toEntries(): List<String> =
             this.entries.map { "${it.key.bed},${it.key.multiplier},${it.value}" }
+
+        /**
+         * Reads back what [toMissEntries] wrote.
+         *
+         * An entry that does not have the five parts is skipped rather than
+         * guessed at, the same way the other counts are read.
+         */
+        private fun List<String>.toMissMap(): Map<Segment, Map<Segment, Int>> {
+            val out = mutableMapOf<Segment, MutableMap<Segment, Int>>()
+            for (entry in this) {
+                val parts = entry.split(",")
+                if (parts.size != 5) continue
+                val aimBed = parts[0].toIntOrNull() ?: continue
+                val aimMultiplier = parts[1].toIntOrNull() ?: continue
+                val landBed = parts[2].toIntOrNull() ?: continue
+                val landMultiplier = parts[3].toIntOrNull() ?: continue
+                val count = parts[4].toIntOrNull() ?: continue
+                val landings = out.getOrPut(Segment(aimBed, aimMultiplier)) { mutableMapOf() }
+                landings[Segment(landBed, landMultiplier)] = count
+            }
+            return out
+        }
+
+        /**
+         * Writes the miss landings as
+         * "aimBed,aimMultiplier,landBed,landMultiplier,count".
+         */
+        private fun Map<Segment, Map<Segment, Int>>.toMissEntries(): List<String> =
+            this.entries.flatMap { (aim, landings) ->
+                landings.entries.map { (land, count) ->
+                    "${aim.bed},${aim.multiplier},${land.bed},${land.multiplier},$count"
+                }
+            }
     }
 }
 
@@ -210,6 +253,14 @@ class HitStats(
     onTargetCounts: Map<Segment, Int> = emptyMap(),
     /** How many darts have landed on the bed they were aimed at. */
     var totalOnTarget: Int = 0,
+    /**
+     * Where the misses landed, per segment that was aimed at.
+     *
+     * The counts are the counts, not rates: a rate cannot be turned back
+     * into a count, and the history has to keep accumulating across
+     * restarts for the picture to be worth anything.
+     */
+    landingCounts: Map<Segment, Map<Segment, Int>> = emptyMap(),
 ) {
 
     /** How many times each segment was aimed at. */
@@ -228,6 +279,21 @@ class HitStats(
      */
     private val onTarget: MutableMap<Segment, Int> = onTargetCounts.toMutableMap()
 
+    /**
+     * Where the misses landed, per segment that was aimed at.
+     *
+     * A dart aimed at the treble twenty that lands in the single five has
+     * gone sideways; one that lands in the single twenty has dropped short.
+     * They are different problems, and the player has to be able to see
+     * which one is theirs.
+     *
+     * Only trebles and doubles are kept. A single is a big target and its
+     * misses are not interesting, and the bull scatters its misses across
+     * the whole board.
+     */
+    private val landings: MutableMap<Segment, MutableMap<Segment, Int>> =
+        landingCounts.mapValues { it.value.toMutableMap() }.toMutableMap()
+
     /** Records a dart that was aimed at `aimed` and landed on `landed`. */
     fun record(aimed: Segment, landed: Segment?) {
         attempts[aimed] = (attempts[aimed] ?: 0) + 1
@@ -240,10 +306,39 @@ class HitStats(
             onTarget[aimed] = (onTarget[aimed] ?: 0) + 1
             totalOnTarget++
         }
+        // Where the miss went. A dart that landed where it was aimed is not
+        // a miss, so it is not counted here.
+        if (landed != null && landed != aimed && aimed.bed != 25 && aimed.multiplier >= 2) {
+            val where = landings.getOrPut(aimed) { mutableMapOf() }
+            where[landed] = (where[landed] ?: 0) + 1
+        }
     }
 
     /** How many times the segment was aimed at. */
     fun attemptsFor(segment: Segment): Int = attempts[segment] ?: 0
+
+    /**
+     * Throws the counts away.
+     *
+     * The counts are the coach's memory of how the player throws, so
+     * clearing them puts the coach back on the population averages. It is
+     * what a player wants when the memory is of a game they did not play - or
+     * of a test rather than a leg.
+     *
+     * The counts are cleared in place rather than by building a new set of
+     * them, because the learner holds them: a new set would need a new
+     * learner, and a new learner would need a new coach, and the coach holds
+     * the leg.
+     */
+    fun clear() {
+        attempts.clear()
+        hits.clear()
+        onTarget.clear()
+        landings.clear()
+        totalAttempts = 0
+        totalHits = 0
+        totalOnTarget = 0
+    }
 
     /** How many times the segment was hit. */
     fun hitsFor(segment: Segment): Int = hits[segment] ?: 0
@@ -256,6 +351,14 @@ class HitStats(
 
     /** The on-target counts, so they can be saved. */
     fun onTargetCounts(): Map<Segment, Int> = onTarget.toMap()
+
+    /** Where the misses on `segment` landed, as landing segment to count. */
+    fun missLandingsFor(segment: Segment): Map<Segment, Int> =
+        landings[segment]?.toMap() ?: emptyMap()
+
+    /** Every segment's miss landings, so they can be saved. */
+    fun missLandingCounts(): Map<Segment, Map<Segment, Int>> =
+        landings.mapValues { it.value.toMap() }
 
     /** How many darts aimed at the segment landed on it. */
     fun onTargetFor(segment: Segment): Int = onTarget[segment] ?: 0
@@ -270,11 +373,23 @@ class HitStats(
      * how many darts' worth of the population average stands for a segment
      * with no history of its own, so a segment with one miss behind it does
      * not swing to zero.
+     *
+     * The numerator is the count of darts that went where they were aimed,
+     * not the count of darts that landed on the segment. Those are different
+     * populations: a dart aimed at T16 that slides into T20 is a hit on T20
+     * and a miss on T16, so counting it as a hit on T20 would tell the coach
+     * the player hits T20 more often than they do, and the count of darts
+     * landing on the segment would have nothing to do with the count of darts
+     * thrown at it.
+     *
+     * This is the rate the planner wants as well: the chance that a dart
+     * aimed at a segment lands on that segment, with the drop into the bed
+     * below handled separately.
      */
     fun rate(segment: Segment, prior: Double, k: Double = PRIOR_WEIGHT): Double {
         val n = attemptsFor(segment)
         if (n == 0) return prior
-        val h = hitsFor(segment)
+        val h = onTargetFor(segment)
         return (prior * k + h) / (k + n)
     }
 

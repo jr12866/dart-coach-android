@@ -13,12 +13,22 @@ import kotlin.test.assertTrue
  */
 class SetupChartTest {
 
-    /** At 350 the classic 170 out is the leave. */
+    /**
+     * At 350 the coach sets up rather than leaving the 170 out.
+     *
+     * The 170 out is finished with T20 T20 and the double bull, and the bull
+     * is a small target - published figures put it at 20-25% for a
+     * professional. With the bull priced at that rate the coach no longer
+     * sets a player up to finish on it, and 350 is set up instead.
+     *
+     * The note about the classic 170 out is still there for a player whose own
+     * bull rate is good enough to earn it back.
+     */
     @Test
-    fun atThreeFiftyTheClassicOutIsTheLeave() {
+    fun atThreeFiftyItIsSetUpRatherThanTheBullOut() {
         val row = SetupChart.rowFor(350)
-        assertEquals(170, row.leaves)
-        assertEquals("the classic 170 out", row.note)
+        assertEquals(173, row.leaves)
+        assertFalse(row.note == "the classic 170 out")
     }
 
     /** At 349 the same 180 leaves a bogey, so it is not the good leave. */
@@ -124,13 +134,20 @@ class SetupChartTest {
         assertTrue(row.fallbackLeaves > 0)
     }
 
-    /** The doubles are the ones still on from the leave. */
+    /**
+     * The doubles are the ones still on from the leave.
+     *
+     * At 321 the coach leaves 153, which is finished T20 T19 D18, so the
+     * double eighteen is the one still on. It used to leave the 170 out at
+     * 350, which was finished on the bull.
+     */
     @Test
     fun theDoublesAreTheOnesStillAvailable() {
-        val row = SetupChart.rowFor(350)
+        val row = SetupChart.rowFor(321)
+        assertEquals(153, row.leaves)
         assertTrue(
-            row.doubles.contains("Bull"),
-            "the 170 out is on the bull, got ${row.doubles}",
+            row.doubles.contains("D18"),
+            "the 153 out is on the double eighteen, got ${row.doubles}",
         )
     }
 
@@ -139,5 +156,19 @@ class SetupChartTest {
     fun aScoreOutsideTheChartIsEmpty() {
         assertTrue(SetupChart.rowFor(100).aims.isEmpty())
         assertTrue(SetupChart.rowFor(600).aims.isEmpty())
+    }
+
+    /**
+     * A player who can hit the bull gets the classic 170 out back.
+     *
+     * The note is only true when the leave is 170, and the leave is only 170
+     * when the bull is worth aiming at.
+     */
+    @Test
+    fun aBullHittingPlayerGetsTheClassicNote() {
+        val planner = Planner.build(PlayerProfile(doubleBullHit = 0.45))
+        val row = SetupChart.rowFor(350, planner)
+        assertEquals(170, row.leaves)
+        assertEquals("the classic 170 out", row.note)
     }
 }

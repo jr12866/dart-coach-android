@@ -485,3 +485,99 @@ unconditionally and does not contain the debug one at all.
 
 The implementation, Pixel 7 findings, and remaining work are in
 `docs/MISSED-TARGET.md`.
+
+---
+
+## 16. The double bull is priced at the published rate, not at half
+
+**Decision.** The double bull is worth 22.5% - the middle of the published
+band for professionals - instead of the 50% the coach was ported with.
+
+**Why.** It was the one hit rate in the model with no source behind it, and
+the one that mattered most. The bull is one of the few targets the coach can
+plan a leg around: 170 is finished with T20 T20 Bull and nothing else, so an
+optimistic bull rate makes the coach steer players into bull finishes they
+then miss. Published segment tracking (Ochepedia's figures, as summarised in
+the professional hit-rate tables) puts the inner bull at 20-25% for a
+professional and around 30% for the very best, so 0.50 described a player who
+has never existed.
+
+Correcting one number moved the advice more than anything else in the model:
+**138 of the 501 plans** changed. The coach no longer leaves 170 at all, the
+setup it leaves at 321 became T20 T20 T16 leaving 153 (finished T20 T19 D18),
+and the checkouts in the 100-135 range moved off the bull onto ordinary
+doubles.
+
+**Alternatives considered.**
+
+| Option | Why not |
+|---|---|
+| Leave it at 0.50 | A guess above the best player alive, and the single number that moved the advice most. |
+| Lower the treble curve to the professional average as well | The treble twenty has a published figure (40-43%), but only the treble twenty does, and the model's treble curve descends with the bed number - which is how often a bed is thrown at, not how often it is hit. All the treble beds are the same size. Scaling the curve to fit one point dragged the small trebles down to figures nobody can hit (the treble five at 9%). That needs per-bed data, not a scale factor. |
+| Change the coach to prefer the lowest leave | The coach maximises the chance of checking out in the coming turn, which is the right quantity. "Lowest" is not a principle: 159 is lower than 170 and cannot be finished at all. |
+| Change the Kotlin coach first and the Python after | The Python coach is the reference and the parity corpus is the contract, so the Python change came first, the corpus was regenerated, and the Kotlin port followed it. |
+
+**What would reverse it.** A player's own measured bull rate already
+overrides the default - the hit learner prices the bull from their own play - 
+so a player who hits the bull gets the classic 170 advice back without
+anything changing here. What would move the default itself is better data:
+per-bed hit rates for club players, which nobody publishes.
+
+*Correction, added later: the first half of that is not true yet. The
+learner does price the bull from the player's own play, but
+`PlayerProfile.merge` always takes the player's own bull number - there is no
+way to say "not set" for a plain number - so a learned bull rate never
+reaches the planner. See decision 17 and section 9 of `HANDOVER.md`.*
+
+*Correction, added later still: the bull is fixed now. The bull's rate is
+nullable, so "not set" can be said: the merge takes the player's own number
+if there is one, and the learned number otherwise, and the planner falls back
+to the population average when there is neither. The player's own number is
+saved and read back as well, so a player who says they hit the bull get the
+classic 170 advice back.*
+
+*The same fix has been applied to the outer bull and to the singles, so they
+say "not set" as well. A learned single rate now reaches the planner, which
+it never did: the coach used the population average for every single dart
+whatever the player's own play said. The outer bull was not in the learner
+at all, though the counts were kept for it; it is now learned from those
+counts the same way the double bull is, so nothing is left in the plain
+numbers.*
+
+---
+
+## 17. A learned rate counts the darts that went where they were aimed
+
+**Decision.** The rate the hit learner works out for a segment is the share
+of the darts **aimed at that segment** that landed **on that segment**. It
+was the share of the darts that landed on the segment, over the darts aimed
+at it.
+
+**Why.** Those are two different populations. The learner keeps both counts
+for every segment, because they answer different questions: the attempts are
+the darts thrown at the segment, the hits are the darts that landed there.
+A dart aimed at T16 that slides into T20 is a hit on T20 and a miss on T16.
+
+Dividing one by the other gives a number that is not a rate. The effect is
+always in the same direction: a segment that other targets happen to land on
+looks better than the player is, and a segment the player misses looks
+worse. The planner uses this number as `pHit` - the chance that a dart aimed
+at a segment lands on it - so the error goes straight into the advice.
+
+It was found by building the web coach, where the page has to show what the
+coach has learned, and the panel said "T20 2/2, 63%": the player aimed at T20
+twice and hit it twice, and the third dart - aimed at T16, landed on T20 -
+had made the coach think the player hits T20 68% of the time.
+
+**Alternatives considered.**
+
+| Option | Why not |
+|---|---|
+| Leave it | The rate would keep being a ratio of two unrelated numbers, and the coach would keep telling players they are better or worse than they are. |
+| Change the denominator to every dart thrown | That would measure "where do the darts land" rather than "how well do they throw at this segment", which is not what the planner needs. |
+| Fix it in the browser | The browser has no learner of its own; it uses the shared one. There is one copy of the coach. |
+| Change the Python first | There is no Python learner to change: the Windows coach has never had one, so there is no parity corpus entry and nothing to regenerate. |
+
+**What would reverse it.** Nothing about the model depends on it. The
+defaults are unchanged, so an unmeasured player gets exactly the advice they
+got before, and the parity corpus still passes untouched.

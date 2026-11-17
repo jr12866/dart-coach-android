@@ -171,13 +171,177 @@ class MissedTargetTest {
         assertEquals(listOf(60), coach.state.currentDarts)
     }
 
+    /**
+     * A correction with nothing on the books is the first dart of the turn.
+     *
+     * This is the case a player runs into when they report their turn as a
+     * number and then correct the dart they missed. There is no dart to
+     * replace, so the landing is recorded as the first dart of the turn and
+     * the rest of the turn is planned around it.
+     */
     @Test
-    fun `a correction without a current dart is refused clearly`() {
+    fun `a correction with no dart on the books records the landing`() {
         val coach = CoachEngine()
+        coach.handle("180")
+        coach.handle("yes")
+        assertEquals(321, coach.state.remainingScore)
+
+        val said = coach.handle("I miss treble 20, I hit a single 20.")
+        assertNotNull(said)
+        assertEquals(listOf(20), coach.state.currentDarts)
+        assertEquals(20, coach.state.currentTurnScore())
+        // The leg score does not move until the turn is confirmed.
+        assertEquals(321, coach.state.remainingScore)
+        assertTrue(said.contains("2 darts left"), "expected two darts left, got: $said")
+    }
+
+    /**
+     * A correction of an out, with the turn reported as a number.
+     *
+     * The player reports the turn and then says what landed instead. The
+     * total is corrected: the double that was missed comes off it and the
+     * single that landed goes on. The new total is read back.
+     */
+    @Test
+    fun `a correction of an out corrects the total that is pending`() {
+        val coach = CoachEngine()
+        coach.state.recordTurn(469)
+        // The coach is playing for double sixteen from thirty-two.
+        coach.learner.setAimedSegments(listOf(Segment(16, 2)))
+        assertEquals(32, coach.state.remainingScore)
+
+        // The player reports the turn as a number, and the coach reads it
+        // back.
+        coach.handle("32")
+        assertEquals(32, coach.pendingScore)
+
+        // And then says what actually landed.
         val said = coach.handle("I hit single 8 instead")
         assertNotNull(said)
-        assertTrue(said.contains("Tell me the dart"), "expected a request, got: $said")
-        assertEquals(501, coach.state.remainingScore)
+        // Thirty-two, with the double sixteen taken off it and the single
+        // eight put on.
+        assertEquals(8, coach.pendingScore)
+        assertTrue(said.contains("Right?"), "expected a read-back, got: $said")
+        assertEquals(32, coach.state.remainingScore)
+    }
+
+    /**
+     * A correction that does not add up is refused, and the total the player
+     * gave stands.
+     */
+    @Test
+    fun `a correction that does not add up leaves the total alone`() {
+        val coach = CoachEngine()
+        coach.handle("180")
+        coach.handle("yes")
+        coach.handle("20")
+
+        // A treble twenty was not in a turn of twenty, so taking it off and
+        // putting a single eight on does not make a turn.
+        val said = coach.handle("I missed treble 20 and hit single 8")
+        assertNotNull(said)
+        assertTrue(said.contains("doesn't add up"), "expected a refusal, got: $said")
+        assertEquals(20, coach.pendingScore)
+    }
+
+    /**
+     * A corrected dart is learned once, not twice.
+     *
+     * The miss is learned when the correction is made, and the turn is
+     * learned again when it is confirmed. The same dart must not be counted
+     * in both, or the player would be told they miss a treble twice for the
+     * one dart they missed it on.
+     *
+     * The count is checked on the miss landing rather than on the attempt,
+     * because the attempt count also carries the darts that were hit. The
+     * coach aims the treble twenty at the second dart of the turn and the
+     * player hits it, so the treble twenty has two attempts against it: the
+     * miss that was corrected and the hit.
+     */
+    @Test
+    fun `a corrected dart is learned once`() {
+        val coach = CoachEngine()
+        coach.handle("180")
+        coach.handle("yes")
+
+        coach.handle("triple 20")
+        coach.handle("I hit single 8 instead")
+        assertEquals(1, coach.learner.stats.attemptsFor(Segment(20, 3)))
+        assertEquals(1, coach.learner.stats.missLandingsFor(Segment(20, 3))[Segment(8, 1)])
+
+        // The rest of the turn, reported and confirmed.
+        coach.handle("triple 20")
+        coach.handle("triple 20")
+        coach.handle("yes")
+
+        // The miss is still counted once, and the second dart was a hit.
+        assertEquals(1, coach.learner.stats.missLandingsFor(Segment(20, 3))[Segment(8, 1)])
+        assertEquals(2, coach.learner.stats.attemptsFor(Segment(20, 3)))
+        assertEquals(1, coach.learner.stats.hitsFor(Segment(8, 1)))
+    }
+
+    /**
+     * A dart recorded by a correction is learned once as well.
+     *
+     * The correction is made with nothing on the books, so the coach takes
+     * the target from its own plan and records the miss against that. The
+     * turn is learned again when it is confirmed, and the same dart must not
+     * be counted in both.
+     */
+    @Test
+    fun `a dart recorded by a correction is learned once`() {
+        val coach = CoachEngine()
+        coach.handle("180")
+        coach.handle("yes")
+
+        coach.handle("I hit single 8 instead")
+        assertEquals(1, coach.learner.stats.attemptsFor(Segment(20, 3)))
+        assertEquals(1, coach.learner.stats.missLandingsFor(Segment(20, 3))[Segment(8, 1)])
+
+        coach.handle("triple 20")
+        coach.handle("triple 20")
+        coach.handle("yes")
+
+        // The miss is still counted once. The second dart was aimed at the
+        // treble twenty and hit, so the treble twenty has two attempts
+        // against it: the miss that was corrected and the hit.
+        assertEquals(1, coach.learner.stats.missLandingsFor(Segment(20, 3))[Segment(8, 1)])
+        assertEquals(2, coach.learner.stats.attemptsFor(Segment(20, 3)))
+        assertEquals(1, coach.learner.stats.hitsFor(Segment(8, 1)))
+    }
+
+    /**
+     * A correction the parser cannot read a target from is learned against
+     * the coach's own aim, and not against the dart that landed.
+     *
+     * This is what the Pixel 7 showed. Whisper wrote "missed treble 20" as
+     * "mist-traveled 20" once, which is not a phrase the parser can read a
+     * target out of, so the target has to come from the coach's plan. The
+     * dart that landed was on the books by then, and taking that as the
+     * target taught the coach that the single eight was a segment the player
+     * hit every time - which is the opposite of what happened, and it moved
+     * the coach's advice off the treble twenty.
+     */
+    @Test
+    fun `a correction with an unreadable target is learned against the aim`() {
+        val coach = CoachEngine()
+        coach.handle("180")
+        coach.handle("yes")
+
+        // The first correction puts the landing on the books as the first
+        // dart of the turn.
+        coach.handle("I hit single 8 instead")
+        assertEquals(1, coach.learner.stats.attemptsFor(Segment(20, 3)))
+
+        // The second one names the target in words the parser cannot read.
+        coach.handle("I mistraveled treble 20 and hit single 8 instead")
+
+        // The treble twenty is the target: that is what the coach aimed at
+        // and what the player says they missed.
+        assertEquals(2, coach.learner.stats.attemptsFor(Segment(20, 3)))
+        // The single eight is the landing, so it is a hit and not a target.
+        assertEquals(0, coach.learner.stats.attemptsFor(Segment(8, 1)))
+        assertEquals(2, coach.learner.stats.hitsFor(Segment(8, 1)))
     }
 
     @Test

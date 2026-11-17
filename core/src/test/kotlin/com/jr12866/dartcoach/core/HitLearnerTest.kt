@@ -126,10 +126,102 @@ class HitLearnerTest {
         assertTrue(rate > 0.8, "the rate should be high, was $rate")
     }
 
+    /**
+     * A dart that lands on a segment it was not aimed at is not a hit on it.
+     *
+     * The two counts are different populations. The attempts are the darts
+     * thrown at the segment; the hits that matter are the darts that went
+     * where they were aimed. Mixing them tells the coach the player hits a
+     * segment more often than they do, and the rate it works out is not a
+     * rate at all - it is a ratio of two unrelated numbers.
+     */
+    @Test
+    fun aDartFromElsewhereIsNotAHit() {
+        val learner = HitLearner()
+        // Aimed at T16, and the dart slid into T20.
+        learner.setAimedSegments(segmentsOf("T16"))
+        learner.learn(segmentsOf("T20"))
+
+        val t16 = PlayerProfile.defaultTrebleHit(16)
+        val t20 = PlayerProfile.defaultTrebleHit(20)
+
+        // T20 was never aimed at, so its rate is the population average: one
+        // dart landing there says nothing about how the player throws.
+        assertEquals(t20, learner.stats.trebleRate(20, t20), 1e-12)
+
+        // T16 was aimed at and missed, so its rate has to fall.
+        assertTrue(
+            learner.stats.trebleRate(16, t16) < t16,
+            "the rate should have dropped",
+        )
+    }
+
+    /**
+     * The rate is the darts that went where they were aimed.
+     *
+     * Two darts at T20, both hit, and a third dart thrown at T16 that landed
+     * on T20: the rate for T20 is the two that were aimed at it and hit it,
+     * not the three that landed on it.
+     */
+    @Test
+    fun theRateCountsTheDartsThatWentWhereTheyWereAimed() {
+        val learner = HitLearner()
+        learner.setAimedSegments(segmentsOf("T20", "T20", "T16"))
+        learner.learn(segmentsOf("T20", "T20", "T20"))
+
+        val prior = PlayerProfile.defaultTrebleHit(20)
+        val k = HitStats.PRIOR_WEIGHT
+        val expected = (prior * k + 2) / (k + 2)
+        assertEquals(expected, learner.stats.trebleRate(20, prior), 1e-12)
+    }
+
+    /**
+     * The outer bull is learned like the double bull is.
+     *
+     * The counts were kept for it all along, but the rate was not read out
+     * of them, so it sat at the population average whatever the player's own
+     * play said.
+     */
+    @Test
+    fun theOuterBullIsLearned() {
+        val learner = HitLearner()
+        repeat(30) {
+            learner.setAimedSegments(segmentsOf("25"))
+            learner.learn(segmentsOf("20"))
+        }
+        val rate = learner.profile().outerBullHit!!
+        assertTrue(
+            rate < PlayerProfile.DEFAULT_SB_HIT,
+            "thirty missed outer bulls should pull the rate down, was $rate",
+        )
+    }
+
+    /** The outer bull is a bull and not a bed, so it is not pooled with the singles. */
+    @Test
+    fun theOuterBullIsNotPooledWithTheSingles() {
+        val learner = HitLearner()
+        repeat(30) {
+            learner.setAimedSegments(segmentsOf("25"))
+            learner.learn(segmentsOf("20"))
+        }
+        val profile = learner.profile()
+        assertEquals(
+            PlayerProfile.DEFAULT_SINGLE_HIT,
+            profile.singleHit!!,
+            1e-12,
+        )
+    }
+
+    /** With no history the outer bull is the population average. */
+    @Test
+    fun anOuterBullWithNoHistoryKeepsThePrior() {
+        val profile = HitLearner().profile()
+        assertEquals(PlayerProfile.DEFAULT_SB_HIT, profile.outerBullHit!!, 1e-12)
+    }
+
     /** The profile carries an override only for segments that were thrown at. */
     @Test
-    fun theProfileOnlyOverridesSeenSegments() {
-        val learner = HitLearner()
+    fun theProfileOnlyOverridesSeenSegments() {        val learner = HitLearner()
         repeat(30) {
             learner.setAimedSegments(segmentsOf("D16"))
             learner.learn(segmentsOf("D16"))

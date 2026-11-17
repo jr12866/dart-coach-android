@@ -45,6 +45,7 @@ fun AppNavHost(
     remaining: Int,
     turns: Int,
     suggestion: String,
+    contingency: String,
     message: String,
     double: String,
     listening: Boolean,
@@ -61,6 +62,8 @@ fun AppNavHost(
     measuredTail: Double?,
     measuringTail: Boolean,
     tailMessage: String,
+    learnedAttempts: Int,
+    learnedMessage: String,
     onNewGame: () -> Unit,
     onUndo: () -> Unit,
     onPrivacyPolicy: () -> Unit,
@@ -71,6 +74,7 @@ fun AppNavHost(
     onOpenSettings: () -> Unit,
     onMeasureTail: () -> Unit,
     onResetTail: () -> Unit,
+    onResetLearned: () -> Unit,
 ) {
     val nav = rememberNavController()
 
@@ -80,6 +84,7 @@ fun AppNavHost(
                 remaining = remaining,
                 turns = turns,
                 suggestion = suggestion,
+                contingency = contingency,
                 message = message,
                 double = double,
                 listening = listening,
@@ -162,9 +167,12 @@ fun AppNavHost(
                 measuredTail = measuredTail,
                 measuring = measuringTail,
                 tailMessage = tailMessage,
+                learnedAttempts = learnedAttempts,
+                learnedMessage = learnedMessage,
                 onBack = { nav.popBackStack() },
                 onMeasureTail = onMeasureTail,
                 onResetTail = onResetTail,
+                onResetLearned = onResetLearned,
             )
         }
     }
