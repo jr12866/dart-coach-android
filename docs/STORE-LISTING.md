@@ -11,7 +11,7 @@ privacy text, and the Play Console Data safety answers in agreement.
 
 > Voice-controlled 501 darts coach. Say your score; get the route to checkout.
 
-64 characters.
+76 characters, against Play's limit of 80.
 
 ## Full description
 
@@ -49,7 +49,7 @@ privacy text, and the Play Console Data safety answers in agreement.
 > gives you the routes that suit you rather than the ones that suit everyone.
 > It adds the full out chart for every score from 2 to 170, the setup coaching
 > for the middle of the leg, and your own statistics. The live coach keeps
-> working either way.>
+> working either way.
 > A large first install is expected: the speech models and the voice are
 > included in the app so it works offline and does not need a download step.
 >
