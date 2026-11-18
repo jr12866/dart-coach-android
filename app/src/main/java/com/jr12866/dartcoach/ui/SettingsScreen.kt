@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jr12866.dartcoach.core.TailSetting
+import com.jr12866.dartcoach.speech.CoachVoice
 
 /**
  * The settings.
@@ -40,6 +41,9 @@ import com.jr12866.dartcoach.core.TailSetting
  *
  * A phone that is quieter, or louder, or in a different room, wants a
  * different answer, which is why the measurement can be run again.
+ *
+ * The voice is the other thing a player might want to change. Both of them
+ * are on the phone already, so choosing one costs nothing to download.
  *
  * The second panel is about the coach's memory. The coach works out how
  * well the player throws from the darts that have been reported, and that
@@ -53,10 +57,13 @@ fun SettingsScreen(
     tailMessage: String,
     learnedAttempts: Int,
     learnedMessage: String,
+    voice: CoachVoice,
+    voiceMessage: String,
     onBack: () -> Unit,
     onMeasureTail: () -> Unit,
     onResetTail: () -> Unit,
     onResetLearned: () -> Unit,
+    onChooseVoice: (CoachVoice) -> Unit,
 ) {
     // Whether the confirmation is on the screen. The reset is worth a
     // question, because it throws away work the player cannot get back.
@@ -241,6 +248,63 @@ fun SettingsScreen(
             Text(
                 text = "Your own rates and your leg history are not " +
                     "touched. The leg in play keeps its score.",
+                fontSize = 13.sp,
+                color = QuietText,
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(PanelBackground, RoundedCornerShape(12.dp))
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = "The coach's voice",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+                color = PrimaryText,
+            )
+            Text(
+                text = "The coach speaks with the voice you pick here. " +
+                    "Both of them are on the phone already.",
+                fontSize = 14.sp,
+                color = QuietText,
+            )
+            Text(
+                text = "Currently: ${voice.label} - ${voice.description}",
+                fontSize = 15.sp,
+                fontFamily = FontFamily.Monospace,
+                color = AccentGreen,
+            )
+            if (voiceMessage.isNotEmpty()) {
+                Text(
+                    text = voiceMessage,
+                    fontSize = 14.sp,
+                    color = AccentAmber,
+                )
+            }
+            for (choice in CoachVoice.entries) {
+                val inUse = choice == voice
+                OutlinedButton(
+                    onClick = { onChooseVoice(choice) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = if (inUse) {
+                            choice.label + " - " + choice.description + " (in use)"
+                        } else {
+                            choice.label + " - " + choice.description
+                        },
+                        color = if (inUse) AccentGreen else PrimaryText,
+                        fontWeight = if (inUse) FontWeight.Bold else FontWeight.Normal,
+                    )
+                }
+            }
+            Text(
+                text = "Pick one and the coach will say a line in it, so you " +
+                    "can hear what it sounds like.",
                 fontSize = 13.sp,
                 color = QuietText,
             )

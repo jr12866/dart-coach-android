@@ -8,6 +8,7 @@ import com.jr12866.dartcoach.core.Planner
 import com.jr12866.dartcoach.core.ProfileView
 import com.jr12866.dartcoach.core.StatsView
 import com.jr12866.dartcoach.entitlement.Entitlement
+import com.jr12866.dartcoach.speech.CoachVoice
 
 /** The routes the app has. */
 object Routes {
@@ -64,6 +65,8 @@ fun AppNavHost(
     tailMessage: String,
     learnedAttempts: Int,
     learnedMessage: String,
+    voice: CoachVoice,
+    voiceMessage: String,
     onNewGame: () -> Unit,
     onUndo: () -> Unit,
     onPrivacyPolicy: () -> Unit,
@@ -75,6 +78,7 @@ fun AppNavHost(
     onMeasureTail: () -> Unit,
     onResetTail: () -> Unit,
     onResetLearned: () -> Unit,
+    onChooseVoice: (CoachVoice) -> Unit,
 ) {
     val nav = rememberNavController()
 
@@ -169,10 +173,13 @@ fun AppNavHost(
                 tailMessage = tailMessage,
                 learnedAttempts = learnedAttempts,
                 learnedMessage = learnedMessage,
+                voice = voice,
+                voiceMessage = voiceMessage,
                 onBack = { nav.popBackStack() },
                 onMeasureTail = onMeasureTail,
                 onResetTail = onResetTail,
                 onResetLearned = onResetLearned,
+                onChooseVoice = onChooseVoice,
             )
         }
     }

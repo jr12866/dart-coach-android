@@ -15,6 +15,7 @@ import com.jr12866.dartcoach.core.HitStatsSnapshot
 import com.jr12866.dartcoach.core.Leg
 import com.jr12866.dartcoach.core.LegsSnapshot
 import com.jr12866.dartcoach.core.PlayerProfile
+import com.jr12866.dartcoach.speech.CoachVoice
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -43,7 +44,7 @@ private val Context.store: DataStore<Preferences> by preferencesDataStore(
 /**
  * The player's settings and history, stored on the phone.
  *
- * Four things are kept:
+ * Five things are kept:
  *
  * - the **manual overrides**, the segments the player has said they cannot
  *   hit;
@@ -53,6 +54,7 @@ private val Context.store: DataStore<Preferences> by preferencesDataStore(
  *   their darts go wrong;
  * - the **preferred double**, which the player would rather not have to say
  *   every leg;
+ * - the **voice** the coach speaks with;
  * - the **session history**, for the stats screen.
  *
  * The manual overrides and the learned rates are kept apart on purpose. A
@@ -147,6 +149,19 @@ class SettingsStore(private val activity: Context) {
         }
     }
 
+    /**
+     * The voice the coach speaks with, as it changes.
+     *
+     * A voice that is not on offer falls back to the default, so a settings
+     * file written by another version of the app cannot leave the coach
+     * without a voice.
+     */
+    val voice: Flow<CoachVoice> by lazy {
+        store.data.map { prefs ->
+            CoachVoice.byId(prefs[KEY_VOICE])
+        }
+    }
+
     /** Reads the manual overrides once. */
     suspend fun readManual(): PlayerProfile = manual.first()
 
@@ -161,6 +176,22 @@ class SettingsStore(private val activity: Context) {
 
     /** Reads the measured echo tail once. */
     suspend fun readMeasuredTail(): Double? = measuredTail.first()
+
+    /** Reads the voice the coach speaks with once. */
+    suspend fun readVoice(): CoachVoice = voice.first()
+
+    /**
+     * Saves the voice the coach speaks with.
+     *
+     * The voice is remembered across restarts, because a player who has
+     * picked one does not want to pick it again every time they open the
+     * app.
+     */
+    suspend fun saveVoice(voice: CoachVoice) {
+        store.edit { prefs ->
+            prefs[KEY_VOICE] = voice.id
+        }
+    }
 
     /**
      * Saves the measured echo tail.
@@ -382,5 +413,6 @@ class SettingsStore(private val activity: Context) {
         private val KEY_LEGS = stringPreferencesKey("legs")
         private val KEY_MEASURED_TAIL = doublePreferencesKey("measured_tail")
         private val KEY_IS_PRO = booleanPreferencesKey("is_pro")
+        private val KEY_VOICE = stringPreferencesKey("voice")
     }
 }

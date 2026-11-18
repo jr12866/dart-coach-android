@@ -87,5 +87,5 @@ exit codes explicitly.
   `libandroid.so`, `liblog.so`, `libm.so`, `libdl.so` and `libc.so`. All are
   either packaged or part of Android itself.
 - `:app:assembleDebug` and `:app:bundleRelease` both succeed.
-- The release bundle is **140 MB**: a base module of 26 MB compressed (66 MB on
-  the device) and a models pack of 104 MB compressed (172 MB on the device).
+- The release bundle is **153 MB**: a base module of 26 MB compressed (66 MB on
+  the device) and a models pack of 117 MB compressed (189 MB on the device).

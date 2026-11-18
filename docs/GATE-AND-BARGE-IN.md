@@ -110,6 +110,11 @@ tail is taken for the player.
 Tail: 11 chunk(s), 0 over the player's level, so it was the echo
 ```
 
+The voice does not change any of this. The coach has two of them, and the
+coach's own voice at the microphone measures 0.0015 - 0.0026 with the British
+one, which is the same as with the American one. The tail is the phone's
+speaker ringing, not the voice.
+
 Only an **answer** is taken from the tail. The coach is waiting for one, and
 anything else in the tail is the echo of what the coach just said. If the
 echo of "You said one hundred and forty" were read back as a score, the

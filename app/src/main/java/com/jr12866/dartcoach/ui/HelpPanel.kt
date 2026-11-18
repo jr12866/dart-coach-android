@@ -215,6 +215,11 @@ enum class HelpTopic(
                     "microphone, so the delay is zero and the advice is private.",
             ),
             HelpPoint(
+                "The coach's voice",
+                "Two voices to choose from. The coach speaks with the one you " +
+                    "pick, and both of them are on the phone already.",
+            ),
+            HelpPoint(
                 "Forget what it has learned",
                 "Throws away the counts the coach has built up from your play " +
                     "and puts it back on the population averages. The leg in " +

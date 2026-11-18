@@ -37,6 +37,7 @@ import com.jr12866.dartcoach.entitlement.Entitlement
 import com.jr12866.dartcoach.entitlement.FeatureGated
 import com.jr12866.dartcoach.entitlement.NotPro
 import com.jr12866.dartcoach.entitlement.Pro
+import com.jr12866.dartcoach.speech.CoachVoice
 import com.jr12866.dartcoach.speech.PiperTts
 import com.jr12866.dartcoach.ui.AppNavHost
 import kotlinx.coroutines.CoroutineScope
@@ -156,6 +157,22 @@ class MainActivity : ComponentActivity() {
      */
     private var learnedMessage by mutableStateOf("")
 
+    /**
+     * The voice the coach is speaking with.
+     *
+     * It is the one the player picked in the settings, and it is the default
+     * until they say otherwise.
+     */
+    private var coachVoice by mutableStateOf(CoachVoice.DEFAULT)
+
+    /**
+     * What the last voice choice did, for the screen.
+     *
+     * It is only ever a problem - a voice that would not load - because a
+     * voice that loads is obvious from the line the coach says in it.
+     */
+    private var voiceMessage by mutableStateOf("")
+
     private var remaining by mutableStateOf(501)
     private var turns by mutableStateOf(0)
     private var suggestion by mutableStateOf("")
@@ -264,6 +281,8 @@ class MainActivity : ComponentActivity() {
                         tailMessage = tailMessage,
                         learnedAttempts = profileView.totalAttempts,
                         learnedMessage = learnedMessage,
+                        voice = coachVoice,
+                        voiceMessage = voiceMessage,
                         onNewGame = { onNewGame() },
                         onUndo = { onUndo() },
                         onPrivacyPolicy = { openPrivacyPolicy() },
@@ -275,6 +294,7 @@ class MainActivity : ComponentActivity() {
                         onMeasureTail = { measureTailForThePlayer() },
                         onResetTail = { resetTail() },
                         onResetLearned = { resetLearned() },
+                        onChooseVoice = { chooseVoice(it) },
                     )
                 }
             }
@@ -648,6 +668,7 @@ class MainActivity : ComponentActivity() {
             val legs = store.readLegs()
             measuredTail = store.readMeasuredTail()
             storedPreferredDouble = store.readPreferredDouble()
+            coachVoice = store.readVoice()
 
             val learner = HitLearner(stats)
             val profile = PlayerProfile.merge(learner.profile(), manual)
@@ -664,6 +685,36 @@ class MainActivity : ComponentActivity() {
 
             loadEntitlement()
         }
+    }
+
+    /**
+     * The player picked a voice in the settings.
+     *
+     * The voice is loaded before it is saved, so a voice that cannot be
+     * loaded does not get remembered as the one the coach is speaking with.
+     * The model is read again, which takes a couple of seconds, and then the
+     * coach says a line in it, so the player can hear what they picked.
+     *
+     * The reading of the model and the speaking are both slow, so they are
+     * off the main thread. The screen is updated from the main thread, which
+     * is where the state lives.
+     */
+    private fun chooseVoice(chosen: CoachVoice) {
+        if (chosen == coachVoice) return
+        Thread {
+            if (!tts.useVoice(chosen)) {
+                scope.launch {
+                    voiceMessage = "That voice could not be loaded."
+                }
+                return@Thread
+            }
+            scope.launch {
+                coachVoice = chosen
+                voiceMessage = ""
+                store.saveVoice(chosen)
+            }
+            speak("I am the coach. This is the voice you picked.")
+        }.start()
     }
 
     /**

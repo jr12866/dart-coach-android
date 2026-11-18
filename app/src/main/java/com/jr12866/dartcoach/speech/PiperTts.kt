@@ -23,10 +23,23 @@ import java.io.File
  * The espeak-ng directory that ships with the voice is **not** used.
  * sherpa-onnx has ignored `data_dir` since v2.0.0, and the upstream build
  * script deletes it for the same reason.
+ *
+ * There is more than one voice: the player picks between them, and each one
+ * is a different model with its own phoneme voice. See [CoachVoice].
  */
 class PiperTts(private val appContext: Context) {
 
     private var tts: OfflineTts? = null
+
+    /**
+     * The voice the coach is speaking with.
+     *
+     * It is set before the voice is loaded, so a voice that cannot be loaded
+     * leaves the coach without a voice rather than with the wrong one.
+     */
+    @Volatile
+    var voice: CoachVoice = CoachVoice.DEFAULT
+        private set
 
     /** The sample rate the voice runs at. 22050 for the Piper voices. */
     val sampleRate: Int
@@ -43,14 +56,37 @@ class PiperTts(private val appContext: Context) {
         return try {
             piperPhonemizeInitialize(appContext)
             val config = getOfflineTtsConfig(
-                modelDir = MODEL_DIR,
-                modelName = MODEL_NAME,
+                modelDir = voice.modelDir,
+                modelName = voice.modelName,
             )
             tts = OfflineTts(appContext.assets, config)
             true
         } catch (e: Exception) {
             false
         }
+    }
+
+    /**
+     * Speaks with another voice.
+     *
+     * The model is read again, which takes a couple of seconds, so this is
+     * worth doing when the player picks a voice and not on every reply.
+     *
+     * Returns false if the new voice could not be loaded. The old voice is
+     * kept in that case, because a coach with the wrong voice is better than
+     * a coach with no voice.
+     */
+    fun useVoice(next: CoachVoice): Boolean {
+        if (next == voice && tts != null) return true
+        val previous = voice
+        val previousTts = tts
+        voice = next
+        tts = null
+        if (load()) return true
+        // The new voice would not load. Go back to the one that did.
+        voice = previous
+        tts = previousTts
+        return false
     }
 
     /**
@@ -246,7 +282,10 @@ class PiperTts(private val appContext: Context) {
     fun synthesize(text: String): Pair<FloatArray, Int>? {
         if (!load()) return null
         return try {
-            val phonemes = piperPhonemizeText(text, "en-us") ?: return null
+            // The phonemes come from the voice's own accent. A British voice
+            // given the American phonemes is pronounced with American vowels.
+            val phonemes = piperPhonemizeText(text, voice.phonemeVoice)
+                ?: return null
             try {
                 val codes = Array(phonemes.numSentences) { i -> phonemes.getPhonemes(i) }
                 val audio = tts!!.generateWithConfig(
@@ -466,10 +505,6 @@ class PiperTts(private val appContext: Context) {
     }
 
     companion object {
-        /** The voice lives in its own directory, with its tokens file beside it. */
-        const val MODEL_DIR = "vits-piper-en_US-lessac-medium-int8"
-        const val MODEL_NAME = "en_US-lessac-medium.onnx"
-
         /** How much audio to write at a time, in samples. About 45 ms. */
         private const val SLICE_SAMPLES = 1024
 

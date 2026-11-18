@@ -33,6 +33,7 @@ privacy text, and the Play Console Data safety answers in agreement.
 > - Say your score in plain English: "one forty", "treble twenty", "double six"
 > - The coach reads it back before counting it, so a quiet number never changes
 >   your score by accident
+> - Two voices for the coach, British and American, and you pick which one
 > - The screen stays awake during a leg
 > - Undo a throw with one tap
 >
@@ -50,7 +51,7 @@ privacy text, and the Play Console Data safety answers in agreement.
 > It adds the full out chart for every score from 2 to 170, the setup coaching
 > for the middle of the leg, and your own statistics. The live coach keeps
 > working either way.
-> A large first install is expected: the speech models and the voice are
+> A large first install is expected: the speech models and the voices are
 > included in the app so it works offline and does not need a download step.
 >
 > Suitable for Android phones with a microphone. Headphones are recommended

@@ -591,7 +591,6 @@ command is armed, so "undo" still supersedes a score.
 | Measured | `docs/GATE-AND-BARGE-IN.md`, `docs/DECISIONS.md` decision 18 |
 
 ### 12. AVG flags the debug build
-
 AVG AntiVirus put a "Suspicious app found" dialog up on the Pixel 7 when the
 debug APK was installed. The release build does not have the things that
 usually earn that warning: the debug APK is `android:debuggable="true"` and
@@ -604,6 +603,39 @@ the Play App Signing certificate, so Play Protect has Google's own record of
 it. Worth re-checking on a clean phone once the release is in internal
 testing, and worth reporting to AVG either way, because a false positive on
 the app's name is not something the app can fix by itself.
+
+### 13. The coach had one voice, and it was the wrong accent
+
+The coach says "treble twenty" and "checkout", which is how British darts is
+spoken, and it said it in an American accent. The model directory and the
+file name were constants in `PiperTts`, so there was no way to change it.
+
+There are now **two voices**, and the player picks one in **Settings**:
+Alba, which is British, and Lessac, which is American. The British one is
+the default. The choice is remembered across restarts, and the coach says a
+line in the new voice when it is picked, so the player can hear it.
+
+The part that is easy to get wrong is the phonemes. Each Piper model says
+which espeak voice it was trained with, in the config file beside it -
+`en-gb-x-rp` for the British one, `en-us` for the American one - and the text
+is phonemised before it reaches the model. A voice given the wrong phonemes
+still makes a sound and it still sounds like English, so nothing about it
+looks broken; it just says the words with the wrong vowels.
+
+Each voice is 17.7 MB in the install, so the download is now about 143 MB
+and the app takes about 255 MB on the phone. That is still under the 200 MB
+where Play warns the user on mobile data, but it is not far off it.
+
+| | |
+|---|---|
+| Where | `app/.../speech/CoachVoice.kt`, `app/.../speech/PiperTts.kt` |
+| Test | `app/.../speech/CoachVoiceTest.kt` |
+| Fetched by | `tools/fetch-models.ps1` |
+| Decision | `docs/DECISIONS.md` decision 19 |
+
+The echo does not change with the voice: the coach's own voice at the
+microphone measures 0.0015 - 0.0026 with the British one, the same as with
+the American one, so the level gate is unaffected.
 
 ## The repositories
 

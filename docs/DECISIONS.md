@@ -169,11 +169,11 @@ are part of the Play install, not downloaded by the app.
 | Individual asset packs | 1.5 GB |
 | Cumulative, all modules + install-time packs | 4 GB |
 
-Our assets are ~189 MB in total: Whisper `base.en` int8 (153 MB), the Piper
-voice int8 (17.7 MB), silero-vad (0.6 MB) and espeak-ng data (17.2 MB). That
-fits in a single install-time pack with room to spare.
+Our assets are ~189 MB in total: Whisper `base.en` int8 (153 MB), the two
+Piper voices int8 (17.7 MB each), silero-vad (0.6 MB) and espeak-ng data
+(17.2 MB). That fits in a single install-time pack with room to spare.
 
-The int8 variants are used throughout. The Piper voice is 17.7 MB int8 against
+The int8 variants are used throughout. A Piper voice is 17.7 MB int8 against
 64 MB in float32, for the same voice, and the Whisper int8 pair is a third of
 the float32 size.
 
@@ -189,10 +189,11 @@ and wants to throw darts, not watch a progress bar. Install-time also means no
 download code at all: the models are read with the ordinary `AssetManager`,
 exactly as if they were in the app's own assets.
 
-**The one cost.** The download is about 130 MB and the app occupies about 240 MB
-on the phone. That is honest: the app is large because it contains a speech
-recogniser and a voice. It is under the 200 MB that makes Play warn the user
-before an install over mobile data.
+**The one cost.** The download is about 143 MB and the app occupies about
+255 MB on the phone. That is honest: the app is large because it contains a
+speech recogniser and two voices. It is under the 200 MB that makes Play warn
+the user before an install over mobile data, but it is not far off it - a
+third voice would put it in reach, and a larger Whisper would put it over.
 
 **The alternative, if it is ever wanted.** `fast-follow` or `on-demand`, using
 `AssetPackManager`. The Gradle change is one line. The catch, from Google's
@@ -623,3 +624,41 @@ from, and the strictness cost the player their turn.
 **What would reverse it.** The rule that a command drops the pending score.
 That one is the Windows build's (`_ask_about_command`), and it is what keeps
 "undo" from being read as a refusal of the score read-back.
+
+## 19. The coach speaks with one of two voices, and the player picks
+
+**Decision.** The app ships two Piper voices: `en_GB-alba-medium`, which is
+British, and `en_US-lessac-medium`, which is American. The player picks one
+in the settings, and the British one is the default.
+
+**Why.** The coach says "treble twenty" and "checkout", which is how British
+darts is spoken, and it said it in an American accent. The British voice is
+the one that fits. There was also no way to change it: the model directory
+and the file name were constants in `PiperTts`.
+
+The voices are Piper VITS models, and each model says which espeak voice it
+was trained with - `en-gb-x-rp` for the British one, `en-us` for the American
+one. The text is phonemised before it reaches the model, so the phonemes have
+to come from the same accent as the model. A voice given the wrong phonemes
+still makes a sound, and it sounds like English, so nothing about it looks
+broken - it just says the words with the wrong vowels.
+
+Two voices rather than one because an accent is a matter of taste, and the
+alternative is that the app has one voice and everyone else lives with it.
+Two cost 17.7 MB each in the install, which is 12.7 MB of the download, and
+that leaves the download at about 143 MB - under the 200 MB where Play warns
+the user before an install over mobile data.
+
+**Alternatives considered.**
+
+| Option | Why not |
+|---|---|
+| One voice, British | It is the default, so most players get it, but a player who wants the other one has no way to get it. |
+| One voice, American | It is the voice the Windows coach uses, but the coach says "treble" and "checkout" in it, which is not how British darts is spoken. |
+| More than two voices | The x_low models are 13 MB, but the English ones are not published in that quality, and the download is already at 143 MB against a 200 MB warning. |
+| A voice the player downloads later | The pack is install-time, so a voice that is not in the pack is not on the phone. Downloading one later means writing download code and a "not ready" state for a preference most players will not change. |
+| Let the player bring their own | A Piper voice is a model file with a tokens file beside it. Asking a player to assemble one is not something an app can ask. |
+
+**What would reverse it.** The download size. A third voice, or a larger
+Whisper, would put the download over the 200 MB where Play warns, and the
+voices would have to go.
