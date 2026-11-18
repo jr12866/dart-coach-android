@@ -187,6 +187,16 @@ Policy → App content → App access
 **All or most functionality is available without special access.** There is
 no login and no account.
 
+The **sign-in details** fields on that page are left **empty**. The username,
+email, phone and password boxes are for apps that need a reviewer to log in,
+and there is nothing to log into here: the app has no account, no server and
+no user data of its own. The name of the set of sign-in details is the only
+field that has to be filled in, and "Darts Coach" is as good a name as any.
+
+If the sign-in fields appear, check that the option above them is **"All or
+most functionality is available without special access"** rather than
+"Additional information is required to access your app".
+
 ---
 
 ## Step 4 — The store listing
