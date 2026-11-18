@@ -9,10 +9,10 @@ download step on first launch.
 | | |
 |---|---|
 | Base module | The app: Kotlin code, Compose UI, the native libraries, and the espeak-ng data that `piper-phonemize` needs. 66 MB on the device, 26 MB compressed. |
-| Asset pack `models` | The models: 172 MB on the device, 104 MB compressed. `install-time` delivery. |
+| Asset pack `models` | The models: 189 MB on the device, 117 MB compressed. `install-time` delivery. |
 
-The whole app is therefore about **130 MB to download** and takes about
-**240 MB on the phone**. Those are the numbers measured on the built bundle,
+The whole app is therefore about **143 MB to download** and takes about
+**255 MB on the phone**. Those are the numbers measured on the built bundle,
 not estimates.
 
 The espeak-ng data is about 20 MB and is bundled by `piper-phonemize` itself,
@@ -309,7 +309,7 @@ copy says so.
 ## Testing tracks
 
 Ship to **internal testing** first. It is available within minutes, needs no
-review, and is where the install of a 130 MB app over mobile data should be
+review, and is where the install of a 143 MB app over mobile data should be
 tested first.
 
 ### The closed test, if the account is a new personal one

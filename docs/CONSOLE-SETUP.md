@@ -23,7 +23,7 @@ comes *before* the product, not after it.
 |---|---|
 | The release keystore | `C:/Users/jr128/dart-coach-keys/dart-coach-release.jks`, alias `dart-coach` |
 | The signing properties | in `local.properties`, which is not in git |
-| The signed bundle | `app/build/outputs/bundle/release/app-release.aab`, 140 MB, signature verified |
+| The signed bundle | `app/build/outputs/bundle/release/app-release.aab`, 153 MB, signature verified |
 
 The bundle was built with:
 
@@ -184,7 +184,10 @@ The copy is in `docs/STORE-LISTING.md`, ready to paste:
 - **Full description**: the long one in `docs/STORE-LISTING.md`
 - **App icon**: `docs/store/icon-512.png` (512 x 512, 32-bit PNG with alpha)
 - **Feature graphic**: `docs/store/feature-graphic.png` (1024 x 500)
-- **Phone screenshots**: `docs/store/screenshots/01-main.png` and `03-privacy.png` exist; the read-back and checkout shots still have to be taken on a phone with the app in the right state
+- **Phone screenshots**: all four are in `docs/store/screenshots/`, taken on the
+  Pixel 7 and cropped to 1080 x 1920 - `01-main.png`, `02-suggestion.png`,
+  `03-privacy.png` and `04-readback.png`. Play wants at least two; four is
+  better, and they should be uploaded in that order.
 
 ---
 
@@ -201,10 +204,23 @@ Test and release → Testing → Internal testing → Create new release
 |---|---|
 | Release name | `0.2.0 (2)` |
 | Bundle | `app/build/outputs/bundle/release/app-release.aab` |
-| Release notes | What is in this release |
+| Release notes | The text below, which is under the 500 character limit |
+
+```
+Darts Coach is a voice-controlled 501 coach.
+
+Say your score after a visit and it works out what to throw next: checkout
+routes from 501 to the double, and setup plans for the middle of the leg. It
+reads the number back before it counts it, so a quiet number never changes
+your score by accident. It learns your own hit rates from your own play.
+
+Two voices for the coach, British and American, and you pick which one.
+
+Everything runs on your phone. No account, no ads, no analytics.
+```
 
 Save and publish. The install-time asset pack arrives with it, so this is
-also the first test of the 130 MB install over mobile data.
+also the first test of the 143 MB install over mobile data.
 
 ### Play App Signing
 
