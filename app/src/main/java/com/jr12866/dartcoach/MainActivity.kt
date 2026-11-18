@@ -298,7 +298,7 @@ class MainActivity : ComponentActivity() {
         // use. That is the point: it proves the recogniser, the parser and
         // the voice all work together.
         if (intent?.getBooleanExtra("selfhears", false) == true) {
-            selfHear()
+            selfHear(selfHearPhrases(intent))
         }
 
         // A hidden way to measure the wording on the device.
@@ -344,6 +344,26 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         handleMeasurementIntent(intent)
+        // The same is true of the self-hearing test, and it matters more
+        // there: the app is warm by then, so the recogniser catches the
+        // first phrase, which it does not when the app has just started.
+        if (intent.getBooleanExtra("selfhears", false)) {
+            selfHear(selfHearPhrases(intent))
+        }
+    }
+
+    /**
+     * The phrases for the self-hearing test, given in the intent.
+     *
+     * They are one comma-separated string rather than an array, because the
+     * command line that sends the intent is a shell one and a shell splits a
+     * list of arguments on the spaces. "140,yes" survives; an array of two
+     * phrases does not.
+     */
+    private fun selfHearPhrases(intent: Intent): Array<String>? {
+        val given = intent.getStringExtra("selfhear") ?: return null
+        val phrases = given.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+        return phrases.takeIf { it.isNotEmpty() }?.toTypedArray()
     }
 
     private fun handleMeasurementIntent(intent: Intent?) {
@@ -837,8 +857,15 @@ class MainActivity : ComponentActivity() {
      *
      * The gate is left open on purpose. It is the one thing the coach never
      * does in normal use, and that is exactly what makes this a test.
+     *
+     * The phrases can be given in the intent, as "selfhear", so that a
+     * particular score can be tested. The default is "one hundred and
+     * forty" and "yes", and it has to be spelled out: the voice runs
+     * "one forty" together into "onef", which the recogniser hears as a
+     * word and the parser throws away. The tool has to say the number the
+     * way a player says it, or it is not testing the parser at all.
      */
-    private fun selfHear() {
+    private fun selfHear(requested: Array<String>? = null) {
         Thread {
             if (!tts.load()) {
                 Log.i("DartsCoach", "The voice would not load")
@@ -846,10 +873,13 @@ class MainActivity : ComponentActivity() {
             }
             // Wait for the models and the microphone to be ready, or the
             // first phrase is heard before the recogniser is listening.
-            Thread.sleep(3000)
+            // The recogniser needs the longer wait: it drops the first
+            // phrase it is given while it is still warming up, and the
+            // phrase after that lands.
+            Thread.sleep(8000)
 
-            val phrases = arrayOf(
-                "one forty",
+            val phrases = requested ?: arrayOf(
+                "one hundred and forty",
                 "yes",
             )
             for (phrase in phrases) {

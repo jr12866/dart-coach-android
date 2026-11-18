@@ -322,6 +322,7 @@ class PiperTts(private val appContext: Context) {
             .build()
 
         return try {
+            val started = System.currentTimeMillis()
             track.play()
             var offset = 0
             while (offset < samples.size) {
@@ -329,9 +330,32 @@ class PiperTts(private val appContext: Context) {
                 track.write(samples, offset, chunk, AudioTrack.WRITE_BLOCKING)
                 offset += chunk
             }
-            // Let the last of it out of the buffer.
-            Thread.sleep(300)
-            samples.size.toDouble() / rate
+
+            // Wait for the device to actually finish playing, the same way
+            // speak() does.
+            //
+            // The buffer here is the whole utterance, so every write returns
+            // at once and the audio is still sitting in the track when they
+            // are done. Stopping it then cuts the phrase off: the phone
+            // plays the first fraction of it and the rest never reaches the
+            // speaker. That is why the self-hearing test heard "one" for
+            // "one hundred and forty" - it was hearing the first third of
+            // the phrase and nothing else.
+            val millis = samples.size * 1000L / rate
+            val deadline = started + millis + DRAIN_GRACE_MS
+            while (System.currentTimeMillis() < deadline) {
+                if (track.playbackHeadPosition >= samples.size) break
+                Thread.sleep(20)
+            }
+            Thread.sleep(DRAIN_GRACE_MS)
+
+            val total = System.currentTimeMillis() - started
+            Log.i(
+                "DartsCoach",
+                "TTS (ungated): ${samples.size} samples at $rate Hz = " +
+                    "${millis}ms, played in ${total}ms",
+            )
+            return total / 1000.0
         } finally {
             try { track.stop() } catch (_: Exception) {}
             track.release()
