@@ -107,9 +107,22 @@ Take the real screenshots from the app rather than mock-ups, and remove the
 Android status/navigation bars if the capture tool allows it. Do not add
 device frames or promotional badges.
 
-Two captures already exist in `docs/store/screenshots/`: the main screen and
-the privacy policy. The others need the app in the right state, which means
-saying a score at the phone.
+**Four captures exist now**, all in `docs/store/screenshots/`, all 1080 x 1920
+PNG with no alpha:
+
+| File | Shows |
+|---|---|
+| `01-main.png` | The scoreboard |
+| `02-suggestion.png` | **401**, "Treble twenty, treble twenty and treble twenty", T20 T20 T20, leaving 221 |
+| `03-privacy.png` | The privacy promise |
+| `04-readback.png` | **"You said one hundred and forty. Right?"** |
+
+The two that needed the app to hear a score were taken with the self-hearing
+test, which plays the phrase through the speaker with the microphone gate
+left open. `docs/store/screenshots/README.md` has the command.
+
+Two more would be worth having when there is time: the checkout plan on its
+own ("That leaves 221" as a spoken plan), and the out chart.
 
 ## Alt text
 
