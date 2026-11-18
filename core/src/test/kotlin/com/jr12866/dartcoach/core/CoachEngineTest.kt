@@ -128,6 +128,64 @@ class CoachEngineTest {
         assertEquals(376, coach.state.remainingScore)
     }
 
+    @Test
+    fun `a phrase the coach did not understand leaves the read-back open`() {
+        val coach = CoachEngine()
+
+        coach.handle("140")
+        assertEquals(140, coach.pendingScore)
+
+        // Whisper wrote a stray "B" out of room noise in the middle of the
+        // read-back. The player had not walked away from the question, so
+        // the question is still there to be answered.
+        assertNull(coach.handle("B"))
+        assertEquals(140, coach.pendingScore)
+
+        // The "yes" that came after the noise is the answer the coach asked
+        // for, and the score counts.
+        coach.handle("yes")
+        assertNull(coach.pendingScore)
+        assertEquals(361, coach.state.remainingScore)
+    }
+
+    @Test
+    fun `a question about the game leaves the read-back open`() {
+        val coach = CoachEngine()
+
+        coach.handle("140")
+        val said = coach.handle("what's my score")
+        assertNotNull(said)
+        assertTrue(said.contains("You're at 501"), "expected the score, got: $said")
+
+        // The coach did not ask a different question, so the read-back is
+        // still the one in the air.
+        assertEquals(140, coach.pendingScore)
+    }
+
+    @Test
+    fun `a new turn replaces the read-back and the darts that went with it`() {
+        val coach = CoachEngine()
+
+        // The player threw three darts and the coach read the turn back.
+        // This is the state a turn of darts one at a time leaves behind.
+        coach.state.recordDarts(listOf(60, 60, 60))
+        coach.handle("180")
+        assertEquals(180, coach.pendingScore)
+
+        // Now the player says the turn was a different one.
+        coach.handle("140")
+        assertEquals(140, coach.pendingScore)
+        coach.handle("yes")
+
+        // The turn that counts is the new one, and it carries its own darts
+        // - not the darts of the turn it replaced.
+        assertEquals(361, coach.state.remainingScore)
+        assertTrue(
+            coach.state.turnHistory.last().darts.isEmpty(),
+            "expected no darts on the turn, got: ${coach.state.turnHistory.last().darts}",
+        )
+    }
+
     // -- refusals are spoken aloud -----------------------------------------
 
     @Test

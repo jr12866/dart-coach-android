@@ -27,6 +27,7 @@ import com.jr12866.dartcoach.core.CoachEngine
 import com.jr12866.dartcoach.core.HitLearner
 import com.jr12866.dartcoach.core.Planner
 import com.jr12866.dartcoach.core.PlayerProfile
+import com.jr12866.dartcoach.core.Parser
 import com.jr12866.dartcoach.core.ProfileView
 import com.jr12866.dartcoach.core.Stats
 import com.jr12866.dartcoach.core.StatsView
@@ -218,7 +219,7 @@ class MainActivity : ComponentActivity() {
         audio = AudioEngine(this)
         tts = PiperTts(this)
 
-        audio.onPhrase = { phrase -> onHeard(phrase) }
+        audio.onPhrase = { phrase, fromTail -> onHeard(phrase, fromTail) }
         audio.onStateChanged = { running -> listening = running }
         audio.onBargeIn = { tts.stop() }
 
@@ -400,13 +401,34 @@ class MainActivity : ComponentActivity() {
      *
      * The answer is spoken away from the thread that captured it, because
      * speaking takes seconds and the capture loop has to keep running.
+     *
+     * A phrase from the tail is the coach's own voice still ringing in the
+     * room, or the player answering before the echo has died away. Only an
+     * answer is taken from it: the coach is waiting for one, and anything
+     * else in the tail is the echo of what the coach just said. If the echo
+     * of "You said one hundred and forty" were read back as a score, the
+     * coach would read it back again, and again.
      */
-    private fun onHeard(phrase: String) {
+    private fun onHeard(phrase: String, fromTail: Boolean) {
+        if (fromTail && !Parser.isConfirmation(phrase) && !Parser.isCancellation(phrase)) {
+            Log.i(
+                "DartsCoach",
+                "Ignored a phrase from the tail: '$phrase' is not an answer",
+            )
+            return
+        }
         Thread {
             val turnsBefore = coach.state.turnsPlayed
             val attemptsBefore = coach.learner.stats.totalAttempts
             val said = coach.handle(phrase)
             Log.i("DartsCoach", "Coach says: $said")
+            if (coach.pendingScore != null) {
+                // The question is still open. It is worth saying so in the
+                // log: a player who says "yes" and gets nothing back has
+                // usually had the question thrown away by something the
+                // coach did not understand, and this is where that shows.
+                Log.i("DartsCoach", "Still waiting for: ${coach.pendingScore}")
+            }
             rememberPreferredDouble()
             if (coach.state.turnsPlayed != turnsBefore) {
                 // A turn was confirmed, so the coach has learned something.
@@ -589,9 +611,14 @@ class MainActivity : ComponentActivity() {
             )
             val seconds = tts.speak(text)
             if (seconds > 0 && !tts.wasInterrupted()) {
-                // The speaker is still ringing. Wait for it to stop before
-                // listening again.
+                // The speaker is still ringing. The tail is the window in
+                // which the player is most likely to be answering, so the
+                // microphone is not shut through it - the level decides
+                // afterwards whether what arrived was the player or the
+                // echo.
+                audio.beginTail()
                 Thread.sleep((audio.echoTailSeconds * 1000).toLong())
+                audio.endTail()
             }
             Log.i(
                 "DartsCoach",
@@ -860,10 +887,14 @@ class MainActivity : ComponentActivity() {
      *
      * The phrases can be given in the intent, as "selfhear", so that a
      * particular score can be tested. The default is "one hundred and
-     * forty" and "yes", and it has to be spelled out: the voice runs
+     * forty" and "yeah", and it has to be spelled out: the voice runs
      * "one forty" together into "onef", which the recogniser hears as a
      * word and the parser throws away. The tool has to say the number the
      * way a player says it, or it is not testing the parser at all.
+     *
+     * The confirmation word is "yeah" and not "yes" because the phone hears
+     * its own speaker, and writes the TTS's "yes" as "she" or "you" more
+     * often than as "yes".
      */
     private fun selfHear(requested: Array<String>? = null) {
         Thread {
@@ -880,14 +911,33 @@ class MainActivity : ComponentActivity() {
 
             val phrases = requested ?: arrayOf(
                 "one hundred and forty",
-                "yes",
+                "yeah",
             )
+            var gate = audio.gateOpenCount
             for (phrase in phrases) {
                 Log.i("DartsCoach", "SELF HEAR: '$phrase'")
                 tts.speakUngated(phrase)
                 // Give the recogniser time to transcribe and the coach time
                 // to answer before the next phrase.
                 Thread.sleep(4000)
+                // Wait for the coach to finish answering before the next
+                // phrase is spoken.
+                //
+                // A fixed wait speaks over the coach's answer, which no
+                // player does, and the app is right to throw away a phrase
+                // that arrives while the coach is still talking. So the
+                // test waits for the gate to open instead.
+                //
+                // The wait ends early when the coach has nothing to say:
+                // a phrase it did not understand leaves the question open,
+                // and there is no answer to wait for.
+                val deadline = System.currentTimeMillis() + 8000
+                while (audio.gateOpenCount == gate &&
+                    System.currentTimeMillis() < deadline
+                ) {
+                    Thread.sleep(200)
+                }
+                gate = audio.gateOpenCount
             }
         }.start()
     }

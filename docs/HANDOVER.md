@@ -559,6 +559,52 @@ turn. The read-back wording - "You said one hundred and forty" could become
 "That makes you three hundred and seventy-six" - was recommended as the
 highest-value onboarding change and has **not** been done.
 
+### 11. The coach lost the "yes" - two faults, both fixed
+
+The complaint from the room was that the coach "didn't pick up the yes". The
+log showed the "yes" *was* heard and then ignored. Two separate faults were
+behind it, and both had to be fixed for the answer to survive.
+
+**The dead window.** The gate was shut for the coach's speech and for the
+echo tail after it. The tail in this room is 0.671 s, so the first half of
+the player's answer was thrown away before the microphone was ever opened -
+and a player answers a question at once.
+
+The tail is now a **window**. The microphone stays open through it, the audio
+goes to the voice detector as usual, and the level decides afterwards what it
+was. Measured here: the coach's own voice ringing in the room has a chunk
+mean of at most 0.022, the player's voice has a mean of 0.052, so a chunk at
+0.03 or above is the player, and two such chunks are needed. Only an **answer**
+is taken from the tail, so the echo of the read-back cannot come back as a
+score and start a loop.
+
+**The question thrown away.** The other half was in the conversation layer:
+*any* phrase the parser did not understand cleared the pending score, so the
+read-back was gone before the player's "yes" arrived. The Windows build does
+not do this, and the Kotlin now matches it. The drop moved to where a
+command is armed, so "undo" still supersedes a score.
+
+| | |
+|---|---|
+| Where | `core/.../CoachEngine.kt`, `app/.../audio/AudioEngine.kt` |
+| Test | `core/.../CoachEngineTest.kt` - three new tests |
+| Measured | `docs/GATE-AND-BARGE-IN.md`, `docs/DECISIONS.md` decision 18 |
+
+### 12. AVG flags the debug build
+
+AVG AntiVirus put a "Suspicious app found" dialog up on the Pixel 7 when the
+debug APK was installed. The release build does not have the things that
+usually earn that warning: the debug APK is `android:debuggable="true"` and
+is signed with the debug key, while the release APK is not debuggable and is
+signed with the release key. A release build also arrives through the Play
+Store under Google's signature rather than being sideloaded.
+
+The APK that goes to Play is the bundle, not either of these, and it carries
+the Play App Signing certificate, so Play Protect has Google's own record of
+it. Worth re-checking on a clean phone once the release is in internal
+testing, and worth reporting to AVG either way, because a false positive on
+the app's name is not something the app can fix by itself.
+
 ## The repositories
 
 | | |
@@ -602,10 +648,19 @@ models in the asset pack and nowhere else; if they are also copied into the
 base module, the two modules claim the same asset and the bundle build
 fails. `bundleRelease` therefore ignores the flag.
 
+**Keep the debug build and the release build in separate commands.** The
+base module's assets are shared by every variant, so the decision to copy
+the models in has to be made once for the whole build, and it is made from
+the task names in the command. A command that packages a release and also
+builds the debug APK leaves the debug APK without the models, and the app
+then dies on the device with `Load 'silero_vad.onnx' failed` from the native
+library and nothing else. A task that only has "Release" in its name, such
+as `testReleaseUnitTest`, does not count as a release build.
+
 `docs/BUILDING.md` has the details, including the four version constraints
 that all have to be right at once.
 
-## Three hidden measurement tools
+## Four hidden measurement tools
 
 All are reached by an intent extra, and all exist so the numbers can be
 measured on the device rather than by eye.
@@ -619,7 +674,25 @@ adb shell am start -S -n com.jr12866.dartcoach/.MainActivity --ez tail true
 
 # which audio route the coach's voice is using
 adb shell am start -S -n com.jr12866.dartcoach/.MainActivity --ez route true
+
+# make the app hear itself: speak, be heard, answer, be answered
+adb shell am start -S -n com.jr12866.dartcoach/.MainActivity \
+    --ez testpro true --ez selfhears true --es selfhear 'one\ hundred\ and\ forty,yeah'
 ```
+
+The self-hearing test plays a phrase through the phone's own speaker with
+the microphone gate left open, which is the one thing the coach never does in
+normal use, and that is the point: it proves the recogniser, the parser, the
+conversation rules and the voice together without anyone having to talk to
+the phone.
+
+The phrases are one comma-separated string, because a shell splits a list of
+arguments on the spaces. The test waits for the coach to finish answering
+before it speaks the next phrase, which is how a player answers a question; a
+fixed wait would speak over the coach's answer, and the app is right to
+throw that away. The confirmation word is "yeah" rather than "yes" because
+the phone hears its own speaker and writes the voice's "yes" as "she" more
+often than as "yes".
 
 ## Where the documentation is
 

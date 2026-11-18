@@ -13,6 +13,7 @@ import android.util.Log
 import com.k2fsa.sherpa.onnx.Vad
 import com.k2fsa.sherpa.onnx.getVadModelConfig
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.concurrent.thread
 
@@ -40,8 +41,15 @@ class AudioEngine(context: Context) {
 
     private val appContext = context.applicationContext
 
-    /** Called with each phrase the coach hears. */
-    var onPhrase: ((String) -> Unit)? = null
+    /**
+     * Called with each phrase the coach hears.
+     *
+     * The second argument says whether the phrase arrived during the tail -
+     * the moment after the coach stopped speaking, when its own voice was
+     * still ringing in the room. The caller uses it to be careful about what
+     * it accepts from the tail.
+     */
+    var onPhrase: ((String, Boolean) -> Unit)? = null
 
     /** Called when the engine starts and stops. */
     var onStateChanged: ((Boolean) -> Unit)? = null
@@ -205,7 +213,91 @@ class AudioEngine(context: Context) {
     /** Call this when the coach has finished speaking. */
     fun endSpeaking() {
         speaking.set(false)
+        gateOpenings.incrementAndGet()
     }
+
+    /** How many times the coach has finished speaking and let the mic back in. */
+    private val gateOpenings = AtomicInteger(0)
+
+    /**
+     * How many times the microphone has been let back in.
+     *
+     * The self-hearing test waits for this number to go up, so that it
+     * speaks the way a player does: after the coach has answered, and not
+     * over the top of the answer. A phrase that arrives while the coach is
+     * still talking is thrown away by the gate, which is right, but it
+     * means the test is not testing anything.
+     */
+    val gateOpenCount: Int get() = gateOpenings.get()
+
+    /**
+     * The tail: the coach has stopped speaking, but its voice is still
+     * ringing in the room.
+     *
+     * The microphone is not ignored in this window. The player answers the
+     * coach's question while the echo is still there, and an answer that
+     * starts in this window used to be thrown away with everything else,
+     * because the gate was shut until the tail was over. The player has to
+     * wait about half a second to be heard, and a question asks to be
+     * answered at once.
+     *
+     * So the audio goes to the voice detector as usual, and the level
+     * decides afterwards what it was: the player's voice, or the coach's
+     * echo. The echo is quiet and fading, and the player is not.
+     */
+    fun beginTail() {
+        tailActive.set(true)
+        tailEnded.set(false)
+        tailHandled.set(false)
+    }
+
+    /** The tail is over. The capture loop now decides what it heard. */
+    fun endTail() {
+        tailActive.set(false)
+        tailEnded.set(true)
+    }
+
+    /**
+     * The level a sound has to reach for the app to take it for the player
+     * rather than for the coach's own echo.
+     *
+     * Measured on a Pixel 7, in the room the app was developed in, with the
+     * echo tail measured in the same room:
+     *
+     *   the coach's own voice ringing in the room   chunk mean at most 0.022
+     *   a player speaking over the coach             mean 0.052 to 0.055
+     *
+     * So 0.03 sits above the echo and below the player. It is a guess in
+     * between two measured numbers, and it is only ever used to tell the
+     * player's answer from the coach's echo in the tail - nothing else
+     * depends on it.
+     */
+    private val PLAYER_LEVEL = 0.03f
+
+    /**
+     * How many chunks have to be over the player's level before the tail is
+     * taken for the player.
+     *
+     * One is not enough: the coach's own voice has the occasional loud
+     * transient in it - a plosive - and a single chunk cannot tell that
+     * apart from a word. A spoken word is several chunks.
+     */
+    private val PLAYER_CHUNKS = 2
+
+    /** True while the coach's voice is still ringing in the room. */
+    private val tailActive = AtomicBoolean(false)
+
+    /** True once the tail is over and the capture loop has not judged it yet. */
+    private val tailEnded = AtomicBoolean(false)
+
+    /** True once the capture loop has judged the tail. */
+    private val tailHandled = AtomicBoolean(false)
+
+    /** The phrases the voice detector found during the tail. */
+    private val tailPhrases = mutableListOf<FloatArray>()
+
+    /** The mean level of every chunk heard during the tail. */
+    private val tailLevels = mutableListOf<Float>()
 
     /** True while the microphone is being ignored. */
     val isSpeaking: Boolean get() = speaking.get()
@@ -244,6 +336,33 @@ class AudioEngine(context: Context) {
         val vad = this.vad!!
 
         while (running.get()) {
+            // Has the tail just ended? Decide what it was before going on.
+            if (tailEnded.get() && !tailHandled.get()) {
+                tailHandled.set(true)
+                val loud = tailLevels.count { it >= PLAYER_LEVEL }
+                val player = loud >= PLAYER_CHUNKS
+                Log.i(
+                    TAG,
+                    "Tail: ${tailLevels.size} chunk(s), $loud over the player's " +
+                        "level, so it was ${if (player) "the player" else "the echo"}",
+                )
+                tailLevels.clear()
+                if (player) {
+                    // The player answered while the echo was still there.
+                    for (samples in tailPhrases) {
+                        val text = transcribe(samples)
+                        Log.i(TAG, "Heard: '$text'")
+                        if (text.isNotBlank()) onPhrase?.invoke(text, true)
+                    }
+                    tailPhrases.clear()
+                } else {
+                    // Only the coach's own voice. Throw it away rather than
+                    // let it be heard as the player talking.
+                    tailPhrases.clear()
+                    vad.reset()
+                }
+            }
+
             val read = try {
                 recorder.read(buffer, 0, buffer.size, AudioRecord.READ_BLOCKING)
             } catch (e: Exception) {
@@ -284,6 +403,25 @@ class AudioEngine(context: Context) {
                 // the coach.
                 val mean = meanLevel(buffer, read)
                 speechMeans.add(mean)
+
+                if (tailActive.get() || tailEnded.get()) {
+                    // The tail. The coach has stopped, but its voice is still
+                    // in the room, and the player may already be answering.
+                    // The audio goes to the voice detector so that the answer
+                    // is not lost with the rest of the gate, and the level
+                    // decides afterwards what it was.
+                    tailLevels.add(mean)
+                    vad.acceptWaveform(buffer.copyOf(read))
+                    while (!vad.empty()) {
+                        val segment = vad.front()
+                        vad.pop()
+                        if (segment.samples.isNotEmpty()) {
+                            tailPhrases.add(segment.samples)
+                        }
+                    }
+                    continue
+                }
+
                 if (bargeInEnabled && mean > bargeInThreshold) {
                     Log.i(
                         TAG,
@@ -312,7 +450,7 @@ class AudioEngine(context: Context) {
                 val text = transcribe(samples)
                 Log.i(TAG, "Heard: '$text'")
                 if (text.isNotBlank()) {
-                    onPhrase?.invoke(text)
+                    onPhrase?.invoke(text, false)
                 }
             }
         }

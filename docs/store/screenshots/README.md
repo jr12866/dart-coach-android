@@ -21,13 +21,16 @@ microphone gate left open:
 
 ```
 adb shell am start -n com.jr12866.dartcoach/.MainActivity \
-    --ez testpro true --ez selfhears true --es selfhear 'one\ hundred,yes'
+    --ez testpro true --ez selfhears true --es selfhear 'one\ hundred\ and\ forty,yeah'
 ```
 
 `--es selfhear` takes the phrases as one comma-separated string. The
 backslashes are because the command line is a shell one and a shell splits a
-list of arguments on the spaces. `one\ hundred,yes` says "one hundred" and
-then "yes", which is what a player does when the coach reads a score back.
+list of arguments on the spaces. The phrases are spoken one at a time, and the
+test waits for the coach to finish answering before it speaks the next one,
+which is how a player answers a question. The confirmation word is "yeah"
+rather than "yes" because the phone hears its own speaker and writes "yes" as
+"she".
 
 To take any further captures the same way:
 

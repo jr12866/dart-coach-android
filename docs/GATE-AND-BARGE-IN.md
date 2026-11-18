@@ -81,6 +81,44 @@ list. The Bose is paired and present even after Android has fallen back to
 the speaker, and that fallback is exactly what made the coach cut itself
 off.
 
+## The tail is a window, not a wall
+
+The tail is the wait after the coach stops speaking, for its own voice to die
+away. It was dead time: the microphone was shut for the whole of it, and a
+player who answers a question at once - which is what players do - had the
+first half of their answer thrown away before the microphone was ever opened.
+
+The tail is now a **window**. The microphone stays open through it, the audio
+goes to the voice detector as usual, and the **level** decides afterwards what
+it was: the player answering, or the coach's own voice still ringing in the
+room.
+
+The levels were measured in the room the app is played in, on the Pixel 7:
+
+| What | Level at the microphone |
+|---|---|
+| The room, with nobody talking | 0.0003 - 0.0006 |
+| The coach's own voice ringing in the room | chunk mean at most **0.022** |
+| The player's voice | chunk mean **0.052 - 0.055** |
+
+So a chunk at **0.03** or above is the player, and a chunk below it is the
+coach. One chunk is not enough - the coach's own voice has the occasional
+loud transient in it - so **two** chunks over the level are needed before the
+tail is taken for the player.
+
+```
+Tail: 11 chunk(s), 0 over the player's level, so it was the echo
+```
+
+Only an **answer** is taken from the tail. The coach is waiting for one, and
+anything else in the tail is the echo of what the coach just said. If the
+echo of "You said one hundred and forty" were read back as a score, the
+coach would read it back again, and again.
+
+A longer measured tail is now safe, because the tail is no longer a period in
+which the player cannot be heard. That is what the measured tail in this room
+turned out to mean: 0.671 s, not the 0.35 s the Windows build used.
+
 ## The numbers
 
 With headphones, barge-in is safe and the coach speaks the whole phrase:
@@ -94,8 +132,8 @@ full.
 
 ## What is still not right
 
-**The echo tail is still 0.35 seconds**, which was measured for a laptop
-whose speakers are across the room. With headphones the echo is below the
-room floor and no tail is needed at all. With the phone's own speaker the
-tail has to cover the speaker's mechanical ringing, which is probably much
-shorter. That needs measuring with the phone on the board.
+**The echo tail is measured per phone, and the number in this room is long.**
+The player measures their own from Settings; the default is the Windows
+value, 0.35 s. In the room this app was tested in the tail measured 0.671 s,
+which used to be two thirds of a second of dead time and is now a window in
+which the player can be heard.

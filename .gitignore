@@ -83,3 +83,7 @@ models-pack/src/main/assets/espeak-ng-data/
 *.log
 session*.wav
 levels*.csv
+
+# Heap dumps. A JVM that dies under Gradle leaves one in the working
+# directory, and they are hundreds of megabytes.
+*.hprof

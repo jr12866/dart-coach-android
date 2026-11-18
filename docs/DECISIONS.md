@@ -581,3 +581,45 @@ had made the coach think the player hits T20 68% of the time.
 **What would reverse it.** Nothing about the model depends on it. The
 defaults are unchanged, so an unmeasured player gets exactly the advice they
 got before, and the parity corpus still passes untouched.
+
+## 18. A phrase the coach does not understand leaves the question open
+
+**Decision.** While the coach is waiting for a "yes" to a score it has read
+back, a phrase the parser does not understand **does not** cancel that
+question. The question stays open, and the player's "yes" still answers it.
+Only a phrase that is understood replaces the question: a new score, or a
+command that costs progress.
+
+**Why.** The complaint from the room was that the coach "didn't pick up the
+yes", and the log showed the "yes" *was* heard and then ignored:
+
+```
+18:30:39.125 Heard: '140'
+18:30:39.128 Coach says: You said one hundred and forty. Right?
+18:30:49.599 Heard: 'B'          <- room noise, written as a letter
+18:30:49.604 Coach says: null
+18:30:53.311 Heard: 'yes'        <- the player, three seconds later
+18:30:53.312 Coach says: null
+```
+
+The stray "B" was Whisper writing room noise. It was not the player walking
+away from the question, so it did not cancel the question - but it did, and
+by the time the player answered, there was nothing left to answer.
+
+The Windows build does not do this. `handle_input` falls through to the parse
+without dropping the pending score, so only an understood phrase replaces the
+question there too. The Kotlin was stricter than the thing it was ported
+from, and the strictness cost the player their turn.
+
+**Alternatives considered.**
+
+| Option | Why not |
+|---|---|
+| Keep clearing the question on anything unrecognised | This is the bug. A phrase the parser does not understand is not a refusal, and the player never said "no". |
+| Clear the question, but re-ask it | The coach would ask the same question again, and the player would hear the coach repeat itself every time the room made a noise. |
+| Only keep the question for a short window | A timer would have to be guessed, and the player's answer is not on a schedule. The question is either open or it is not. |
+| Change the Python | The Python already behaves this way. The parity corpus does not cover the conversation layer, so there was nothing to regenerate. |
+
+**What would reverse it.** The rule that a command drops the pending score.
+That one is the Windows build's (`_ask_about_command`), and it is what keeps
+"undo" from being read as a refusal of the score read-back.

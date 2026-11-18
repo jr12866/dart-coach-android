@@ -218,13 +218,22 @@ class CoachEngine(
                         return message
                     }
 
-                    // Anything else supersedes the question. The player has
-                    // moved on to something else, and leaving the question
-                    // armed would let a later "yes" meant for a score
-                    // read-back undo a turn instead.
-                    pendingScore = null
-                    pendingMissTarget = null
-                    state.resetDarts()
+                    // Anything else is left to the parse below, and the
+                    // read-back stays armed.
+                    //
+                    // A phrase the parser does not understand is not the
+                    // player walking away from the question. Room noise
+                    // reaches the microphone: Whisper wrote a stray "B" in
+                    // the middle of a read-back, and the player's "yes"
+                    // that came after it had nothing left to answer, so the
+                    // coach never took the score. The Windows build keeps
+                    // the pending score the same way - main.py's
+                    // handle_input falls through to the parse without
+                    // dropping it.
+                    //
+                    // The phrases that do replace the question handle
+                    // themselves further down: a new score, and a command
+                    // that costs progress.
                 }
             }
         } else {
@@ -277,6 +286,15 @@ class CoachEngine(
         }
 
         if (result.needsConfirmation) {
+            // A command that costs progress takes the place of the
+            // question that was open. Only one question can be in the air
+            // at a time, so a read-back that was waiting goes with it:
+            // saying "undo" instead of answering is that score's refusal.
+            // The Windows build drops it in the same place (main.py's
+            // _ask_about_command).
+            pendingScore = null
+            pendingMissTarget = null
+            state.resetDarts()
             pendingCommand = result.command
             message = commandQuestion(result.command)
             return message
@@ -331,6 +349,7 @@ class CoachEngine(
                 // wrong number often enough that the player has to be able to
                 // correct it. A total that finishes the leg waits too: it is
                 // the one score that cannot be argued with afterwards.
+                discardTheTurnThatWasReadBack()
                 pendingScore = result.score
                 message = "You said ${numberToWords(result.score!!)}. Right?"
                 return message
@@ -339,6 +358,7 @@ class CoachEngine(
                 // The parser reports the darts; recording them is the
                 // engine's job. In the Windows build this is main.py's
                 // game_state.record_darts(result.darts).
+                discardTheTurnThatWasReadBack()
                 state.recordDarts(result.darts!!, result.dartSegments)
                 val score = state.currentTurnScore()
                 val remaining = state.remainingScore
@@ -605,6 +625,24 @@ class CoachEngine(
         // the turn, the report is the only reliable source for this dart.
         val planned = aims[dartIndex]
         return planned ?: reported
+    }
+
+    /**
+     * Throws away the turn that a new score report replaces.
+     *
+     * The darts on the books belong to the turn the player has just
+     * changed, so they go with it. Without this the new turn would be
+     * recorded with the old turn's darts, and the coach would learn from
+     * darts that were never thrown.
+     *
+     * Nothing is thrown away when no read-back was open: the darts on the
+     * books are then the turn the player is reporting, not a turn that has
+     * been replaced.
+     */
+    private fun discardTheTurnThatWasReadBack() {
+        if (pendingScore == null) return
+        state.resetDarts()
+        pendingMissTarget = null
     }
 
     /** The score is confirmed, so it counts. */

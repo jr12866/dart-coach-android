@@ -47,9 +47,21 @@ val hasReleaseSigning = listOf(
  * variant. The local-model assets are only for debug builds, because the
  * release build ships the models in the asset pack and a duplicate copy in
  * the base module makes the bundle fail.
+ *
+ * Only a task that *packages* a release counts. The base module's assets are
+ * shared by every variant, so the decision has to be made once for the whole
+ * build, and a task that merely has "Release" in its name - such as
+ * `testReleaseUnitTest` - is not a release build of the app. Counting it
+ * meant that running the test suites and the debug build in one command
+ * quietly left the models out of the debug APK, and the app then died on the
+ * device with `Load 'silero_vad.onnx' failed` and nothing else.
  */
 fun isReleaseBuild(): Boolean =
-    gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+    gradle.startParameter.taskNames.any {
+        it.contains("Release", ignoreCase = true) &&
+            (it.contains("assemble", ignoreCase = true) ||
+                it.contains("bundle", ignoreCase = true))
+    }
 
 android {
     namespace = "com.jr12866.dartcoach"
