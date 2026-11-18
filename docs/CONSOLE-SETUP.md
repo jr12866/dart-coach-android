@@ -53,10 +53,9 @@ because both modules then claim the same asset.
    generated from one source by `tools/generate-privacy-policy.py`, so they
    cannot drift apart. Put that URL in the console and in the app.
 
-3. **The app name.** "Darts Coach" may already be taken on Play. If it is,
-   pick a different one and change `app_name` in
-   `app/src/main/res/values/strings.xml` to match, so the listing and the
-   installed app say the same thing.
+3. **The app name.** "Darts Coach" may already be taken on Play. The form in
+   step 2 says so before you can create the app, and what to do about it is
+   in step 2.
 
 ---
 
@@ -88,13 +87,31 @@ Play Console → Create app
 | Field | Value |
 |---|---|
 | App name | `Darts Coach` |
+| Package name | `com.jr12866.dartcoach` |
 | Default language | English (United States) |
 | App or game | **App** |
 | Free or paid | **Free** - it has an in-app purchase, but the app itself is free |
 | Declarations | Accept the declarations |
 
-The package name is not asked for here. It comes from the bundle, and it is
-`com.jr12866.dartcoach`.
+**The package name is typed here, and it is the one thing on this form that
+cannot be changed.** Play checks it against the bundle when the first release
+is uploaded, and the app record is keyed on it. It has to be
+`com.jr12866.dartcoach`, which is the `applicationId` in
+`app/build.gradle.kts` - not the keystore's certificate name, which is
+`CN=Darts Coach` and is a signing identity rather than a package name.
+
+**Default language.** The form asks for the primary language of the store
+listing, not the language of the app, and it can be changed later in **Store
+settings**. English (United States) is what the app's own resources use.
+English (United Kingdom) would match the wording and the British voice better
+- the coach says "treble twenty" - and is a defensible choice; it is a
+judgement call rather than a requirement.
+
+The "Check availability" link under the package name field tells you whether
+the name has been taken. **"Darts Coach" may already be taken on Play** - if
+it is, pick a different name and change `app_name` in
+`app/src/main/res/values/strings.xml` to match, so the listing and the
+installed app say the same thing.
 
 ---
 
