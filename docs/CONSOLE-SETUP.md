@@ -178,40 +178,52 @@ Google defines "collected" as data sent off the device, and the microphone
 audio is processed in memory and never sent. The purchase *is* sent, so it is
 declared.
 
-### App access
+### Sign-in details (app access)
 
 ```
-Policy → App content → App access
+Policy → App content → Sign-in details
 ```
 
-**All or most functionality is available without special access.** There is
-no login and no account.
+**"Is any part of your app restricted?" → Yes.**
 
-The **sign-in details** fields on that page are left **empty**. The username,
-email, phone and password boxes are for apps that need a reviewer to log in,
-and there is nothing to log into here: the app has no account, no server and
-no user data of its own. The name of the set of sign-in details is the only
-field that has to be filled in, and "Darts Coach" is as good a name as any.
+This is the one declaration that is not about sign-in at all, and it is easy
+to answer wrongly. Play's list of what counts as restricted includes
+**"payments, such as one-time products, memberships, subscriptions, and/or
+access tiers"**, so an app with an in-app purchase answers **Yes** even when
+it has no account and no login. The **No** option says *"no account sign in
+required and no content requires payment"*, and the Pro tier is a payment.
 
-**There should not be a set of sign-in details at all.** The "Add" button
-opens a dialog with three things: the sign-in fields, an **"Any other
-information required to access your app"** box, and a tick box saying
-*"Sign in details in this declaration provide full access to all the features
-and content within this app, including premium or paid content"*.
+So the answer is **Yes**, and Play then asks how a reviewer reaches the paid
+content. Google's own guidance for exactly this case is: *"If your app does
+not require sign-in details but you have functionalities or content behind a
+subscription paywall, please provide additional instructions or access
+details that will allow us to fully and freely access and review the app
+behind the paywall."*
 
-None of them are needed, so the whole declaration goes away:
+| Field | What goes in it |
+|---|---|
+| Name | `Darts Coach (no account required)` |
+| Username, email or phone | **empty** - there is no account to sign in with |
+| Password | **empty** |
+| Any other information required to access your app | The text below |
+| The tick box about full access to paid content | **left unticked** - there are no sign-in details that could give full access, so the statement cannot honestly be made. The explanation goes in the box above instead. |
 
-1. **Discard changes** in the dialog, and delete the "Darts Coach" entry
-   from the list of sign-in details.
-2. On the App access page itself, select **"All or most functionality is
-   available without special access"** and save.
+The "Any other information" text, which is 488 characters and fits the 500
+character limit:
 
-If Play insists on a declaration being present anyway, leave the "Any other
-information" box empty and **tick** the tick box: nothing in the app is held
-back behind a sign-in, so the statement that the details give full access to
-everything, paid content included, is true. The Pro features are not held
-back - they are a purchase, and the tester accounts in the Play Console are
-how a reviewer reaches them.
+```
+No account and no sign-in: the free tier needs no credentials. The coach hears your score, reads it back, plans the visit and the checkout.
+
+Pro is a one-time Play purchase (one-time product, $2.99), unlocked by Play Billing and tied to the Google account that bought it, so there is no in-app account to create.
+
+To review Pro, use a licence tester account from Play Console > Setup > License testing: those accounts can buy the one-time product as a test purchase without being charged.
+```
+
+**The order matters here too.** The licence tester route only works once the
+app is in a track and the one-time product has been **published**, so this
+declaration is finished *after* the internal testing upload and the product,
+not before. The free tier needs none of it: hearing the score, the read-back,
+the checkout plan, the setup plan and the learning are all free.
 
 ---
 
@@ -393,7 +405,7 @@ waiting for everything else to be finished.
 
 1. Payments profile
 2. Create the app entry
-3. App content: privacy policy, ads, target audience, content rating, data safety, app access
+3. App content: privacy policy, ads, target audience, content rating, data safety, **sign-in details** (the last one is finished after step 7)
 4. Store listing: copy, icon, feature graphic, screenshots
 5. Upload the signed bundle to **internal testing**
 6. Play App Signing: accept the upload key reset
