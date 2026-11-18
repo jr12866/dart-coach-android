@@ -193,9 +193,25 @@ and there is nothing to log into here: the app has no account, no server and
 no user data of its own. The name of the set of sign-in details is the only
 field that has to be filled in, and "Darts Coach" is as good a name as any.
 
-If the sign-in fields appear, check that the option above them is **"All or
-most functionality is available without special access"** rather than
-"Additional information is required to access your app".
+**There should not be a set of sign-in details at all.** The "Add" button
+opens a dialog with three things: the sign-in fields, an **"Any other
+information required to access your app"** box, and a tick box saying
+*"Sign in details in this declaration provide full access to all the features
+and content within this app, including premium or paid content"*.
+
+None of them are needed, so the whole declaration goes away:
+
+1. **Discard changes** in the dialog, and delete the "Darts Coach" entry
+   from the list of sign-in details.
+2. On the App access page itself, select **"All or most functionality is
+   available without special access"** and save.
+
+If Play insists on a declaration being present anyway, leave the "Any other
+information" box empty and **tick** the tick box: nothing in the app is held
+back behind a sign-in, so the statement that the details give full access to
+everything, paid content included, is true. The Pro features are not held
+back - they are a purchase, and the tester accounts in the Play Console are
+how a reviewer reaches them.
 
 ---
 
