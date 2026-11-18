@@ -200,30 +200,74 @@ subscription paywall, please provide additional instructions or access
 details that will allow us to fully and freely access and review the app
 behind the paywall."*
 
+### The tick box has to be ticked
+
+It is the control Play refuses to save without. The App Store Review API
+schema calls it `POLICY_QUESTION_ID_TESTING_CREDENTIALS_NO_ADDITIONAL_DETAILS_REQUIRED`
+- a multiple choice with a single answer and the condition **"always required
+within the group"**. On screen it reads *"Sign in details in this declaration
+provide full access to all the features and content within this app, including
+premium or paid content"*. Left blank, the console prints a red *"Is any other
+information required?"* underneath it and refuses the save with *"Your changes
+couldn't be saved"*. That red prompt is the console asking for this one
+missing answer; it is not a complaint about the text in the box above it.
+
+Ticking it is a promise: the details in this declaration are enough to get a
+reviewer into everything, the paid tier included. With no account and no
+credentials that promise cannot be kept, so it is made true by giving the
+reviewer a Google account that is on our **licence testing** list. A licence
+tester can buy the one-time product as a test purchase, is not charged, and
+ends up with Pro unlocked.
+
+#### The review account, made first
+
+1. Create a Google account for the review only - a spare address, a password
+   not reused anywhere else, and **no 2-step verification**, because a
+   reviewer cannot get past a prompt they cannot answer.
+2. Play Console -> **Monetize -> Monetization setup -> License testing**.
+   Create an email list (say `Google Play Review`), add the address, **Save
+   changes**. Leave the license response at its default, *respond normally*,
+   so the test purchase follows the real billing flow with a simulated card.
+3. Put the address in the **Username** field and its password in the
+   **Password** field of the declaration. These are not app logins - the app
+   has no account system - they are the Google account the reviewer signs the
+   test device in with.
+
+#### The form, field by field
+
 | Field | What goes in it |
 |---|---|
-| Name | `Darts Coach (no account required)` |
-| Username, email or phone | **empty** - there is no account to sign in with |
-| Password | **empty** |
+| Name | `Darts Coach reviewer account` |
+| Username, email or phone | the review Google account |
+| Password | that account's password |
 | Any other information required to access your app | The text below |
-| The tick box about full access to paid content | **left unticked** - there are no sign-in details that could give full access, so the statement cannot honestly be made. The explanation goes in the box above instead. |
+| The tick box about full access to paid content | **ticked** - it is required, and it is true once the review account can buy Pro |
 
-The "Any other information" text, which is 488 characters and fits the 500
+The "Any other information" text, which is 427 characters and fits the 500
 character limit:
 
 ```
-No account and no sign-in: the free tier needs no credentials. The coach hears your score, reads it back, plans the visit and the checkout.
-
-Pro is a one-time Play purchase (one-time product, $2.99), unlocked by Play Billing and tied to the Google account that bought it, so there is no in-app account to create.
-
-To review Pro, use a licence tester account from Play Console > Setup > License testing: those accounts can buy the one-time product as a test purchase without being charged.
+No app account and no sign-in screen. The coach hears your score, reads it back and plans the visit and the checkout. Pro is a one-time Play purchase ($2.99) that unlocks the out chart, personalised routes and statistics. To review Pro: sign the test device in to Google with the account above (it is on our Play licence testing list), open Upgrade and buy Pro - the purchase is free for licence testers and unlocks everything.
 ```
 
-**The order matters here too.** The licence tester route only works once the
-app is in a track and the one-time product has been **published**, so this
-declaration is finished *after* the internal testing upload and the product,
-not before. The free tier needs none of it: hearing the score, the read-back,
-the checkout plan, the setup plan and the learning are all free.
+#### Two things to know before the review
+
+The licence tester status has to reach the reviewer's device. It is applied
+by the Play Store app, so the account must be the **primary** Google account
+on the device and the Play Store needs time to refresh. Where it has not
+applied, the reviewer still gets the whole free coach - hearing the score,
+the read-back, the checkout plan, the setup plan and the learning - which is
+the part of the app the ratings come from.
+
+The test purchase also needs the one-time product to be **published**, so
+this declaration is written now and *verified* after step 7, before the
+release is sent for review.
+
+**If the review account is not wanted at all.** The tick still has to be
+ticked, and with nothing to hand over the statement about paid content
+cannot honestly be made. Play can still review the free tier, but a reviewer
+who cannot reach Pro may hold the release, so this is a last resort rather
+than a shortcut.
 
 ---
 
@@ -405,7 +449,7 @@ waiting for everything else to be finished.
 
 1. Payments profile
 2. Create the app entry
-3. App content: privacy policy, ads, target audience, content rating, data safety, **sign-in details** (the last one is finished after step 7)
+3. App content: privacy policy, ads, target audience, content rating, data safety, **sign-in details** (written now; the licence-tester purchase is verified after step 7)
 4. Store listing: copy, icon, feature graphic, screenshots
 5. Upload the signed bundle to **internal testing**
 6. Play App Signing: accept the upload key reset
