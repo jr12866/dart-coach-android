@@ -28,6 +28,36 @@
         android:name="android.hardware.microphone"
         android:required="true" />
 
+    <!--
+        The screen orientation is not a hardware requirement.
+
+        The activity below asks for portrait with android:screenOrientation,
+        and AAPT2 turns that into an implicit requirement for
+        android.hardware.screen.portrait. That is a hardware filter, so Play
+        hid the app from devices with no portrait-capable display - tablets,
+        desktop and Android XR - and refused to send it for review with
+        "Required hardware feature declarations are restricting your app's
+        availability".
+
+        Declaring the feature explicitly with android:required="false" is what
+        Google's own documentation asks for: it removes the store filter
+        without changing the app. The activity still runs portrait on a
+        phone, because android:screenOrientation is a runtime request and is
+        untouched by this. Nothing about the layout or the coach changes.
+
+        Landscape is declared for the same reason. The app does not ask for
+        it, but Play's check covers both orientations, and declaring both
+        stops the same issue coming back when the manifest changes.
+
+        See docs/PUBLISHING.md.
+    -->
+    <uses-feature
+        android:name="android.hardware.screen.portrait"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.screen.landscape"
+        android:required="false" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

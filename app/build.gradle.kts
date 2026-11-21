@@ -65,14 +65,35 @@ fun isReleaseBuild(): Boolean =
 
 android {
     namespace = "com.jr12866.dartcoach"
-    compileSdk = 35
+
+    /**
+     * compileSdk 36, because Play requires it.
+     *
+     * From 31 August 2026, a new app or an app update has to target Android 16
+     * (API level 36) to be accepted by Google Play. The extension to
+     * 1 November 2026 has passed, so targetSdk 35 is no longer accepted for a
+     * new release.
+     *
+     * See docs/PUBLISHING.md for the requirement and its source.
+     */
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.jr12866.dartcoach"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 2
-        versionName = "0.2.0"
+        targetSdk = 36
+
+        /**
+         * The version code goes up for every bundle that reaches Play.
+         *
+         * Play will not accept a second bundle with a version code it has
+         * already seen, even for a track that has not been rolled out, so a
+         * change to the manifest - the screen orientation fix, for instance -
+         * needs a new code. 3 is the bundle that declares the screen
+         * orientation as optional, which is what Play asked for.
+         */
+        versionCode = 3
+        versionName = "0.2.1"
         buildFeatures {
             buildConfig = true
         }
@@ -166,6 +187,32 @@ android {
         sourceSets.getByName("main") {
             assets.srcDir(rootProject.file("models-pack/src/main/assets"))
         }
+    }
+
+    lint {
+        // `InvalidFragmentVersionForActivityResult` is a false positive here.
+        //
+        // The check fires when `registerForActivityResult()` is used and the
+        // resolved androidx.fragment is older than 1.3.0. The reason it
+        // exists is that older FragmentActivity versions mishandled
+        // `onRequestPermissionsResult`. Since androidx.activity 1.9.0,
+        // ComponentActivity no longer extends FragmentActivity at all: the
+        // Activity Result API is handled by ActivityResultRegistry and
+        // SavedStateRegistry, with no Fragment involved.
+        //
+        // This app depends on androidx.activity 1.9.3 and has no
+        // androidx.fragment on the classpath, so lint finds no fragment
+        // version and assumes the old, broken one. There is no Fragment here
+        // to upgrade.
+        //
+        // The permission request was proved on the Pixel 7: the dialog
+        // appears, the grant arrives through the activity result callback,
+        // and the coach starts listening.
+        //
+        // This only affects `lintVitalRelease`, which runs on the APK path.
+        // `bundleRelease` does not depend on it, so the bundle that Play
+        // receives was never affected.
+        disable += "InvalidFragmentVersionForActivityResult"
     }
 
     androidResources {
