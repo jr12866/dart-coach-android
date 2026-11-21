@@ -343,12 +343,114 @@ for development only; the Play install is the test that counts.
 Google also publishes a pre-launch report that runs the app against common
 crash scenarios before a release goes to review. Run it and read it.
 
+## The screen orientation is not a hardware requirement
+
+**`android.hardware.screen.portrait` is declared as `required="false"`.**
+
+This is not a preference. Play refused to send the first upload for review with
+*"Required hardware feature declarations are restricting your app's
+availability"*, naming `android.hardware.screen.portrait` as the cause and
+listing Phone, Tablet, Desktop and Android XR as the affected users.
+
+The cause was not in the source manifest. The activity asks for portrait with
+`android:screenOrientation="portrait"`, and **AAPT2 turns that into an
+implicit requirement** for portrait-capable hardware. That is a store filter,
+so Play hides the app from devices with no portrait display.
+
+The fix is the one Google's own documentation gives:
+
+```xml
+<uses-feature
+    android:name="android.hardware.screen.portrait"
+    android:required="false" />
+```
+
+Declaring the feature explicitly with `required="false"` removes the store
+filter **without changing the app**. The activity still runs portrait on a
+phone, because `android:screenOrientation` is a runtime request and this
+declaration does not touch it. That was proved on the Pixel 7: with the device
+forced into landscape, the app still rendered portrait, at 1080 x 2400.
+
+`android.hardware.screen.landscape` is declared the same way. The app does not
+ask for it, but Play's check covers both orientations, and declaring both
+stops the same issue returning when the manifest changes.
+
+Verify it against the merged manifest, which is what the bundle actually
+carries, and with `aapt2 dump badging`, which is what Play reads:
+
+```
+uses-feature: name='android.hardware.microphone'
+uses-feature-not-required: name='android.hardware.screen.landscape'
+uses-feature-not-required: name='android.hardware.screen.portrait'
+```
+
+The microphone stays required. The app cannot hear the score without it.
+
+## Building an APK, and one lint check
+
+`bundleRelease` is the release build and is what Play takes. `assembleRelease`
+builds the APK, and it runs `lintVitalRelease`, which the bundle task does
+not.
+
+One lint check is disabled, with the reason in `app/build.gradle.kts`:
+`InvalidFragmentVersionForActivityResult`. It fires when
+`registerForActivityResult()` is used and the resolved `androidx.fragment` is
+older than 1.3.0. Since androidx.activity 1.9.0, `ComponentActivity` no
+longer extends `FragmentActivity`, and this app has no `androidx.fragment` on
+the classpath at all - so lint finds no fragment version and assumes the old,
+broken one. There is no fragment here to upgrade, and the permission request
+works: the dialog appears and the grant arrives through the callback.
+
 ## Target API level
 
-Play requires the target SDK to be within one year of the latest Android
-release. `targetSdk = 35` is current as of this plan; check
-https://developer.android.com/google/play/requirements/target-sdk before
-shipping, and bump it when required.
+**`targetSdk = 36`.** This is a requirement, not a preference.
+
+From **31 August 2026**, a new app or an app update has to target Android 16
+(API level 36) or higher to be accepted by Google Play. The extension to
+1 November 2026 that Google offered has passed, so `targetSdk = 35` is no
+longer accepted for a new release. The app was on 35 until this was checked
+on 21 November 2026, which is the kind of thing that gets a release rejected
+at the upload rather than at the review.
+
+The requirement and the dates are in the Play Console Help:
+https://support.google.com/googleplay/android-developer/answer/11926878
+
+`compileSdk` was raised to 36 at the same time, because `targetSdk` cannot be
+higher than the SDK it is compiled against. The Android Gradle Plugin in use
+was released before API 36 was final, so it prints a warning about an
+untested `compileSdk`. That warning is expected and is suppressed in
+`gradle.properties` with `android.suppressUnsupportedCompileSdk=36`.
+
+Check the requirement again before every release:
+https://developer.android.com/google/play/requirements/target-sdk
+
+## 16 KB page sizes
+
+**Satisfied.** Since 1 November 2025, a new app or an update to an app
+targeting Android 15 or higher has to support 16 KB page sizes, because
+devices with 16 KB pages exist and an app that is not built for them does not
+run on them.
+
+The app ships four native libraries - `libsherpa-onnx-jni.so`,
+`libonnxruntime.so`, `libpiper-phonemize-jni.so` and `libc++_shared.so` - and
+all of them are built with the NDK, so this is a real question here rather
+than a formality.
+
+Every `LOAD` segment in every one of them is aligned to `0x4000`, which is
+16384 bytes, which is 16 KB. That is checked against the built bundle, not
+assumed:
+
+```
+$ llvm-readelf -l app/build/outputs/bundle/release/app-release.aab
+libsherpa-onnx-jni.so  LOAD align: 0x4000, 0x4000, 0x4000
+libonnxruntime.so      LOAD align: 0x4000, 0x4000, 0x4000, 0x4000
+libpiper-phonemize-jni.so  LOAD align: 0x4000, 0x4000, 0x4000
+libc++_shared.so       LOAD align: 0x4000, 0x4000, 0x4000, 0x4000
+```
+
+If the NDK is ever changed, this has to be checked again. A library aligned
+to 4 KB loads on a 16 KB device, but it is loaded at the wrong alignment and
+the device refuses it.
 
 ## What is still manual
 
