@@ -24,12 +24,24 @@ comes *before* the product, not after it.
 | The release keystore | `C:/Users/jr128/dart-coach-keys/dart-coach-release.jks`, alias `dart-coach` |
 | The signing properties | in `local.properties`, which is not in git |
 | The signed bundle | `app/build/outputs/bundle/release/app-release.aab`, 153 MB, signature verified |
+| The target SDK | 36, which is what Play requires from 31 August 2026. See `docs/PUBLISHING.md`. |
 
 The bundle was built with:
 
 ```powershell
 .\gradlew.bat :app:bundleRelease
 ```
+
+**Check the target SDK before uploading.** Play rejects a new app that targets
+below API level 36, and the rejection happens at the upload rather than at the
+review, so it costs a rebuild. The version in `app/build.gradle.kts` has to be
+36 or higher, and the uploaded bundle has to be the one built from it.
+
+**Every bundle that reaches Play needs a new version code.** Play will not
+accept a second bundle with a version code it has already seen, even for a
+track that has not been rolled out, so anything that changes the manifest
+costs a version code bump. The version code is in `app/build.gradle.kts`, and
+the release name in the console is `versionName (versionCode)`.
 
 **Do not pass `-PwithLocalModels` to the release build.** It copies the models
 into the base module as well as the asset pack, and the bundle build fails
@@ -68,13 +80,25 @@ waiting. Once it clears, the account is usable.
 nothing can be sold without one:
 
 ```
-Play Console → Settings → Developer account → Payments profile
+Manage account → Play apps settings → Monetization settings → Payments profile
 ```
+
+**The path has moved.** It used to be `Settings → Developer account →
+Payments profile`, and older notes still say so. It is now under **Manage
+account → Play apps settings → Monetization settings**.
 
 Fill in the business details and add a payment method to receive earnings.
 The app has no server and no account of its own, so this is Google's merchant
 registration, and it is the one part of the Pro tier that needs Google's
 paperwork rather than the app's.
+
+**Budget time for the payment method verification.** Play may require the
+payment method to be verified before monetization is available, and that
+check is not instant: it can be a small deposit to the bank account that has
+to be confirmed in the console, or a request to upload bank documents, and
+**verification can take up to 5 days**. This is a second potential long pole
+alongside the 14-day closed test, so it is worth starting early rather than
+after the product is ready to be created.
 
 ---
 
@@ -301,7 +325,7 @@ Test and release → Testing → Internal testing → Create new release
 
 | | |
 |---|---|
-| Release name | `0.2.0 (2)` |
+| Release name | `0.2.1 (3)` |
 | Bundle | `app/build/outputs/bundle/release/app-release.aab` |
 | Release notes | The text below, which is under the 500 character limit |
 
@@ -324,8 +348,14 @@ also the first test of the 143 MB install over mobile data.
 ### Play App Signing
 
 ```
-Test and release → App integrity → Play App Signing
+Protected with Play → Play Store protection → App signing
 ```
+
+**This has moved.** It used to be `Test and release → App integrity → Play App
+Signing`, and older notes still say so. Google moved app signing to the
+**Protected with Play** page in the left navigation, so that is where it is
+now. Google announced the move in
+[See what's new](https://google.play/business/whats-new/).
 
 Accept the upload key reset, so the key that is **not** the signing key of
 record is the one in `dart-coach-keys/`. That is what makes the upload key
@@ -339,28 +369,96 @@ several days to complete a key reset.
 
 ## Step 6 — The product
 
-Only now, with a bundle in a track:
+Only now, with a bundle published to a track:
 
 ```
 Monetize with Play → Products → One-time products → Create one-time product
 ```
 
-### The product
+**Monetize with Play** is an app-level item in the left navigation, so the
+app has to be selected first.
+
+**There are two states for this page, and they look nothing alike.**
+
+*Before* monetisation is set up, the page is a landing screen: "Earn revenue
+through one-time products, subscriptions, and more", with a **Get started**
+button and a **Manage with AI** button. There is no Products item anywhere,
+because there is nothing to put in it yet. **This is where you start.**
+
+*After* monetisation is set up, "Monetize with Play" becomes an expandable
+tree in the left navigation:
+
+```
+Monetize with Play
+├── Overview
+├── Monetization setup
+├── Products            ← expand this one too
+│   ├── One-time products
+│   ├── Subscriptions
+│   └── Bundles
+├── Orders
+└── Merchandising and optimization
+```
+
+**Products** expands to show the three ways to monetize an app, and
+**One-time products** is the one to click - not "In-app products", which is
+the legacy page for apps created before the migration.
+
+**Get started** walks through the setup that has to come first: the merchant
+registration and payments profile, then the monetisation setup for the app -
+the tax and compliance answers and the countries and regions the app is sold
+in. The Products page appears when that is done.
+
+**Manage with AI** is Play's own assistant for this section, and it can
+create one-time products from a plain-language request. It is free and does
+not need a Gemini subscription, but it needs the **Manage store presence**
+permission and it still applies changes through a **Review → Apply changes**
+step. For one product with values that are written down here, the manual
+wizard is the more predictable route.
+
+**If the Products page is missing or the create button is not there**, the
+cause is almost always one of these:
+
+- **Monetisation is not set up yet.** This is the common one. The Monetize
+  with Play page is a landing screen with a **Get started** button and no
+  Products item anywhere, because there is nothing to put in it yet. Click
+  **Get started** and work through it.
+- **The release was uploaded but not published.** Play requires a version to
+  be *published* to a track - any track, internal testing is enough - before
+  billing features are enabled. Uploading an AAB and leaving it in the draft
+  is not publishing it.
+- **There is no payments profile.** Manage account → Play apps settings →
+  Monetization settings → Payments profile. Until that exists, the Products
+  pages are read-only.
+- **The app itself was never uploaded.** Play prompts for the app file first
+  if the app is still an empty shell.
+
+### It is one wizard, not two pages
+
+The create form is a single flow with two halves, and it cannot be
+half-completed: a product with no purchase option is not allowed, so there is
+no way to save a product without a purchase option.
+
+**Step one - the product details:**
 
 | Field | Value |
 |---|---|
 | Product ID | `dartcoach_pro` |
 | Name | `Darts Coach Pro` |
 | Description | `The personalised coach: your own hit rates, the full out chart, the setup coaching and your statistics.` |
+| Icon | `docs/store/icon-512.png` - optional, but it is already 512x512 PNG |
 
 **The product ID cannot be changed once the product is created.** It has to
 be `dartcoach_pro`, because that is what `BillingRepository.PRODUCT_ID` asks
 Play for. A mismatch means the app cannot find the product and the purchase
 silently fails.
 
-### The purchase option
+**Then the "Tax, compliance, and programs" section**, which is required and
+sits between the details and the **Next** button. It asks about the seller's
+own tax position, so the answers depend on the circumstances - it is the one
+part of this step that cannot be pre-written.
 
-The product needs at least one purchase option, and this is what carries the
+**Step two - the purchase option**, after **Next**. This is what carries the
 price:
 
 | Field | Value |
@@ -371,8 +469,12 @@ price:
 | Price | **$2.99** |
 | Availability | All regions, or whichever ones are wanted |
 
-Save the changes and **activate** the product. A product that is not active
-does not appear in the purchase flow at all.
+**Digital content** is under **Advanced options** on this step, so the
+expansion has to be opened to find it.
+
+The last button in the wizard is **Activate**. That is what creates the
+product and makes it buyable. A product that is not active does not appear in
+the purchase flow at all.
 
 The app reads the price from Play rather than from a string in the code, so
 the price shown to the player is right for their country. Changing it later
@@ -428,6 +530,57 @@ Google requires:
 - then **Apply for production** on the Dashboard, answering questions about
   the closed test, the app, and production readiness;
 - then a production release.
+
+### Adding the testers' email addresses
+
+```
+Test and release → Testing → Closed testing → Manage track → Testers tab
+```
+
+Under **Testers**, click **Create email list**, give it a name, add the
+addresses separated by commas, then **Save changes** and **Create**.
+
+The list can be reused across tracks and across apps on the same account, so
+it is worth naming it something like `Darts Coach testers` rather than
+something tied to one release.
+
+**"This email address doesn't exist"** means Play looked the address up in
+Google's account directory and did not find it. The rule is not "is this a
+real mailbox", it is "**is this address a registered Google Account**". The
+domain does not matter - a Hotmail or company address is fine as long as
+somebody has registered it with Google. Three things cause it:
+
+1. **The address is not a Google Account.** A company email that has never
+   been used to sign in to Google fails here, even though the mailbox is
+   real. The fix is for the tester to register it:
+   `accounts.google.com/signup` → **Use current email instead of creating a
+   new Google Account**. That turns it into a Google Account, and the address
+   then validates.
+
+2. **It is not the address they sign in with.** The address has to be the one
+   the tester's Play Store uses, because that is how Play identifies them.
+   On the phone: Play Store → profile icon → the email shown. If they have
+   two Google accounts, the Play Store may be using the other one.
+
+3. **Two addresses on one account.** If both `a@x.com` and `b@x.com` belong
+   to the same Google Account, Play accepts only one of them and rejects the
+   other as the same person twice.
+
+Two UI traps that produce the same message:
+
+- **Press Enter after typing each address.** The field turns the address into
+  a chip on Enter. Typing and going straight to **Save** leaves it as loose
+  text, and the console complains about it.
+- **The CSV route.** **Upload CSV file** accepts the addresses in bulk, and
+  it works when the text box will not. Two rules: uploading **overwrites** the
+  list rather than adding to it, and Play **rejects CSV files saved as
+  UTF-8 with BOM**. Save the CSV as plain UTF-8 without a BOM.
+
+A personal Google Group is the escape hatch for a group of people whose
+addresses are not registered with Google: create the group at
+`groups.google.com`, then add the group's address to the tester list in the
+form `yourgroupname@googlegroups.com`, and select **Google Groups** rather
+than **Email** as the access method.
 
 Things that catch people out:
 
